@@ -8,6 +8,7 @@ import (
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
 	handlerGreeterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/helloworld/handler"
+	singletonService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
 	dicontext_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
 	logger_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/logger"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -32,8 +33,15 @@ func main() {
 	}
 
 	handlerGreeterService.AddGreeterService(dotNetGoBuilder.Builder)
-
+	singletonService.AddSingletonService(dotNetGoBuilder.Builder)
 	dotNetGoBuilder.Build()
+
+	ss := singletonService.GetSingletonService()
+	ss.SetName("test")
+	log.Info().Msg(ss.GetName())
+
+	ss2 := singletonService.GetSingletonService()
+	log.Info().Msg(ss2.GetName())
 
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
