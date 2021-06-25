@@ -6,7 +6,7 @@ import (
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	singletonServicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/singleton-serviceprovider"
-	"github.com/sarulabs/di"
+	di "github.com/sarulabs/di/v2"
 )
 
 const (
@@ -25,7 +25,7 @@ func GetContainer() di.Container {
 }
 
 func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
-	builder, err := di.NewBuilder(di.App, di.Request)
+	builder, err := di.NewBuilder(di.App, di.Request, "transient")
 	if err != nil {
 		return nil, err
 	}

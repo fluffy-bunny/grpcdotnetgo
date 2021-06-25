@@ -4,7 +4,7 @@ import (
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/sarulabs/di"
+	di "github.com/sarulabs/di/v2"
 )
 
 type loggerService struct {

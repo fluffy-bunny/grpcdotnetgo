@@ -7,7 +7,7 @@ import (
 	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	"github.com/google/uuid"
-	"github.com/sarulabs/di"
+	di "github.com/sarulabs/di/v2"
 	"google.golang.org/grpc"
 )
 

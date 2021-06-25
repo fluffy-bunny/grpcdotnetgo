@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/rs/zerolog/log"
-	"github.com/sarulabs/di"
+	di "github.com/sarulabs/di/v2"
 )
 
 type service struct {

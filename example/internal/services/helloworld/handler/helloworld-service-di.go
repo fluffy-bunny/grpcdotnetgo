@@ -7,7 +7,7 @@ import (
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	"github.com/rs/zerolog/log"
-	"github.com/sarulabs/di"
+	di "github.com/sarulabs/di/v2"
 )
 
 // GreeterService adds service to the DI container

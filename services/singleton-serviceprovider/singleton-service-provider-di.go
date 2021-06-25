@@ -3,7 +3,7 @@ package serviceprovider
 import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/sarulabs/di"
+	di "github.com/sarulabs/di/v2"
 )
 
 // Define an object in the App scope.

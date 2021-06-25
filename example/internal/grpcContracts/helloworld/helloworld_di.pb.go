@@ -6,7 +6,7 @@ import (
 	context "context"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
-	di "github.com/sarulabs/di"
+	v2 "github.com/sarulabs/di/v2"
 	grpc "google.golang.org/grpc"
 )
 
@@ -28,7 +28,7 @@ func GetGreeterServiceName() string {
 }
 
 // GetGreeterFromContainer fetches the downstream di.Request scoped service
-func GetGreeterFromContainer(ctn di.Container) GreeterService {
+func GetGreeterFromContainer(ctn v2.Container) GreeterService {
 	return ctn.Get(GetGreeterServiceName()).(GreeterService)
 }
 

@@ -2,7 +2,7 @@ package serviceprovider
 
 import (
 	"github.com/rs/zerolog"
-	"github.com/sarulabs/di"
+	di "github.com/sarulabs/di/v2"
 )
 
 type IServiceProvider interface {
