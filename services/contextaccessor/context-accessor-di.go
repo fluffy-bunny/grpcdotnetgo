@@ -3,6 +3,7 @@ package contextaccessor
 import (
 	"context"
 
+	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 	"github.com/rs/zerolog/log"
 	di "github.com/sarulabs/di/v2"
 )
@@ -12,8 +13,7 @@ type service struct {
 }
 
 // Define an object in the App scope.
-
-var diServiceName = "context-accessor"
+var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("context-accessor")
 
 // GetContextAccessorFromContainer from the Container
 func GetContextAccessorFromContainer(ctn di.Container) IContextAccessor {

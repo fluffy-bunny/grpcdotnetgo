@@ -1,13 +1,13 @@
 package claimsprincipal
 
 import (
+	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 	"github.com/rs/zerolog/log"
 	di "github.com/sarulabs/di/v2"
 )
 
 // Define an object in the App scope.
-
-var diServiceName = "claims-principal"
+var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("claims-principal")
 
 // GetClaimsPrincipalFromContainer from the Container
 func GetClaimsPrincipalFromContainer(ctn di.Container) *ClaimsPrincipal {

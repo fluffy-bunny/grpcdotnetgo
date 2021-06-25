@@ -1,14 +1,14 @@
 package serviceprovider
 
 import (
+	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	di "github.com/sarulabs/di/v2"
 )
 
 // Define an object in the App scope.
-
-var diServiceName = "di-singleton-service-provider"
+var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("di-singleton-service-provider")
 
 // GetSingletonServiceProviderFromContainer from the Container
 func GetSingletonServiceProviderFromContainer(ctn di.Container) IServiceProvider {

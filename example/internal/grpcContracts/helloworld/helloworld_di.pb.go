@@ -20,7 +20,7 @@ type GreeterService interface {
 }
 
 // diGreeterServiceName is the unique service name that MUST be used to register the downstream service in the DI
-const diGreeterServiceName = "grpc-downstreamservice-Greeter"
+const diGreeterServiceName = "grpc-downstreamservice-Greeter.BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk"
 
 // GetGreeterServiceName is a getter to fetch the unique service name.
 func GetGreeterServiceName() string {

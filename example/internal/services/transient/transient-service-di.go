@@ -3,12 +3,13 @@ package handler
 import (
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	singletonServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/singleton-serviceprovider"
+	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 	"github.com/rs/zerolog/log"
 	di "github.com/sarulabs/di/v2"
 )
 
 // Define an object in the App scope.
-var diServiceName = "di-transient-service"
+var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("di-transient-service")
 
 // GetTransientServiceFromContainer from the Container
 func GetTransientService() *Service {

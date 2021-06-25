@@ -2,14 +2,14 @@ package serviceprovider
 
 import (
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
+	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	di "github.com/sarulabs/di/v2"
 )
 
 // Define an object in the App scope.
-
-var diServiceName = "di-req-service-provider"
+var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("di-req-service-provider")
 
 // GetDIServiceProviderFromContainer from the Container
 func GetServiceProviderFromContainer(ctn di.Container) IServiceProvider {
