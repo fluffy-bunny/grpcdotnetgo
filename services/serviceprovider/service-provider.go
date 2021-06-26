@@ -1,8 +1,8 @@
 package serviceprovider
 
 import (
+	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog"
-	di "github.com/sarulabs/di/v2"
 )
 
 type IServiceProvider interface {

@@ -6,7 +6,7 @@ import (
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	singletonServicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/singleton-serviceprovider"
-	di "github.com/sarulabs/di/v2"
+	di "github.com/fluffy-bunny/sarulabsdi"
 )
 
 const (

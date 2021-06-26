@@ -1,4 +1,4 @@
-package handler
+package singleton
 
 import (
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"

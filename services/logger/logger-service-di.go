@@ -3,14 +3,10 @@ package logger
 import (
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
+	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	di "github.com/sarulabs/di/v2"
 )
-
-type loggerService struct {
-	Logger *zerolog.Logger
-}
 
 // Define an object in the App scope.
 var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("di-req-logger-service")
@@ -30,7 +26,7 @@ func AddRequestLogger(builder *di.Builder) {
 		Build: func(ctn di.Container) (interface{}, error) {
 			contextAccessor := contextaccessor.GetContextAccessorFromContainer(ctn)
 			logger := zerolog.Ctx(contextAccessor.GetContext())
-			return &loggerService{
+			return &LoggerService{
 				Logger: logger,
 			}, nil
 		},

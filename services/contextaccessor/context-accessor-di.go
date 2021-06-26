@@ -4,8 +4,8 @@ import (
 	"context"
 
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
+	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
-	di "github.com/sarulabs/di/v2"
 )
 
 type service struct {

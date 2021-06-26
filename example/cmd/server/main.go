@@ -3,10 +3,12 @@ package main
 
 import (
 	"net"
+	"reflect"
 
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
+	exampleServices "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services"
 	handlerGreeterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/helloworld/handler"
 	singletonService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
@@ -35,9 +37,21 @@ func main() {
 
 	handlerGreeterService.AddGreeterService(dotNetGoBuilder.Builder)
 	singletonService.AddSingletonService(dotNetGoBuilder.Builder)
+
 	transientService.AddTransientService(dotNetGoBuilder.Builder)
+	transientService.AddTransientService2(dotNetGoBuilder.Builder)
+
 	dotNetGoBuilder.Build()
 
+	ctn := grpcdotnetgo.GetContainer()
+	inter := reflect.TypeOf((*exampleServices.ISomething)(nil)).Elem()
+
+	dd := ctn.GetByType(inter)
+	for _, d := range dd {
+		ds := d.(exampleServices.ISomething)
+		ds.SetName("test")
+		log.Info().Msg(ds.GetName())
+	}
 	ss := singletonService.GetSingletonService()
 	ss.SetName("test")
 	log.Info().Msg(ss.GetName())

@@ -6,8 +6,8 @@ import (
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
+	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/google/uuid"
-	di "github.com/sarulabs/di/v2"
 	"google.golang.org/grpc"
 )
 
