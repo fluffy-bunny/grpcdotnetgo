@@ -3,7 +3,7 @@ module github.com/fluffy-bunny/grpcdotnetgo/example
 go 1.16
 
 require (
-	github.com/fluffy-bunny/grpcdotnetgo v0.0.0-20210623034251-8e7e5605f16f
+	github.com/fluffy-bunny/grpcdotnetgo v0.1.0
 	github.com/fluffy-bunny/sarulabsdi v0.1.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/jnewmano/grpc-json-proxy v0.0.3
@@ -14,6 +14,6 @@ require (
 	google.golang.org/protobuf v1.26.0
 )
 
-replace github.com/fluffy-bunny/grpcdotnetgo => ../
+//replace github.com/fluffy-bunny/grpcdotnetgo => ../
 
 //replace github.com/fluffy-bunny/sarulabsdi => ../../sarulabsdi
