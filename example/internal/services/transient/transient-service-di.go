@@ -6,6 +6,7 @@ import (
 
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	exampleServices "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services"
+	grpcdotnetgreflect "github.com/fluffy-bunny/grpcdotnetgo/reflect"
 	singletonServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/singleton-serviceprovider"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
@@ -30,7 +31,7 @@ func AddTransientService(builder *di.Builder) {
 	log.Info().Msg("IoC: AddTransientService")
 
 	types := di.NewTypeSet()
-	inter := reflect.TypeOf((*exampleServices.ISomething)(nil)).Elem()
+	inter := grpcdotnetgreflect.GetInterfaceReflectType((*exampleServices.ISomething)(nil))
 	types.Add(inter)
 	types.Add(reflect.TypeOf(&Service{}))
 
@@ -79,7 +80,7 @@ func AddTransientService2(builder *di.Builder) {
 	log.Info().Msg("IoC: AddTransientService")
 
 	types := di.NewTypeSet()
-	inter := reflect.TypeOf((*exampleServices.ISomething)(nil)).Elem()
+	inter := grpcdotnetgreflect.GetInterfaceReflectType((*exampleServices.ISomething)(nil))
 	types.Add(inter)
 	types.Add(reflect.TypeOf(&Service2{}))
 

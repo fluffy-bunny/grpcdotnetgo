@@ -4,7 +4,6 @@ package main
 import (
 	"fmt"
 	"net"
-	"reflect"
 
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
@@ -15,6 +14,7 @@ import (
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
 	dicontext_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
 	logger_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/logger"
+	grpcdotnetgreflect "github.com/fluffy-bunny/grpcdotnetgo/reflect"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	_ "github.com/jnewmano/grpc-json-proxy/codec"
@@ -48,12 +48,12 @@ func main() {
 	dotNetGoBuilder.Build()
 
 	ctn := grpcdotnetgo.GetContainer()
-	inter := reflect.TypeOf((*exampleServices.ISomething)(nil)).Elem()
+	inter := grpcdotnetgreflect.GetInterfaceReflectType((*exampleServices.ISomething)(nil))
 
 	dd := ctn.GetByType(inter)
 	for _, d := range dd {
 		ds := d.(exampleServices.ISomething)
-		ds.SetName("test")
+		ds.SetName("rabbit")
 		log.Info().Msg(ds.GetName())
 	}
 	ss := singletonService.GetSingletonService()
