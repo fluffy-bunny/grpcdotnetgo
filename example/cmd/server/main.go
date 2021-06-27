@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"net"
 	"reflect"
 
@@ -25,7 +26,10 @@ const (
 	port = ":40051"
 )
 
+var Version = "development"
+
 func main() {
+	fmt.Println("Version:\t", Version)
 	config := &internal.Config{}
 	ReadViperConfig(internal.ConfigDefaultYaml, &config)
 

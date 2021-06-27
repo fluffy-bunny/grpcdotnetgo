@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -15,7 +16,10 @@ const (
 	defaultName = "world"
 )
 
+var Version = "development"
+
 func main() {
+	fmt.Println("Version:\t", Version)
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
