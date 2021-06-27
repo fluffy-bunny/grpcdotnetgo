@@ -16,10 +16,10 @@ const (
 	defaultName = "world"
 )
 
-var Version = "development"
+var version = "development"
 
 func main() {
-	fmt.Println("Version:\t", Version)
+	fmt.Println("Version:\t", version)
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

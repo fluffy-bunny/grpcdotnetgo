@@ -26,10 +26,10 @@ const (
 	port = ":40051"
 )
 
-var Version = "development"
+var version = "development"
 
 func main() {
-	fmt.Println("Version:\t", Version)
+	fmt.Println("Version:\t", version)
 	config := &internal.Config{}
 	ReadViperConfig(internal.ConfigDefaultYaml, &config)
 
