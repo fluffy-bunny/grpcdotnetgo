@@ -38,8 +38,10 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		// get a fresh ClaimsPrincipal from the request container and populate it with uuid data
 
 		claimsPrincipal := claimsprincipal.GetClaimsPrincipalFromContainer(requestContainer)
-		claimsPrincipal.Claims = make(map[string][]string)
-		claimsPrincipal.Claims["d"] = append(claimsPrincipal.Claims["d"], uuid.New().String())
+		claimsPrincipal.AddClaim(claimsprincipal.Claim{
+			Type:  "d",
+			Value: uuid.New().String(),
+		})
 
 		return handler(ctx, req)
 	}

@@ -14,7 +14,7 @@ import (
 // Service is used to implement helloworld.GreeterServer.
 type Service struct {
 	ContextAccessor contextaccessor.IContextAccessor
-	ClaimsPrincipal *claimsprincipal.ClaimsPrincipal
+	ClaimsPrincipal claimsprincipal.IClaimsPrincipal
 	Logger          servicesLogger.ILogger
 	ServiceProvider servicesServiceProvider.IServiceProvider
 }

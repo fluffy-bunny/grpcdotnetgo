@@ -9,7 +9,7 @@ import (
 )
 
 // Define an object in the App scope.
-var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("di-req-logger-service")
+var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("ILogger")
 
 // GetDIRequestLoggerFromContainer from the Container
 func GetRequestLoggerFromContainer(ctn di.Container) ILogger {
