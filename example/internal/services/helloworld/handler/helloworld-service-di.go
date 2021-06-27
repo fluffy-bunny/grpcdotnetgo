@@ -12,7 +12,10 @@ import (
 
 // GreeterService adds service to the DI container
 func AddGreeterService(builder *di.Builder) {
-	log.Info().Msg("IoC: GreeterService")
+	log.Info().
+		Str("serviceName", pb.GetGreeterServiceName()).
+		Msg("IoC: GreeterService")
+
 	builder.Add(di.Def{
 		Name:  pb.GetGreeterServiceName(),
 		Scope: di.Request,
@@ -20,8 +23,8 @@ func AddGreeterService(builder *di.Builder) {
 			return &Service{
 				ContextAccessor: contextaccessor.GetContextAccessorFromContainer(ctn),
 				ClaimsPrincipal: claimsprincipal.GetClaimsPrincipalFromContainer(ctn),
-				Logger:          servicesLogger.GetRequestLoggerFromContainer(ctn),
-				ServiceProvider: servicesServiceProvider.GetServiceProviderFromContainer(ctn),
+				Logger:          servicesLogger.GetScopedLoggerFromContainer(ctn),
+				ServiceProvider: servicesServiceProvider.GetScopedServiceProviderFromContainer(ctn),
 			}, nil
 		},
 	})

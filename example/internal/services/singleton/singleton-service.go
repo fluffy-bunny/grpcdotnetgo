@@ -5,17 +5,17 @@ import (
 )
 
 // Service is used to implement helloworld.GreeterServer.
-type Service struct {
+type service struct {
 	ServiceProvider servicesServiceProvider.IServiceProvider
 	name            string
 }
 
 // SetName ...
-func (s *Service) SetName(in string) {
+func (s *service) SetName(in string) {
 	s.name = in
 }
 
 // SetName ...
-func (s *Service) GetName() string {
+func (s *service) GetName() string {
 	return s.name
 }

@@ -17,26 +17,26 @@ type ILogger interface {
 	Trace() *zerolog.Event
 }
 
-type LoggerService struct {
+type loggerService struct {
 	Logger *zerolog.Logger
 }
 
-func (s *LoggerService) Error() *zerolog.Event {
+func (s *loggerService) Error() *zerolog.Event {
 	sublogger := s.withFileNumber(s.Logger)
 	return sublogger.Error()
 }
 
-func (s *LoggerService) Debug() *zerolog.Event {
+func (s *loggerService) Debug() *zerolog.Event {
 	sublogger := s.withFileNumber(s.Logger)
 	return sublogger.Debug()
 }
 
-func (s *LoggerService) Fatal() *zerolog.Event {
+func (s *loggerService) Fatal() *zerolog.Event {
 	sublogger := s.withFileNumber(s.Logger)
 	return sublogger.Fatal()
 }
 
-func (s *LoggerService) Info() *zerolog.Event {
+func (s *loggerService) Info() *zerolog.Event {
 	e := s.Logger.Debug()
 	if !e.Enabled() {
 		return s.Logger.Info()
@@ -44,7 +44,7 @@ func (s *LoggerService) Info() *zerolog.Event {
 	sublogger := s.withFileNumber(s.Logger)
 	return sublogger.Info()
 }
-func (s *LoggerService) Warn() *zerolog.Event {
+func (s *loggerService) Warn() *zerolog.Event {
 	e := s.Logger.Debug()
 	if !e.Enabled() {
 		return s.Logger.Warn()
@@ -52,7 +52,7 @@ func (s *LoggerService) Warn() *zerolog.Event {
 	sublogger := s.withFileNumber(s.Logger)
 	return sublogger.Warn()
 }
-func (s *LoggerService) Trace() *zerolog.Event {
+func (s *loggerService) Trace() *zerolog.Event {
 	e := s.Logger.Debug()
 	if !e.Enabled() {
 		return s.Logger.Trace()
@@ -62,7 +62,7 @@ func (s *LoggerService) Trace() *zerolog.Event {
 }
 
 // withFileNumber is used internally to make sure our stack filenames are correct.
-func (s *LoggerService) withFileNumber(log *zerolog.Logger) *zerolog.Logger {
+func (s *loggerService) withFileNumber(log *zerolog.Logger) *zerolog.Logger {
 	e := log.Debug()
 	if !e.Enabled() {
 		return log
@@ -79,7 +79,7 @@ func (s *LoggerService) withFileNumber(log *zerolog.Logger) *zerolog.Logger {
 		Str("stack.function", frame.Function).Logger()
 	return &subLogger
 }
-func (s *LoggerService) getLoggerContext(ctx context.Context) *zerolog.Logger {
+func (s *loggerService) getLoggerContext(ctx context.Context) *zerolog.Logger {
 	log := zerolog.Ctx(ctx)
 	return log
 }

@@ -16,7 +16,9 @@ func GetClaimsPrincipalFromContainer(ctn di.Container) IClaimsPrincipal {
 
 // ClaimsPrincipal adds service to the DI container
 func AddClaimsPrincipal(builder *di.Builder) {
-	log.Info().Msg("IoC: ClaimsPrincipal")
+	log.Info().
+		Str("serviceName", diServiceName).
+		Msg("IoC: AddClaimsPrincipal")
 	builder.Add(di.Def{
 		Name:  diServiceName,
 		Scope: di.Request,

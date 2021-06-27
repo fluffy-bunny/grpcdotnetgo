@@ -2,6 +2,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net"
 
@@ -16,6 +17,7 @@ import (
 	logger_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/logger"
 	grpcdotnetgreflect "github.com/fluffy-bunny/grpcdotnetgo/reflect"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	_ "github.com/jnewmano/grpc-json-proxy/codec"
 	"github.com/rs/zerolog/log"
@@ -84,6 +86,7 @@ func main() {
 			logger_middleware.EnsureCorrelationIDUnaryServerInterceptor(),
 			dicontext_middleware.UnaryServerInterceptor(),
 			logger_middleware.LoggingUnaryServerInterceptor(),
+			grpc_auth.UnaryServerInterceptor(exampleAuthFunc),
 		)),
 	)
 	pb.RegisterGreeterServerDI(grpcServer)
@@ -92,4 +95,9 @@ func main() {
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatal().Err(err).Msg("failed to serve: ")
 	}
+}
+
+func exampleAuthFunc(ctx context.Context) (context.Context, error) {
+
+	return ctx, nil
 }

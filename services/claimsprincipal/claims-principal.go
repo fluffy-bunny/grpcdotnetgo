@@ -1,5 +1,9 @@
 package claimsprincipal
 
+import (
+	"fmt"
+)
+
 type Claim struct {
 	Type  string
 	Value string
@@ -15,7 +19,13 @@ type claimsPrincipal struct {
 }
 
 func removeIndex(s []string, index int) []string {
-	return append(s[:index], s[index+1:]...)
+	if index >= len(s) {
+		panic(fmt.Errorf("len:%v, index:%v out of range", len(s), index))
+	}
+	s[index] = s[len(s)-1]
+	s[len(s)-1] = ""
+	s = s[:len(s)-1]
+	return s
 }
 
 func (c *claimsPrincipal) RemoveClaim(claim Claim) {

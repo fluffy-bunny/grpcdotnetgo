@@ -5,7 +5,6 @@ import (
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
-	singletonServicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/singleton-serviceprovider"
 	di "github.com/fluffy-bunny/sarulabsdi"
 )
 
@@ -32,9 +31,10 @@ func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 
 	claimsprincipal.AddClaimsPrincipal(builder)
 	contextaccessor.AddContextAccessor(builder)
-	servicesLogger.AddRequestLogger(builder)
-	servicesServiceProvider.AddServiceProvider(builder)
-	singletonServicesServiceProvider.AddSingletonServiceProvider(builder)
+	servicesLogger.AddScopedLogger(builder)
+	servicesLogger.AddSingletonLogger(builder)
+	servicesServiceProvider.AddScopedServiceProvider(builder)
+	servicesServiceProvider.AddSingletonServiceProvider(builder)
 
 	return &DotNetGoBuilder{
 		Builder: builder,

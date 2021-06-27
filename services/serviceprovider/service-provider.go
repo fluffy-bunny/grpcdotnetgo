@@ -1,8 +1,8 @@
 package serviceprovider
 
 import (
+	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog"
 )
 
 type IServiceProvider interface {
@@ -11,7 +11,7 @@ type IServiceProvider interface {
 
 type serviceProvider struct {
 	Container di.Container
-	Logger    *zerolog.Logger
+	Logger    servicesLogger.ILogger
 }
 
 func (s *serviceProvider) GetService(name string) interface{} {

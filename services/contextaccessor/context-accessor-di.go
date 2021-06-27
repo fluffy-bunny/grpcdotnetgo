@@ -13,7 +13,7 @@ type service struct {
 }
 
 // Define an object in the App scope.
-var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("context-accessor")
+var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("IContextAccessor")
 
 // GetContextAccessorFromContainer from the Container
 func GetContextAccessorFromContainer(ctn di.Container) IContextAccessor {
@@ -27,7 +27,10 @@ func GetInternalGetContextAccessorFromContainer(ctn di.Container) IInternalConte
 
 // ContextAccessor adds service to the DI container
 func AddContextAccessor(builder *di.Builder) {
-	log.Info().Msg("IoC: ContextAccessor")
+	log.Info().
+		Str("serviceName", diServiceName).
+		Msg("IoC: AddContextAccessor")
+
 	builder.Add(di.Def{
 		Name:  diServiceName,
 		Scope: di.Request,
