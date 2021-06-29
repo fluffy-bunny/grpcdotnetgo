@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"reflect"
 
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
@@ -52,12 +53,21 @@ func main() {
 	ctn := grpcdotnetgo.GetContainer()
 	inter := grpcdotnetgreflect.GetInterfaceReflectType((*exampleServices.ISomething)(nil))
 
-	dd := ctn.GetByType(inter)
+	dd := ctn.GetManyByType(inter)
 	for _, d := range dd {
 		ds := d.(exampleServices.ISomething)
 		ds.SetName("rabbit")
 		log.Info().Msg(ds.GetName())
 	}
+
+	inter = reflect.TypeOf(&transientService.Service{}).Elem()
+	dd = ctn.GetManyByType(inter)
+	for _, d := range dd {
+		ds := d.(*transientService.Service)
+		ds.SetName("Cougar")
+		log.Info().Msg(ds.GetName())
+	}
+
 	ss := singletonService.GetSingletonService()
 	ss.SetName("test")
 	log.Info().Msg(ss.GetName())

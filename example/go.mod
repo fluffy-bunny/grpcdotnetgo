@@ -16,4 +16,4 @@ require (
 
 replace github.com/fluffy-bunny/grpcdotnetgo => ../
 
-//replace github.com/fluffy-bunny/sarulabsdi => ../../sarulabsdi
+replace github.com/fluffy-bunny/sarulabsdi => ../../sarulabsdi

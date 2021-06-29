@@ -3,13 +3,13 @@ package singleton
 import (
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
-	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
 
 // Define an object in the App scope.
-var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("di-singleton-service")
+
+var diServiceName = di.GenerateUniqueServiceKeyFromInterface(&service{})
 
 // GetSingletonServiceFromContainer from the Container
 func GetSingletonService() *service {
