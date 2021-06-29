@@ -3,7 +3,7 @@ module github.com/fluffy-bunny/grpcdotnetgo
 go 1.16
 
 require (
-	github.com/fluffy-bunny/sarulabsdi v0.1.2
+	github.com/fluffy-bunny/sarulabsdi v0.1.5
 	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/rs/xid v1.3.0

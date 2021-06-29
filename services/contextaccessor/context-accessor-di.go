@@ -4,7 +4,6 @@ import (
 	"context"
 	"reflect"
 
-	grpcdotnetgreflect "github.com/fluffy-bunny/grpcdotnetgo/reflect"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
@@ -34,8 +33,8 @@ func AddContextAccessor(builder *di.Builder) {
 		Msg("IoC: AddContextAccessor")
 	types := di.NewTypeSet()
 
-	types.Add(grpcdotnetgreflect.GetInterfaceReflectType((*IContextAccessor)(nil)))
-	types.Add(grpcdotnetgreflect.GetInterfaceReflectType((*IInternalContextAccessor)(nil)))
+	types.Add(di.GetInterfaceReflectType((*IContextAccessor)(nil)))
+	types.Add(di.GetInterfaceReflectType((*IInternalContextAccessor)(nil)))
 	types.Add(reflect.TypeOf(&service{}))
 	builder.Add(di.Def{
 		Name:             diServiceName,

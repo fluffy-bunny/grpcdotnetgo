@@ -16,7 +16,7 @@ import (
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
 	dicontext_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
 	logger_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/logger"
-	grpcdotnetgreflect "github.com/fluffy-bunny/grpcdotnetgo/reflect"
+	di "github.com/fluffy-bunny/sarulabsdi"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -51,7 +51,7 @@ func main() {
 	dotNetGoBuilder.Build()
 
 	ctn := grpcdotnetgo.GetContainer()
-	inter := grpcdotnetgreflect.GetInterfaceReflectType((*exampleServices.ISomething)(nil))
+	inter := di.GetInterfaceReflectType((*exampleServices.ISomething)(nil))
 
 	dd := ctn.GetManyByType(inter)
 	for _, d := range dd {
