@@ -4,7 +4,6 @@ import (
 	"context"
 	"reflect"
 
-	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
@@ -13,31 +12,33 @@ type service struct {
 	context context.Context
 }
 
-// Define an object in the App scope.
-var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("IContextAccessor")
+var (
+	rtIContextAccessor         = di.GetInterfaceReflectType((*IContextAccessor)(nil))
+	rtIInternalContextAccessor = di.GetInterfaceReflectType((*IInternalContextAccessor)(nil))
+)
 
 // GetContextAccessorFromContainer from the Container
 func GetContextAccessorFromContainer(ctn di.Container) IContextAccessor {
-	return ctn.Get(diServiceName).(IContextAccessor)
+	obj := ctn.GetByType(rtIContextAccessor).(IContextAccessor)
+	return obj
 }
 
 // GetInternalGetContextAccessorFromContainer from the Container
 func GetInternalGetContextAccessorFromContainer(ctn di.Container) IInternalContextAccessor {
-	return ctn.Get(diServiceName).(IInternalContextAccessor)
+	obj := ctn.GetByType(rtIInternalContextAccessor).(IInternalContextAccessor)
+	return obj
 }
 
 // ContextAccessor adds service to the DI container
 func AddContextAccessor(builder *di.Builder) {
 	log.Info().
-		Str("serviceName", diServiceName).
 		Msg("IoC: AddContextAccessor")
 	types := di.NewTypeSet()
 
-	types.Add(di.GetInterfaceReflectType((*IContextAccessor)(nil)))
-	types.Add(di.GetInterfaceReflectType((*IInternalContextAccessor)(nil)))
-	types.Add(reflect.TypeOf(&service{}))
+	types.Add(rtIContextAccessor)
+	types.Add(rtIInternalContextAccessor)
+
 	builder.Add(di.Def{
-		Name:             diServiceName,
 		Scope:            di.Request,
 		ImplementedTypes: types,
 		Type:             reflect.TypeOf(&service{}),
