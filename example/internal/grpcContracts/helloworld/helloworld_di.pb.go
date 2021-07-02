@@ -14,22 +14,17 @@ import (
 // is compatible with the grpc package it is being compiled against.
 const _ = grpcdotnetgo.SupportPackageIsVersion7
 
-// GreeterService defines the required downstream service interface
-type GreeterService interface {
+// IGreeterService defines the required downstream service interface
+type IGreeterService interface {
 	SayHello(request *HelloRequest) (*HelloReply, error)
 }
 
-// diGreeterServiceName is the unique service name that MUST be used to register the downstream service in the DI
-const diGreeterServiceName = "grpc-downstreamservice-Greeter.BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk"
+// IGreeterService reflect type
+var TypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(nil))
 
-// GetGreeterServiceName is a getter to fetch the unique service name.
-func GetGreeterServiceName() string {
-	return diGreeterServiceName
-}
-
-// GetGreeterFromContainer fetches the downstream di.Request scoped service
-func GetGreeterFromContainer(ctn sarulabsdi.Container) GreeterService {
-	return ctn.Get(GetGreeterServiceName()).(GreeterService)
+// GetGreeterServiceFromContainer fetches the downstream di.Request scoped service
+func GetGreeterServiceFromContainer(ctn sarulabsdi.Container) IGreeterService {
+	return ctn.GetByType(TypeIGreeterService).(IGreeterService)
 }
 
 // Impl for Greeter server instances
@@ -44,6 +39,6 @@ func RegisterGreeterServerDI(s grpc.ServiceRegistrar) {
 
 func (s *greeterServer) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error) {
 	requestContainer := dicontext.GetRequestContainer(ctx)
-	downstreamService := GetGreeterFromContainer(requestContainer)
+	downstreamService := GetGreeterServiceFromContainer(requestContainer)
 	return downstreamService.SayHello(request)
 }
