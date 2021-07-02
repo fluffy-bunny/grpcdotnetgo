@@ -10,6 +10,11 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+var (
+	rtService  = reflect.TypeOf(&Service{}).Elem()
+	rtService2 = reflect.TypeOf(&Service2{}).Elem()
+)
+
 // GetTransientServiceFromContainer from the Container
 func GetTransientService() *Service {
 	return GetTransientServiceFromContainer(grpcdotnetgo.GetContainer())
@@ -17,7 +22,7 @@ func GetTransientService() *Service {
 
 // GetTransientServiceFromContainer from the Container
 func GetTransientServiceFromContainer(ctn di.Container) *Service {
-	return ctn.GetByType(reflect.TypeOf(&Service{}).Elem()).(*Service)
+	return ctn.GetByType(rtService).(*Service)
 }
 
 // GreeterAddTransientServiceService adds service to the DI container
@@ -25,14 +30,12 @@ func AddTransientService(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddTransientService")
 
-	types := di.NewTypeSet()
-	inter := di.GetInterfaceReflectType((*exampleServices.ISomething)(nil))
-	types.Add(inter)
-	types.Add(reflect.TypeOf(&Service{}))
+	implementedTypes := di.NewTypeSet()
+	implementedTypes.Add(exampleServices.ReflectTypeISomething)
 
 	builder.Add(di.Def{
 		Scope:            di.App,
-		ImplementedTypes: types,
+		ImplementedTypes: implementedTypes,
 		Type:             reflect.TypeOf(&Service{}),
 		Unshared:         true,
 		Build: func(ctn di.Container) (interface{}, error) {
@@ -51,21 +54,19 @@ func GetTransientService2() *Service2 {
 
 // GetTransientServiceFromContainer from the Container
 func GetTransientService2FromContainer(ctn di.Container) *Service2 {
-	return ctn.GetByType(reflect.TypeOf(&Service2{}).Elem()).(*Service2)
+	return ctn.GetByType(rtService2).(*Service2)
 }
 
 func AddTransientService2(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddTransientService2")
 
-	types := di.NewTypeSet()
-	inter := di.GetInterfaceReflectType((*exampleServices.ISomething)(nil))
-	types.Add(inter)
-	types.Add(reflect.TypeOf(&Service2{}))
+	implementedTypes := di.NewTypeSet()
+	implementedTypes.Add(exampleServices.ReflectTypeISomething)
 
 	builder.Add(di.Def{
 		Scope:            di.App,
-		ImplementedTypes: types,
+		ImplementedTypes: implementedTypes,
 		Type:             reflect.TypeOf(&Service2{}),
 		Unshared:         true,
 		Build: func(ctn di.Container) (interface{}, error) {
