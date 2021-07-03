@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"reflect"
+
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
 	"github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
@@ -13,12 +15,14 @@ import (
 // GreeterService adds service to the DI container
 func AddGreeterService(builder *di.Builder) {
 	log.Info().
-		Str("serviceName", pb.GetGreeterServiceName()).
 		Msg("IoC: GreeterService")
+	types := di.NewTypeSet()
+	types.Add(pb.TypeIGreeterService)
 
 	builder.Add(di.Def{
-		Name:  pb.GetGreeterServiceName(),
-		Scope: di.Request,
+		Scope:            di.Request,
+		ImplementedTypes: types,
+		Type:             reflect.TypeOf(&Service{}),
 		Build: func(ctn di.Container) (interface{}, error) {
 			return &Service{
 				ContextAccessor: contextaccessor.GetContextAccessorFromContainer(ctn),
