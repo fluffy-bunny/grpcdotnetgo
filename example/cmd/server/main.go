@@ -22,10 +22,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-const (
-	port = 40051
-)
-
 var version = "development"
 
 type Startup struct {
