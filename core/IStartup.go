@@ -9,11 +9,13 @@ type ICoreConfig interface {
 	GetPort() int
 }
 type IStartup interface {
+	Startup()
 	ConfigureServices(builder *di.Builder)
 	Configure(
 		container di.Container,
 		unaryServerInterceptorBuilder *UnaryServerInterceptorBuilder)
 	GetPort() int
+	SetPort(port int)
 	RegisterGRPCEndpoints(server *grpc.Server)
 }
 

@@ -12,9 +12,10 @@
             "program": "${workspaceFolder}/cmd/server",
             "env": {
                 "APPLICATION_ENVIRONMENT":"Development",
-                "MODE":"ddd"
+                "MODE":"ddd",
+                "GRPC_PORT": 1111,
             },
-            "args": ["-m=cli"]
+            "args": ["serve", "-e=GRPC_PORT=5105" ]
         }
 
     ]

@@ -5,7 +5,9 @@ import (
 	"context"
 	"fmt"
 
+	grpcdotnetgocobracorecmd "github.com/fluffy-bunny/grpcdotnetgo/cobracore/cmd"
 	grpcdotnetgocore "github.com/fluffy-bunny/grpcdotnetgo/core"
+
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
 	handlerGreeterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/helloworld/handler"
@@ -30,6 +32,11 @@ type Startup struct {
 	port int
 }
 
+func (s *Startup) Startup() {
+}
+func (s *Startup) SetPort(port int) {
+	s.port = port
+}
 func (s *Startup) GetPort() int {
 	return s.port
 }
@@ -60,9 +67,7 @@ func main() {
 	config := &internal.Config{}
 	ReadViperConfig(internal.ConfigDefaultYaml, &config)
 
-	grpcdotnetgocore.Start(&Startup{
-		port: port,
-	})
+	grpcdotnetgocobracorecmd.Start(&Startup{})
 	/*
 		ctn := grpcdotnetgo.GetContainer()
 		inter := di.GetInterfaceReflectType((*exampleServices.ISomething)(nil))
