@@ -6,14 +6,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Version string
+
+func SetVersion(version string) {
+	Version = version
+}
+
 var command = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version number of Hugo",
-	Long:  `All software has versions. This is Hugo's`,
+	Short: "Print the version number of the app",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Verbose mode:%v\n", Verbose)
-		fmt.Printf("many :%v:%v, \n", len(many), many)
-		fmt.Println("Hugo Static Site Generator v0.9 -- HEAD")
+		fmt.Println(Version)
 	},
 }
 var Verbose bool
