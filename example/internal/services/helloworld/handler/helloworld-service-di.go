@@ -33,3 +33,25 @@ func AddGreeterService(builder *di.Builder) {
 		},
 	})
 }
+
+// GreeterService adds service to the DI container
+func AddGreeter2Service(builder *di.Builder) {
+	log.Info().
+		Msg("IoC: GreeterService")
+	types := di.NewTypeSet()
+	types.Add(pb.TypeIGreeter2Service)
+
+	builder.Add(di.Def{
+		Scope:            di.Request,
+		ImplementedTypes: types,
+		Type:             reflect.TypeOf(&Service{}),
+		Build: func(ctn di.Container) (interface{}, error) {
+			return &Service{
+				ContextAccessor: contextaccessor.GetContextAccessorFromContainer(ctn),
+				ClaimsPrincipal: claimsprincipal.GetClaimsPrincipalFromContainer(ctn),
+				Logger:          servicesLogger.GetScopedLoggerFromContainer(ctn),
+				ServiceProvider: servicesServiceProvider.GetScopedServiceProviderFromContainer(ctn),
+			}, nil
+		},
+	})
+}

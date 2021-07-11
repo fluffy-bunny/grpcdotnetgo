@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	address     = "localhost:40051"
+	address     = "localhost:5105"
 	defaultName = "world"
 )
 
@@ -27,7 +27,7 @@ func main() {
 	}
 	defer conn.Close()
 	c := pb.NewGreeterClient(conn)
-
+	c2 := pb.NewGreeter2Client(conn)
 	// Contact the server and print out its response.
 	name := defaultName
 	if len(os.Args) > 1 {
@@ -36,6 +36,14 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("Greeting: %s", r.GetMessage())
+
+	ctx2, cancel2 := context.WithTimeout(context.Background(), time.Second)
+	defer cancel2()
+	r, err = c2.SayHello(ctx2, &pb.HelloRequest{Name: name})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}

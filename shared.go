@@ -41,6 +41,7 @@ func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 	}, nil
 }
 
-func (b *DotNetGoBuilder) Build() {
+func (b *DotNetGoBuilder) Build() di.Container {
 	container = b.Builder.Build()
+	return container
 }

@@ -42,3 +42,32 @@ func (s *greeterServer) SayHello(ctx context.Context, request *HelloRequest) (*H
 	downstreamService := GetGreeterServiceFromContainer(requestContainer)
 	return downstreamService.SayHello(request)
 }
+
+// IGreeter2Service defines the required downstream service interface
+type IGreeter2Service interface {
+	SayHello(request *HelloRequest) (*HelloReply, error)
+}
+
+// IGreeter2Service reflect type
+var TypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
+
+// GetGreeter2ServiceFromContainer fetches the downstream di.Request scoped service
+func GetGreeter2ServiceFromContainer(ctn sarulabsdi.Container) IGreeter2Service {
+	return ctn.GetByType(TypeIGreeter2Service).(IGreeter2Service)
+}
+
+// Impl for Greeter2 server instances
+type greeter2Server struct {
+	UnimplementedGreeter2Server
+}
+
+func RegisterGreeter2ServerDI(s grpc.ServiceRegistrar) {
+	// Register the server
+	RegisterGreeter2Server(s, &greeter2Server{})
+}
+
+func (s *greeter2Server) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error) {
+	requestContainer := dicontext.GetRequestContainer(ctx)
+	downstreamService := GetGreeter2ServiceFromContainer(requestContainer)
+	return downstreamService.SayHello(request)
+}

@@ -37,6 +37,8 @@ func (s *Startup) GetPort() int {
 }
 func (s *Startup) ConfigureServices(builder *di.Builder) {
 	handlerGreeterService.AddGreeterService(builder)
+	handlerGreeterService.AddGreeter2Service(builder)
+
 	singletonService.AddSingletonService(builder)
 
 	transientService.AddTransientService(builder)
@@ -55,6 +57,7 @@ func (s *Startup) Configure(
 }
 func (s *Startup) RegisterGRPCEndpoints(server *grpc.Server) {
 	pb.RegisterGreeterServerDI(server)
+	pb.RegisterGreeter2ServerDI(server)
 }
 
 func main() {
