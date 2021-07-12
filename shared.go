@@ -1,6 +1,7 @@
 package grpcdotnetgo
 
 import (
+	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
 	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
@@ -35,6 +36,9 @@ func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 	servicesLogger.AddSingletonLogger(builder)
 	servicesServiceProvider.AddScopedServiceProvider(builder)
 	servicesServiceProvider.AddSingletonServiceProvider(builder)
+
+	servicesBackgroundTasks.AddBackgroundTasks(builder)
+	servicesBackgroundTasks.AddCounterTaskConsumer(builder)
 
 	return &DotNetGoBuilder{
 		Builder: builder,

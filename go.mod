@@ -8,10 +8,12 @@ require (
 	github.com/fluffy-bunny/viperEx v0.0.12
 	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7
 	github.com/rs/xid v1.3.0
 	github.com/rs/zerolog v1.23.0
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1
+	github.com/vmihailenco/taskq/v3 v3.2.4
 	google.golang.org/grpc v1.38.0
 	google.golang.org/protobuf v1.27.1 // indirect
 

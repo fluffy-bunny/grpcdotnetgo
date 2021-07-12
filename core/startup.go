@@ -3,13 +3,18 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"os"
 
 	"net"
 
 	"github.com/fatih/structs"
 	"github.com/fluffy-bunny/grpcdotnetgo"
+	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/async"
+	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
+	"github.com/fluffy-bunny/grpcdotnetgo/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/reugn/async"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -85,24 +90,60 @@ func Start(startup IStartup) {
 	unaryServerInterceptorBuilder := UnaryServerInterceptorBuilder{}
 	startup.Configure(grpcdotnetgo.GetContainer(), &unaryServerInterceptorBuilder)
 
-	port := fmt.Sprintf(":%v", startup.GetPort())
-	lis, err := net.Listen("tcp", port)
-	if err != nil {
-		log.Fatal().Err(err).
-			Str("port", port).
-			Msg("failed to listen:")
-		panic(err)
-	}
-
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			unaryServerInterceptorBuilder.UnaryServerInterceptors...,
 		)),
 	)
 	startup.RegisterGRPCEndpoints(grpcServer)
+	servicesBackgroundTasks.GetBackgroundTasksFromContainer(grpcdotnetgo.GetContainer())
 
-	log.Info().Msgf("server listening at %v", lis.Addr())
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatal().Err(err).Msg("failed to serve: ")
-	}
+	future := asyncServeGRPC(grpcServer, startup.GetPort())
+
+	sig := utils.WaitSignal()
+	log.Info().Str("sig", sig.String()).Msg("Interupt triggered")
+
+	grpcServer.Stop()
+	grpcdotnetgo.GetContainer().DeleteWithSubContainers()
+	future.Get()
+
+}
+
+func asyncServeGRPC(grpcServer *grpc.Server, port int) async.Future {
+
+	promise := async.NewPromise()
+
+	go func() {
+		var err error
+		log.Info().Msg("gRPC Server Starting up")
+
+		defer func() {
+			promise.Success(&grpcdotnetgoasync.AsyncResponse{
+				Message: "End Serve - grpc Server",
+				Error:   err,
+			})
+			if err != nil {
+				log.Error().Err(err).Msg("gRPC Server exit")
+				os.Exit(1)
+			}
+		}()
+
+		defer promise.Success(&grpcdotnetgoasync.AsyncResponse{
+			Message: "End Serve - grpc Server",
+			Error:   err,
+		})
+
+		lis, err := net.Listen("tcp", fmt.Sprintf(":%v", port))
+		if err != nil {
+			return
+		}
+
+		if err = grpcServer.Serve(lis); err != nil {
+			return
+		}
+		log.Info().Msg("grpc Server has shut down....")
+
+	}()
+	return promise.Future()
+
 }
