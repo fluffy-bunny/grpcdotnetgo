@@ -1,7 +1,6 @@
 syntax = "proto3";
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-
+ 
 option go_package = "github.com/fluffy-bunny/grpcdotnetgo/proto/error";
 option java_multiple_files = true;
 option java_package = "io.grpcdotnetgo.proto.error";
@@ -14,6 +13,5 @@ message Error {
     int32 code = 2;
     map<string, string> nested_errors = 3;
     repeated string details = 4;
-    bytes stack = 5 [(gogoproto.customtype) = "Stack"];
-  }
+}
   
