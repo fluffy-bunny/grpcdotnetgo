@@ -7,7 +7,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
+	_ "github.com/fluffy-bunny/grpcdotnetgo/proto/error"
 	"google.golang.org/grpc"
 )
 
@@ -35,17 +37,21 @@ func main() {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
+	r, err := c.SayHello(ctx, &pb.HelloRequest{
+		Name:      name,
+		Directive: pb.HelloDirectives_HELLO_DIRECTIVES_PANIC,
+	})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	log.Printf("Greeting: %s", r.GetMessage())
+	log.Printf("Greeting: %s", internal.PrettyJSON(r))
 
 	ctx2, cancel2 := context.WithTimeout(context.Background(), time.Second)
 	defer cancel2()
-	r, err = c2.SayHello(ctx2, &pb.HelloRequest{Name: name})
+	r2, err := c2.SayHello(ctx2, &pb.HelloRequest{Name: name})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	log.Printf("Greeting: %s", r.GetMessage())
+	log.Printf("Greeting: %s", internal.PrettyJSON(r2))
+
 }

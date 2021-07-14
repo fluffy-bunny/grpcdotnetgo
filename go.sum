@@ -97,6 +97,8 @@ github.com/fatih/structs v1.1.0 h1:Q7juDM0QtcnhCpeyLGQKyg4TOIghuNXrkL32pHAUMxo=
 github.com/fatih/structs v1.1.0/go.mod h1:9NiDSp5zOcgEDl+j00MP/WkGVPOlPRLejGD8Ga6PJ7M=
 github.com/fluffy-bunny/sarulabsdi v0.1.9 h1:bw1M9QegX3gSgtj+m2duTzK041UX2xwTX2gCZ5oe9dI=
 github.com/fluffy-bunny/sarulabsdi v0.1.9/go.mod h1:Fv7Ce67PYl9D7UR5OUX1ccwDfX/8VUP3SaTu0IpT4W8=
+github.com/fluffy-bunny/sarulabsdi v0.1.12 h1:c8CDjTqD9eZWs+Yp4Q36dYEk1T19SURB7NsJD04bCu8=
+github.com/fluffy-bunny/sarulabsdi v0.1.12/go.mod h1:Fv7Ce67PYl9D7UR5OUX1ccwDfX/8VUP3SaTu0IpT4W8=
 github.com/fluffy-bunny/viperEx v0.0.12 h1:RodM9NG2Ale7RkfchHHi9UsFAxO+NCp0uLDJIxhRDSU=
 github.com/fluffy-bunny/viperEx v0.0.12/go.mod h1:9DpZQnJmoim7Qd7V5Jhg7O2mLkajRg2dhfEl764za9A=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
@@ -120,6 +122,7 @@ github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/me
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.2.1/go.mod h1:hp+jE20tsWTFYpLwKvXlhS1hjn+gTNwPg2I6zVXpSg4=
+github.com/gogo/protobuf v1.3.2 h1:Ov1cvc58UF3b5XjBnZv7+opcTcQFZebYjWzi34vdm4Q=
 github.com/gogo/protobuf v1.3.2/go.mod h1:P1XiOD3dCwIKUDQYPy72D8LYyHL2YPYrpS2s69NZV8Q=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/groupcache v0.0.0-20190129154638-5b532d6fd5ef/go.mod h1:cIg4eruTrX1D+g88fzRXU5OdNfaM+9IcxsU14FzY7Hc=

@@ -4,8 +4,9 @@ go 1.16
 
 require (
 	github.com/fatih/structs v1.1.0
-	github.com/fluffy-bunny/sarulabsdi v0.1.9
+	github.com/fluffy-bunny/sarulabsdi v0.1.12
 	github.com/fluffy-bunny/viperEx v0.0.12
+	github.com/gogo/protobuf v1.3.2
 	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7
@@ -15,7 +16,7 @@ require (
 	github.com/spf13/viper v1.8.1
 	github.com/vmihailenco/taskq/v3 v3.2.4
 	google.golang.org/grpc v1.38.0
-	google.golang.org/protobuf v1.27.1 // indirect
+	google.golang.org/protobuf v1.27.1
 
 )
 

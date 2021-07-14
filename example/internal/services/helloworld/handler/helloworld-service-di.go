@@ -12,10 +12,10 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// GreeterService adds service to the DI container
+// AddGreeterService adds service to the DI container
 func AddGreeterService(builder *di.Builder) {
 	log.Info().
-		Msg("IoC: GreeterService")
+		Msg("IoC: AddGreeterService")
 	types := di.NewTypeSet()
 	types.Add(pb.TypeIGreeterService)
 
@@ -34,19 +34,19 @@ func AddGreeterService(builder *di.Builder) {
 	})
 }
 
-// GreeterService adds service to the DI container
+// AddGreeter2Service adds service to the DI container
 func AddGreeter2Service(builder *di.Builder) {
 	log.Info().
-		Msg("IoC: GreeterService")
+		Msg("IoC: AddGreeter2Service")
 	types := di.NewTypeSet()
 	types.Add(pb.TypeIGreeter2Service)
 
 	builder.Add(di.Def{
 		Scope:            di.Request,
 		ImplementedTypes: types,
-		Type:             reflect.TypeOf(&Service{}),
+		Type:             reflect.TypeOf(&Service2{}),
 		Build: func(ctn di.Container) (interface{}, error) {
-			return &Service{
+			return &Service2{
 				ContextAccessor: contextaccessor.GetContextAccessorFromContainer(ctn),
 				ClaimsPrincipal: claimsprincipal.GetClaimsPrincipalFromContainer(ctn),
 				Logger:          servicesLogger.GetScopedLoggerFromContainer(ctn),

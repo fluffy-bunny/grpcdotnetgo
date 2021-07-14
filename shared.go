@@ -7,6 +7,7 @@ import (
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	di "github.com/fluffy-bunny/sarulabsdi"
+	_ "github.com/gogo/protobuf/gogoproto" // ensures that go mod vendor brings it down
 )
 
 const (

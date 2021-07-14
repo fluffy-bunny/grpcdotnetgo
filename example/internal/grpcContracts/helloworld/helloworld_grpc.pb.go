@@ -107,7 +107,7 @@ var Greeter_ServiceDesc = grpc.ServiceDesc{
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type Greeter2Client interface {
 	// Sends a greeting
-	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply2, error)
 }
 
 type greeter2Client struct {
@@ -118,8 +118,8 @@ func NewGreeter2Client(cc grpc.ClientConnInterface) Greeter2Client {
 	return &greeter2Client{cc}
 }
 
-func (c *greeter2Client) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
-	out := new(HelloReply)
+func (c *greeter2Client) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply2, error) {
+	out := new(HelloReply2)
 	err := c.cc.Invoke(ctx, "/helloworld.Greeter2/SayHello", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -132,7 +132,7 @@ func (c *greeter2Client) SayHello(ctx context.Context, in *HelloRequest, opts ..
 // for forward compatibility
 type Greeter2Server interface {
 	// Sends a greeting
-	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
+	SayHello(context.Context, *HelloRequest) (*HelloReply2, error)
 	mustEmbedUnimplementedGreeter2Server()
 }
 
@@ -140,7 +140,7 @@ type Greeter2Server interface {
 type UnimplementedGreeter2Server struct {
 }
 
-func (UnimplementedGreeter2Server) SayHello(context.Context, *HelloRequest) (*HelloReply, error) {
+func (UnimplementedGreeter2Server) SayHello(context.Context, *HelloRequest) (*HelloReply2, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
 }
 func (UnimplementedGreeter2Server) mustEmbedUnimplementedGreeter2Server() {}

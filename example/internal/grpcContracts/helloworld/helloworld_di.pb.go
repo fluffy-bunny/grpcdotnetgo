@@ -8,11 +8,19 @@ import (
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
 	sarulabsdi "github.com/fluffy-bunny/sarulabsdi"
 	grpc "google.golang.org/grpc"
+	reflect "reflect"
 )
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
 const _ = grpcdotnetgo.SupportPackageIsVersion7
+
+func setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(dst interface{}, field string) {
+	v := reflect.ValueOf(dst).Elem().FieldByName(field)
+	if v.IsValid() {
+		v.Set(reflect.New(v.Type().Elem()))
+	}
+}
 
 // IGreeterService defines the required downstream service interface
 type IGreeterService interface {
@@ -45,7 +53,7 @@ func (s *greeterServer) SayHello(ctx context.Context, request *HelloRequest) (*H
 
 // IGreeter2Service defines the required downstream service interface
 type IGreeter2Service interface {
-	SayHello(request *HelloRequest) (*HelloReply, error)
+	SayHello(request *HelloRequest) (*HelloReply2, error)
 }
 
 // IGreeter2Service reflect type
@@ -66,8 +74,23 @@ func RegisterGreeter2ServerDI(s grpc.ServiceRegistrar) {
 	RegisterGreeter2Server(s, &greeter2Server{})
 }
 
-func (s *greeter2Server) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error) {
+func (s *greeter2Server) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply2, error) {
 	requestContainer := dicontext.GetRequestContainer(ctx)
 	downstreamService := GetGreeter2ServiceFromContainer(requestContainer)
 	return downstreamService.SayHello(request)
+}
+
+// M_helloworldFullMethodNameEmptyResponseMap keys match that of grpc.UnaryServerInfo.FullMethodName
+// i.e. /helloworld.Greeter/SayHello
+var M_helloworldFullMethodNameWithErrorResponseMap = map[string]func() interface{}{
+	"/helloworld.Greeter/SayHello": func() interface{} {
+		ret := &HelloReply{}
+		setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(ret, "Error")
+		return ret
+	},
+	"/helloworld.Greeter2/SayHello": func() interface{} {
+		ret := &HelloReply2{}
+		setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(ret, "Error")
+		return ret
+	},
 }
