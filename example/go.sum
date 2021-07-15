@@ -143,6 +143,8 @@ github.com/fluffy-bunny/protoc-gen-go-di v0.0.10 h1:F7Wo9G1/wZFb3yxgm9K4AKgshMII
 github.com/fluffy-bunny/protoc-gen-go-di v0.0.10/go.mod h1:1Nr+z68QwZdbTEu9O/snUXAUG6kZWSgh6C60d3Uk7B0=
 github.com/fluffy-bunny/protoc-gen-go-di v0.0.11 h1:PsZhwpoGd7s6f1TH8c8I6Vw7DecEg1P1FJfdxIrs0PU=
 github.com/fluffy-bunny/protoc-gen-go-di v0.0.11/go.mod h1:1Nr+z68QwZdbTEu9O/snUXAUG6kZWSgh6C60d3Uk7B0=
+github.com/fluffy-bunny/protoc-gen-go-di v0.0.14 h1:03vNCbcwLmS60f+FS2MGn08I0N/dEr8ncYnaGFkJTzQ=
+github.com/fluffy-bunny/protoc-gen-go-di v0.0.14/go.mod h1:5WWXcL3Df/kh3sX3dwNjwxyMu5h4Q5lxKDdhAMLZE8M=
 github.com/fluffy-bunny/sarulabsdi v0.1.2/go.mod h1:Fv7Ce67PYl9D7UR5OUX1ccwDfX/8VUP3SaTu0IpT4W8=
 github.com/fluffy-bunny/sarulabsdi v0.1.9 h1:bw1M9QegX3gSgtj+m2duTzK041UX2xwTX2gCZ5oe9dI=
 github.com/fluffy-bunny/sarulabsdi v0.1.9/go.mod h1:Fv7Ce67PYl9D7UR5OUX1ccwDfX/8VUP3SaTu0IpT4W8=

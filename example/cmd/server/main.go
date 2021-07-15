@@ -11,6 +11,7 @@ import (
 	handlerGreeterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/helloworld/handler"
 	singletonService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
+	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/middleware/auth"
 	dicontext_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
 	logger_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/logger"
 	grpc_recovery "github.com/fluffy-bunny/grpcdotnetgo/middleware/recovery"
@@ -18,7 +19,6 @@ import (
 	runtime "github.com/fluffy-bunny/grpcdotnetgo/runtime"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/gogo/protobuf/gogoproto"
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	_ "github.com/jnewmano/grpc-json-proxy/codec"
 	"google.golang.org/grpc"
@@ -86,9 +86,24 @@ func main() {
 
 }
 
-func exampleAuthFunc(ctx context.Context) (context.Context, error) {
+func exampleAuthFunc(ctx context.Context, fullMethodName string) (context.Context, interface{}, error) {
 
-	return ctx, nil
+	token, err := grpc_auth.AuthFromMD(ctx, "bearer")
+	if err != nil || token == "" {
+		replyFunc, ok := pb.M_helloworldFullMethodNameWithErrorResponseMap[fullMethodName]
+		if ok {
+			reply, ok2 := replyFunc().(grpcDIProtoError.IError)
+			if ok2 {
+				myError := reply.GetError()
+				myError.Code = 401
+				myError.Message = "Unauthorized"
+				return ctx, reply, fmt.Errorf("Unauthorized")
+			}
+		}
+		return ctx, nil, fmt.Errorf("Unauthorized")
+	}
+
+	return ctx, nil, nil
 }
 func recoveryUnaryFunc(fullMethodName string, p interface{}) (interface{}, error) {
 	fmt.Printf("p: %+v\n", p)

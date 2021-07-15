@@ -3,8 +3,7 @@ module github.com/fluffy-bunny/grpcdotnetgo/example
 go 1.16
 
 require (
-	github.com/fluffy-bunny/grpcdotnetgo v0.1.19
-	github.com/fluffy-bunny/protoc-gen-go-di v0.0.11 // indirect
+	github.com/fluffy-bunny/grpcdotnetgo v0.1.20
 	github.com/fluffy-bunny/sarulabsdi v0.1.12
 	github.com/fluffy-bunny/viperEx v0.0.12
 	github.com/gogo/protobuf v1.3.2
