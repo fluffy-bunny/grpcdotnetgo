@@ -1,59 +1,104 @@
 package backgroundtasks
 
 import (
-	"context"
+	"fmt"
 	"sync/atomic"
 	"time"
 
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/vmihailenco/taskq/v3"
+	"github.com/robfig/cron/v3"
+	"github.com/rs/zerolog/log"
 )
 
 type IBackgroundTasks interface {
 }
 
-type IConsumer interface {
-	GetTaskMessages() []*taskq.Message
+// ScheduledJob cron
+type ScheduledJob struct {
+	// Job must support Run() func
+	Job cron.Job
+	// Schedule "* */5 * * * *","@every 1h30m10s","@midnight"
+	Schedule string
+}
+type OneTimeJob struct {
+	// Job must support Run() func
+	Job   cron.Job
+	Delay time.Duration
+}
+type IJobsProvider interface {
+	GetScheduledJobs() []*ScheduledJob
+	GetOneTimeJobs() []*OneTimeJob
 }
 
 var (
 	rtIBackgroundTasks = di.GetInterfaceReflectType((*IBackgroundTasks)(nil))
-	rtIConsumer        = di.GetInterfaceReflectType((*IConsumer)(nil))
+	rtIJobsProvider    = di.GetInterfaceReflectType((*IJobsProvider)(nil))
 )
 
 type serviceBackgroundTasks struct {
-	QueueFactory taskq.Factory
-	MainQueue    taskq.Queue
-	Logger       servicesLogger.ILogger
+	Logger servicesLogger.ILogger
 }
 
 type counterConsumer struct {
 	Logger servicesLogger.ILogger
 }
 
-var counter int32
-
-func IncrLocalCounter() {
-	atomic.AddInt32(&counter, 1)
+type counterJob struct {
+	counter int32
 }
-func GetLocalCounter() int32 {
-	return atomic.LoadInt32(&counter)
-}
-func (s *counterConsumer) GetTaskMessages() []*taskq.Message {
-	ctx := context.Background()
 
-	var countTask = taskq.RegisterTask(&taskq.TaskOptions{
-		Name: "counter",
-		Handler: func() error {
-			IncrLocalCounter()
-			time.Sleep(time.Millisecond)
-			return nil
+func newCounterJob() *counterJob {
+	return &counterJob{}
+}
+func (j *counterJob) Run() {
+	j.incrLocalCounter()
+	log.Info().Str("count",
+		fmt.Sprintf("%v", j.getLocalCounter())).
+		Msg("Background Counter")
+}
+func (j *counterJob) incrLocalCounter() {
+	atomic.AddInt32(&j.counter, 1)
+}
+func (j *counterJob) getLocalCounter() int32 {
+	return atomic.LoadInt32(&j.counter)
+}
+
+type welcomeJob struct {
+	message string
+}
+
+func newWelcomeJob(message string) *welcomeJob {
+	return &welcomeJob{
+		message: message,
+	}
+}
+func (j *welcomeJob) Run() {
+	log.Info().Str("message", j.message).
+		Msg("Welcome Job")
+}
+
+func (s *counterConsumer) GetOneTimeJobs() []*OneTimeJob {
+	return []*OneTimeJob{
+		{
+			Job:   newWelcomeJob("Hi Bunny"),
+			Delay: time.Microsecond,
 		},
-	})
+		{
+			Job:   newWelcomeJob("Hi Porky"),
+			Delay: time.Minute,
+		},
+	}
 
-	msg := countTask.WithArgs(ctx)
-	return []*taskq.Message{
-		msg,
+}
+func (s *counterConsumer) GetScheduledJobs() []*ScheduledJob {
+	counterJob := newCounterJob()
+	cronJob := &ScheduledJob{
+		Job:      counterJob,
+		Schedule: "@every 0h0m5s",
+	}
+
+	return []*ScheduledJob{
+		cronJob,
 	}
 }

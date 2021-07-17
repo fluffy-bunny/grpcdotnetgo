@@ -1,13 +1,13 @@
 package backgroundtasks
 
 import (
+	"fmt"
 	"reflect"
 
+	"github.com/bamzi/jobrunner"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
-	"github.com/vmihailenco/taskq/v3"
-	"github.com/vmihailenco/taskq/v3/memqueue"
 )
 
 // GetContextAccessorFromContainer from the Container
@@ -17,7 +17,7 @@ func AddCounterTaskConsumer(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddCounterTaskConsumer")
 	types := di.NewTypeSet()
-	types.Add(rtIConsumer)
+	types.Add(rtIJobsProvider)
 
 	builder.Add(di.Def{
 		Scope:            di.App,
@@ -41,6 +41,17 @@ func GetBackgroundTasksFromContainer(ctn di.Container) IBackgroundTasks {
 	return obj
 }
 
+type ReminderEmails struct {
+	// filtered
+}
+
+// ReminderEmails.Run() will get triggered automatically.
+func (e ReminderEmails) Run() {
+	// Queries the DB
+	// Sends some email
+	fmt.Printf("Every 5 sec send reminder emails \n")
+}
+
 // AddBackgroundTasks adds service to the DI container
 func AddBackgroundTasks(builder *di.Builder) {
 	log.Info().
@@ -54,23 +65,25 @@ func AddBackgroundTasks(builder *di.Builder) {
 		ImplementedTypes: types,
 		Type:             reflect.TypeOf(&serviceBackgroundTasks{}),
 		Build: func(ctn di.Container) (interface{}, error) {
+			jobrunner.Start()
 			obj := &serviceBackgroundTasks{
 				Logger: servicesLogger.GetSingletonLoggerFromContainer(ctn),
 			}
+			//jobrunner.Schedule("@every 5s", ReminderEmails{})
 
-			obj.QueueFactory = memqueue.NewFactory()
-			obj.MainQueue = obj.QueueFactory.RegisterQueue(&taskq.QueueOptions{
-				Name: "api-worker",
-			})
-			consumers, err := ctn.SafeGetManyByType(rtIConsumer)
-			if err == nil && consumers != nil && len(consumers) > 0 {
-				for _, c := range consumers {
-					co := c.(IConsumer)
-					taskMessages := co.GetTaskMessages()
-					for _, to := range taskMessages {
-						obj.MainQueue.Add(to)
+			jobsProviders, err := ctn.SafeGetManyByType(rtIJobsProvider)
+			if err == nil && jobsProviders != nil && len(jobsProviders) > 0 {
+				for _, jp := range jobsProviders {
+					jpi := jp.(IJobsProvider)
+					sjs := jpi.GetScheduledJobs()
+					for _, sj := range sjs {
+						jobrunner.Schedule(sj.Schedule, sj.Job)
 					}
 
+					otjs := jpi.GetOneTimeJobs()
+					for _, otj := range otjs {
+						jobrunner.In(otj.Delay, otj.Job)
+					}
 				}
 
 			}
@@ -79,10 +92,8 @@ func AddBackgroundTasks(builder *di.Builder) {
 		},
 		Close: func(obj interface{}) error {
 			log.Info().Msg("Closing BackgroundTasks")
-			o := obj.(*serviceBackgroundTasks)
-			o.QueueFactory.StopConsumers()
-			o.QueueFactory.Close()
 
+			jobrunner.Stop()
 			return nil
 		},
 	})
