@@ -8,6 +8,8 @@ import (
 	grpcdotnetgocore "github.com/fluffy-bunny/grpcdotnetgo/core"
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
+	backgroundCounterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/background/cron/counter"
+	backgroundWelcomeService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/background/onetime/welcome"
 	handlerGreeterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/helloworld/handler"
 	singletonService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
@@ -48,6 +50,9 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 
 	transientService.AddTransientService(builder)
 	transientService.AddTransientService2(builder)
+
+	backgroundCounterService.AddCronCounterJobProvider(builder)
+	backgroundWelcomeService.AddOneTimeWelcomeJobProvider(builder)
 
 }
 func (s *Startup) Configure(

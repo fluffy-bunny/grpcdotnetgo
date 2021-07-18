@@ -1,8 +1,6 @@
 package backgroundtasks
 
 import (
-	"fmt"
-	"sync/atomic"
 	"time"
 
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
@@ -21,47 +19,49 @@ type ScheduledJob struct {
 	// Schedule "* */5 * * * *","@every 1h30m10s","@midnight"
 	Schedule string
 }
+type ScheduledJobs []*ScheduledJob
+
+func NewScheduledJob(job cron.Job, schedule string) *ScheduledJob {
+	return &ScheduledJob{
+		Job:      job,
+		Schedule: schedule,
+	}
+}
+
+func NewScheduledJobs(jobs ...*ScheduledJob) ScheduledJobs {
+	return jobs
+}
+
 type OneTimeJob struct {
 	// Job must support Run() func
 	Job   cron.Job
 	Delay time.Duration
 }
+type OneTimeJobs []*OneTimeJob
+
+func NewOneTimeJob(job cron.Job, delay time.Duration) *OneTimeJob {
+	return &OneTimeJob{
+		Job:   job,
+		Delay: delay,
+	}
+}
+
+func NewOneTimeJobs(jobs ...*OneTimeJob) OneTimeJobs {
+	return jobs
+}
+
 type IJobsProvider interface {
-	GetScheduledJobs() []*ScheduledJob
-	GetOneTimeJobs() []*OneTimeJob
+	GetScheduledJobs() ScheduledJobs
+	GetOneTimeJobs() OneTimeJobs
 }
 
 var (
-	rtIBackgroundTasks = di.GetInterfaceReflectType((*IBackgroundTasks)(nil))
-	rtIJobsProvider    = di.GetInterfaceReflectType((*IJobsProvider)(nil))
+	TypeIBackgroundTasks = di.GetInterfaceReflectType((*IBackgroundTasks)(nil))
+	TypeIJobsProvider    = di.GetInterfaceReflectType((*IJobsProvider)(nil))
 )
 
 type serviceBackgroundTasks struct {
 	Logger servicesLogger.ILogger
-}
-
-type counterConsumer struct {
-	Logger servicesLogger.ILogger
-}
-
-type counterJob struct {
-	counter int32
-}
-
-func newCounterJob() *counterJob {
-	return &counterJob{}
-}
-func (j *counterJob) Run() {
-	j.incrLocalCounter()
-	log.Info().Str("count",
-		fmt.Sprintf("%v", j.getLocalCounter())).
-		Msg("Background Counter")
-}
-func (j *counterJob) incrLocalCounter() {
-	atomic.AddInt32(&j.counter, 1)
-}
-func (j *counterJob) getLocalCounter() int32 {
-	return atomic.LoadInt32(&j.counter)
 }
 
 type welcomeJob struct {
@@ -76,29 +76,4 @@ func newWelcomeJob(message string) *welcomeJob {
 func (j *welcomeJob) Run() {
 	log.Info().Str("message", j.message).
 		Msg("Welcome Job")
-}
-
-func (s *counterConsumer) GetOneTimeJobs() []*OneTimeJob {
-	return []*OneTimeJob{
-		{
-			Job:   newWelcomeJob("Hi Bunny"),
-			Delay: time.Microsecond,
-		},
-		{
-			Job:   newWelcomeJob("Hi Porky"),
-			Delay: time.Minute,
-		},
-	}
-
-}
-func (s *counterConsumer) GetScheduledJobs() []*ScheduledJob {
-	counterJob := newCounterJob()
-	cronJob := &ScheduledJob{
-		Job:      counterJob,
-		Schedule: "@every 0h0m5s",
-	}
-
-	return []*ScheduledJob{
-		cronJob,
-	}
 }

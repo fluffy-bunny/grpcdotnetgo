@@ -32,14 +32,16 @@ func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 	}
 
 	claimsprincipal.AddClaimsPrincipal(builder)
+
 	contextaccessor.AddContextAccessor(builder)
+
 	servicesLogger.AddScopedLogger(builder)
 	servicesLogger.AddSingletonLogger(builder)
+
 	servicesServiceProvider.AddScopedServiceProvider(builder)
 	servicesServiceProvider.AddSingletonServiceProvider(builder)
 
 	servicesBackgroundTasks.AddBackgroundTasks(builder)
-	servicesBackgroundTasks.AddCounterTaskConsumer(builder)
 
 	return &DotNetGoBuilder{
 		Builder: builder,

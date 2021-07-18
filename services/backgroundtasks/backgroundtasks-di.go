@@ -1,7 +1,6 @@
 package backgroundtasks
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/bamzi/jobrunner"
@@ -10,46 +9,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// GetContextAccessorFromContainer from the Container
-
-// AddCounterTaskConsumer adds service to the DI container
-func AddCounterTaskConsumer(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddCounterTaskConsumer")
-	types := di.NewTypeSet()
-	types.Add(rtIJobsProvider)
-
-	builder.Add(di.Def{
-		Scope:            di.App,
-		ImplementedTypes: types,
-		Type:             reflect.TypeOf(&counterConsumer{}),
-		Build: func(ctn di.Container) (interface{}, error) {
-			obj := &counterConsumer{
-				Logger: servicesLogger.GetSingletonLoggerFromContainer(ctn),
-			}
-
-			return obj, nil
-		},
-		Close: func(obj interface{}) error {
-
-			return nil
-		},
-	})
-}
 func GetBackgroundTasksFromContainer(ctn di.Container) IBackgroundTasks {
-	obj := ctn.GetByType(rtIBackgroundTasks).(IBackgroundTasks)
+	obj := ctn.GetByType(TypeIBackgroundTasks).(IBackgroundTasks)
 	return obj
-}
-
-type ReminderEmails struct {
-	// filtered
-}
-
-// ReminderEmails.Run() will get triggered automatically.
-func (e ReminderEmails) Run() {
-	// Queries the DB
-	// Sends some email
-	fmt.Printf("Every 5 sec send reminder emails \n")
 }
 
 // AddBackgroundTasks adds service to the DI container
@@ -58,7 +20,7 @@ func AddBackgroundTasks(builder *di.Builder) {
 		Msg("IoC: AddBackgroundTasks")
 	types := di.NewTypeSet()
 
-	types.Add(rtIBackgroundTasks)
+	types.Add(TypeIBackgroundTasks)
 
 	builder.Add(di.Def{
 		Scope:            di.App,
@@ -71,7 +33,7 @@ func AddBackgroundTasks(builder *di.Builder) {
 			}
 			//jobrunner.Schedule("@every 5s", ReminderEmails{})
 
-			jobsProviders, err := ctn.SafeGetManyByType(rtIJobsProvider)
+			jobsProviders, err := ctn.SafeGetManyByType(TypeIJobsProvider)
 			if err == nil && jobsProviders != nil && len(jobsProviders) > 0 {
 				for _, jp := range jobsProviders {
 					jpi := jp.(IJobsProvider)
