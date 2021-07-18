@@ -3,13 +3,17 @@ module github.com/fluffy-bunny/grpcdotnetgo
 go 1.16
 
 require (
+	github.com/ahmetb/go-linq/v3 v3.2.0
 	github.com/bamzi/jobrunner v1.0.0
 	github.com/fatih/structs v1.1.0
+	github.com/fluffy-bunny/mockoidc v0.0.0-20210718210524-5997b6c20cc1 // indirect
 	github.com/fluffy-bunny/sarulabsdi v0.1.12
 	github.com/fluffy-bunny/viperEx v0.0.12
 	github.com/gogo/protobuf v1.3.2
+	github.com/gogo/status v1.1.0
 	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/lestrrat-go/jwx v1.2.4
 	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/rs/xid v1.3.0

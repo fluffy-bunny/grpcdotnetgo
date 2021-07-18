@@ -15,6 +15,8 @@ import (
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
 	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/middleware/auth"
 	dicontext_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
+	mockoidcservice "github.com/fluffy-bunny/grpcdotnetgo/services/test/mockoidcservice"
+
 	logger_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/logger"
 	grpc_recovery "github.com/fluffy-bunny/grpcdotnetgo/middleware/recovery"
 	grpcDIProtoError "github.com/fluffy-bunny/grpcdotnetgo/proto/error"
@@ -31,7 +33,8 @@ import (
 var version = "development"
 
 type Startup struct {
-	port int
+	port            int
+	MockOIDCService interface{}
 }
 
 func (s *Startup) Startup() {
@@ -54,6 +57,8 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 	backgroundCounterService.AddCronCounterJobProvider(builder)
 	backgroundWelcomeService.AddOneTimeWelcomeJobProvider(builder)
 
+	mockoidcservice.AddMockOIDCService(builder)
+
 }
 func (s *Startup) Configure(
 	container di.Container,
@@ -70,6 +75,8 @@ func (s *Startup) Configure(
 	unaryServerInterceptorBuilder.Use(logger_middleware.LoggingUnaryServerInterceptor())
 	unaryServerInterceptorBuilder.Use(grpc_auth.UnaryServerInterceptor(exampleAuthFunc))
 	unaryServerInterceptorBuilder.Use(grpc_recovery.UnaryServerInterceptor(recoveryOpts...))
+
+	s.MockOIDCService = mockoidcservice.GetMockOIDCService()
 
 }
 func (s *Startup) RegisterGRPCEndpoints(server *grpc.Server) {

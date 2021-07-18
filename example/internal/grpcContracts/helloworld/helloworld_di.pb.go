@@ -22,6 +22,11 @@ func setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(dst interface{}, field string)
 	}
 }
 
+// IGreeterServer defines the grpc server
+type IGreeterServer interface {
+	SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error)
+}
+
 // IGreeterService defines the required downstream service interface
 type IGreeterService interface {
 	SayHello(request *HelloRequest) (*HelloReply, error)
@@ -49,6 +54,16 @@ func (s *greeterServer) SayHello(ctx context.Context, request *HelloRequest) (*H
 	requestContainer := dicontext.GetRequestContainer(ctx)
 	downstreamService := GetGreeterServiceFromContainer(requestContainer)
 	return downstreamService.SayHello(request)
+}
+
+// FullMethodNames for Greeter
+const (
+	FMN_helloworld_Greeter_SayHello = "/helloworld.Greeter/SayHello"
+)
+
+// IGreeter2Server defines the grpc server
+type IGreeter2Server interface {
+	SayHello(ctx context.Context, request *HelloRequest) (*HelloReply2, error)
 }
 
 // IGreeter2Service defines the required downstream service interface
@@ -80,6 +95,11 @@ func (s *greeter2Server) SayHello(ctx context.Context, request *HelloRequest) (*
 	return downstreamService.SayHello(request)
 }
 
+// FullMethodNames for Greeter2
+const (
+	FMN_helloworld_Greeter2_SayHello = "/helloworld.Greeter2/SayHello"
+)
+
 // M_helloworldFullMethodNameEmptyResponseMap keys match that of grpc.UnaryServerInfo.FullMethodName
 // i.e. /helloworld.Greeter/SayHello
 var M_helloworldFullMethodNameWithErrorResponseMap = map[string]func() interface{}{
@@ -92,5 +112,21 @@ var M_helloworldFullMethodNameWithErrorResponseMap = map[string]func() interface
 		ret := &HelloReply2{}
 		setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(ret, "Error")
 		return ret
+	},
+}
+
+// M_helloworld_GreeterFullMethodNameExecuteMap keys match that of grpc.UnaryServerInfo.FullMethodName
+var M_helloworld_GreeterFullMethodNameExecuteMap = map[string]func(service IGreeterServer, ctx context.Context, request interface{}) (interface{}, error){
+	"/helloworld.Greeter/SayHello": func(service IGreeterServer, ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(*HelloRequest)
+		return service.SayHello(ctx, req)
+	},
+}
+
+// M_helloworld_Greeter2FullMethodNameExecuteMap keys match that of grpc.UnaryServerInfo.FullMethodName
+var M_helloworld_Greeter2FullMethodNameExecuteMap = map[string]func(service IGreeter2Server, ctx context.Context, request interface{}) (interface{}, error){
+	"/helloworld.Greeter2/SayHello": func(service IGreeter2Server, ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(*HelloRequest)
+		return service.SayHello(ctx, req)
 	},
 }
