@@ -6,7 +6,6 @@ import (
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/robfig/cron/v3"
-	"github.com/rs/zerolog/log"
 )
 
 type IBackgroundTasks interface {
@@ -62,18 +61,4 @@ var (
 
 type serviceBackgroundTasks struct {
 	Logger servicesLogger.ILogger
-}
-
-type welcomeJob struct {
-	message string
-}
-
-func newWelcomeJob(message string) *welcomeJob {
-	return &welcomeJob{
-		message: message,
-	}
-}
-func (j *welcomeJob) Run() {
-	log.Info().Str("message", j.message).
-		Msg("Welcome Job")
 }
