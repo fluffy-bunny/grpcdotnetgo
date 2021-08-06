@@ -1,0 +1,19 @@
+OIDC_CONFIG: 
+  AUTHORITIY: "https://in-environment/"
+  ENTRY_POINTS: 
+    /helloworld.Greeter/SayHello: 
+      CLAIMS_CONFIG: 
+        AND: 
+          - 
+            TYPE: permissions
+            VALUE: Thing.ReadWrite.All
+        OR: 
+          - 
+            TYPE: permissions
+            VALUE: Thing.ReadWrite.All
+          - 
+            TYPE: permissions
+            VALUE: Thing.Read.All
+
+
+
