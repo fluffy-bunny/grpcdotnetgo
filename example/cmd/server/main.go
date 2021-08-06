@@ -4,6 +4,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
 
 	grpcdotnetgocore "github.com/fluffy-bunny/grpcdotnetgo/core"
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
@@ -16,6 +18,7 @@ import (
 	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/middleware/auth"
 	dicontext_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
 	mockoidcservice "github.com/fluffy-bunny/grpcdotnetgo/services/test/mockoidcservice"
+	"github.com/rs/zerolog/log"
 
 	logger_middleware "github.com/fluffy-bunny/grpcdotnetgo/middleware/logger"
 	grpc_recovery "github.com/fluffy-bunny/grpcdotnetgo/middleware/recovery"
@@ -39,10 +42,21 @@ type Startup struct {
 	ConfigOptions   *grpcdotnetgocore.ConfigOptions
 }
 
+func (s *Startup) getConfigPath() string {
+	var configPath string
+	_, err := os.Stat("../etc/config")
+	if !os.IsNotExist(err) {
+		configPath, _ = filepath.Abs("../etc/config")
+		log.Info().Str("path", configPath).Msg("Configuration Root Folder")
+	}
+	return configPath
+}
+
 func (s *Startup) Startup() {
 	s.ConfigOptions = &grpcdotnetgocore.ConfigOptions{
 		Destination:    &internal.Config{},
 		RootConfigYaml: internal.ConfigDefaultYaml,
+		ConfigPath:     s.getConfigPath(),
 	}
 }
 
@@ -58,6 +72,8 @@ func (s *Startup) GetPort() int {
 func (s *Startup) ConfigureServices(builder *di.Builder) {
 	// this is how  you get your config before you register your services
 	config := s.ConfigOptions.Destination.(*internal.Config)
+
+	log.Info().Interface("d", config).Send()
 
 	handlerGreeterService.AddGreeterService(builder)
 	handlerGreeterService.AddGreeter2Service(builder)
@@ -110,7 +126,9 @@ func main() {
 	runtime.SetVersion(version)
 	fmt.Println("Version:\t", version)
 
-	fmt.Println(internal.PrettyJSON(pkg.NewFullMethodNameToMap()))
+	fmt.Println(internal.PrettyJSON(pkg.NewFullMethodNameToMap(func(fullMethodName string) interface{} {
+		return make(map[string]interface{})
+	})))
 	runtime.Start(&Startup{})
 
 }
@@ -148,6 +166,6 @@ func recoveryUnaryFunc(fullMethodName string, p interface{}) (interface{}, error
 		}
 	}
 
-	return nil, status.Errorf(codes.Internal, "Unexpected error1")
+	return nil, status.Error(codes.Internal, "Unexpected error")
 
 }

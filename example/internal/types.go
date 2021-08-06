@@ -20,4 +20,5 @@ GRPC_PORT: 1111
 ENABLE_TRANSIENT_2: true
 OIDC_CONFIG:
   Authority: "https://in-environment/"
+  B: dd
 `)

@@ -9,8 +9,10 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210718210524-5997b6c20cc1
+	github.com/fluffy-bunny/protoc-gen-go-di v0.0.20
 	github.com/fluffy-bunny/sarulabsdi v0.1.12
 	github.com/fluffy-bunny/viperEx v0.0.12
+	github.com/form3tech-oss/jwt-go v3.2.3+incompatible // indirect
 	github.com/gin-gonic/gin v1.7.3
 	github.com/gogo/protobuf v1.3.2
 	github.com/gogo/status v1.1.0
@@ -30,10 +32,9 @@ require (
 	google.golang.org/grpc v1.38.0
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	github.com/fluffy-bunny/protoc-gen-go-di v0.0.20
 
 )
 
-replace github.com/fluffy-bunny/mockoidc => ../mockoidc
+//replace github.com/fluffy-bunny/mockoidc => ../mockoidc
 
 //replace github.com/fluffy-bunny/sarulabsdi => ../sarulabsdi

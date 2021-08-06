@@ -11,6 +11,7 @@ type ICoreConfig interface {
 type ConfigOptions struct {
 	Destination    interface{}
 	RootConfigYaml []byte
+	ConfigPath     string
 }
 type IStartup interface {
 	Startup()

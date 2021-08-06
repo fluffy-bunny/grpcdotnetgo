@@ -9,10 +9,25 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+type Claim struct {
+	Type  string `mapstructure:"TYPE"`
+	Value string `mapstructure:"VALUE"`
+}
+
+type ClaimsConfig struct {
+	OR  []Claim `mapstructure:"OR"`
+	AND []Claim `mapstructure:"AND"`
+}
+type EntryPointConfig struct {
+	ClaimsConfig ClaimsConfig `mapstructure:"CLAIMS_CONFIG"`
+}
+
 // OIDCConfig  env:OIDC_CONFIG
 type OIDCConfig struct {
-	Authority string `mapstructure:"AUTHORITY"`
+	Authority   string                      `mapstructure:"AUTHORITY"`
+	EntryPoints map[string]EntryPointConfig `mapstructure:"ENTRY_POINTS"`
 }
+
 type JSONWebKeyResponse struct {
 	Keys []JSONWebKey `json:"keys"`
 }

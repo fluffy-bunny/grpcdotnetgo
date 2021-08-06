@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"path"
 	"strings"
 
 	"net"
@@ -33,9 +34,20 @@ APPLICATION_ENVIRONMENT: in-environment
 GRPC_PORT: 0000
 `)
 
-func LoadConfig(configOptions *ConfigOptions) error {
-	v := viper.New()
-
+// ValidateConfigPath just makes sure, that the path provided is a file,
+// that can be read
+func ValidateConfigPath(configPath string) error {
+	s, err := os.Stat(configPath)
+	if err != nil {
+		return err
+	}
+	if s.IsDir() {
+		return fmt.Errorf("'%s' is a directory, not a normal file", configPath)
+	}
+	return nil
+}
+func loadConfig(configOptions *ConfigOptions) error {
+	v := viper.NewWithOptions(viper.KeyDelimiter("__"))
 	var err error
 	v.SetConfigType("yaml")
 	// Environment Variables override everything.
@@ -46,6 +58,26 @@ func LoadConfig(configOptions *ConfigOptions) error {
 	if err != nil {
 		log.Err(err).Msg("ConfigDefaultYaml did not read in")
 		return err
+	}
+
+	environment := os.Getenv("APPLICATION_ENVIRONMENT")
+
+	if len(environment) > 0 && len(configOptions.ConfigPath) != 0 {
+		v.AddConfigPath(configOptions.ConfigPath)
+
+		configFile := "appsettings." + coreConfig.Environment + ".yml"
+		configPath := path.Join(configOptions.ConfigPath, configFile)
+		err = ValidateConfigPath(configPath)
+		if err == nil {
+			v.SetConfigFile(configPath)
+			err = v.MergeInConfig()
+			if err != nil {
+				return err
+			}
+			log.Info().Str("configPath", configPath).Msg("Merging in config")
+		} else {
+			log.Info().Str("configPath", configPath).Msg("Config file not present")
+		}
 	}
 
 	// we need to do a viper Unmarshal because that is the only way we get the
@@ -75,16 +107,18 @@ func LoadConfig(configOptions *ConfigOptions) error {
 func loadCoreConfig() (*Config, error) {
 	var err error
 	dst := Config{}
-	err = LoadConfig(&ConfigOptions{
+	err = loadConfig(&ConfigOptions{
 		Destination:    &dst,
 		RootConfigYaml: coreConfigBaseYaml,
 	})
 	return &dst, err
 }
 
+var coreConfig *Config
+
 func Start(startup IStartup) {
 	var err error
-	coreConfig, err := loadCoreConfig()
+	coreConfig, err = loadCoreConfig()
 	if err != nil {
 		panic(err)
 	}
@@ -96,7 +130,7 @@ func Start(startup IStartup) {
 	}
 	startup.Startup()
 	configOptions := startup.GetConfigOptions()
-	err = LoadConfig(configOptions)
+	err = loadConfig(configOptions)
 	if err != nil {
 		panic(err)
 	}
