@@ -15,7 +15,8 @@
                 "CORE__APPLICATION_ENVIRONMENT":"Development",
                 "CORE__GRPC_PORT":5105,
                 "dGRPC_PORT":5105,
-                "MODE":"ddd"
+                "MODE":"ddd",
+                "OIDC_CONFIG__AUTHORITY": "https://auth-dev.mapped.com/"
             },
             "args": ["serve", "-e=GRPC_PORT=5105" ]
         }

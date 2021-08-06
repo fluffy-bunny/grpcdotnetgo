@@ -6,6 +6,7 @@ import (
 	context "context"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
+	pkg "github.com/fluffy-bunny/protoc-gen-go-di/pkg"
 	sarulabsdi "github.com/fluffy-bunny/sarulabsdi"
 	grpc "google.golang.org/grpc"
 	reflect "reflect"
@@ -100,9 +101,44 @@ const (
 	FMN_helloworld_Greeter2_SayHello = "/helloworld.Greeter2/SayHello"
 )
 
-// M_helloworldFullMethodNameEmptyResponseMap keys match that of grpc.UnaryServerInfo.FullMethodName
+// New_helloworldFullMethodNameSLice create a new map of fullMethodNames to []string
 // i.e. /helloworld.Greeter/SayHello
-var M_helloworldFullMethodNameWithErrorResponseMap = map[string]func() interface{}{
+func New_helloworldFullMethodNameSlice() []string {
+	slice := []string{
+		"/helloworld.Greeter/SayHello",
+		"/helloworld.Greeter2/SayHello",
+	}
+	return slice
+}
+func init() {
+	r := New_helloworldFullMethodNameSlice()
+	pkg.AddFullMethodNameSliceToMap(r)
+}
+
+// helloworldFullMethodNameEmptyResponseMap keys match that of grpc.UnaryServerInfo.FullMethodName
+// i.e. /helloworld.Greeter/SayHello
+var helloworldFullMethodNameEmptyResponseMap = map[string]func() interface{}{
+	"/helloworld.Greeter/SayHello": func() interface{} {
+		ret := &HelloReply{}
+		return ret
+	},
+	"/helloworld.Greeter2/SayHello": func() interface{} {
+		ret := &HelloReply2{}
+		return ret
+	},
+}
+
+func Get_helloworldFullEmptyResponseFromFullMethodName(fullMethodName string) func() interface{} {
+	v, ok := helloworldFullMethodNameEmptyResponseMap[fullMethodName]
+	if ok {
+		return v
+	}
+	return nil
+}
+
+// helloworldFullMethodNameWithErrorResponseMap keys match that of grpc.UnaryServerInfo.FullMethodName
+// i.e. /helloworld.Greeter/SayHello
+var helloworldFullMethodNameWithErrorResponseMap = map[string]func() interface{}{
 	"/helloworld.Greeter/SayHello": func() interface{} {
 		ret := &HelloReply{}
 		setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(ret, "Error")
@@ -113,6 +149,14 @@ var M_helloworldFullMethodNameWithErrorResponseMap = map[string]func() interface
 		setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(ret, "Error")
 		return ret
 	},
+}
+
+func Get_helloworldFullEmptyResponseWithErrorFromFullMethodName(fullMethodName string) func() interface{} {
+	v, ok := helloworldFullMethodNameWithErrorResponseMap[fullMethodName]
+	if ok {
+		return v
+	}
+	return nil
 }
 
 // M_helloworld_GreeterFullMethodNameExecuteMap keys match that of grpc.UnaryServerInfo.FullMethodName

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"strings"
 
 	"net"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/fluffy-bunny/grpcdotnetgo"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/async"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
+	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/services/config"
 	"github.com/fluffy-bunny/grpcdotnetgo/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -31,7 +33,7 @@ APPLICATION_ENVIRONMENT: in-environment
 GRPC_PORT: 0000
 `)
 
-func loadCoreConfig() (*Config, error) {
+func LoadConfig(configOptions *ConfigOptions) error {
 	v := viper.New()
 
 	var err error
@@ -40,21 +42,22 @@ func loadCoreConfig() (*Config, error) {
 	v.AutomaticEnv()
 
 	// 1. Read in as buffer to set a default baseline.
-	err = v.ReadConfig(bytes.NewBuffer(coreConfigBaseYaml))
+	err = v.ReadConfig(bytes.NewBuffer(configOptions.RootConfigYaml))
 	if err != nil {
 		log.Err(err).Msg("ConfigDefaultYaml did not read in")
-		return nil, err
+		return err
 	}
 
-	dst := Config{}
 	// we need to do a viper Unmarshal because that is the only way we get the
 	// ENV variables to come in
-	err = v.Unmarshal(&dst)
+	err = v.Unmarshal(configOptions.Destination)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	// we do all settings here, becuase a v.AllSettings will NOT bring in the ENV variables
-	allSettings := structs.Map(dst)
+	structs.DefaultTagName = "mapstructure"
+	allSettings := structs.Map(configOptions.Destination)
+	changeAllKeysToLowerCase(allSettings)
 
 	// normal viper stuff
 	myViperEx, err := viperEx.New(allSettings, func(ve *viperEx.ViperEx) error {
@@ -62,18 +65,25 @@ func loadCoreConfig() (*Config, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, err
+		return err
 	}
 	myViperEx.UpdateFromEnv()
-	err = myViperEx.Unmarshal(&dst)
-	if err != nil {
-		return nil, err
-	}
-	return &dst, nil
+	err = myViperEx.Unmarshal(configOptions.Destination)
+	return err
+}
 
+func loadCoreConfig() (*Config, error) {
+	var err error
+	dst := Config{}
+	err = LoadConfig(&ConfigOptions{
+		Destination:    &dst,
+		RootConfigYaml: coreConfigBaseYaml,
+	})
+	return &dst, err
 }
 
 func Start(startup IStartup) {
+	var err error
 	coreConfig, err := loadCoreConfig()
 	if err != nil {
 		panic(err)
@@ -85,6 +95,14 @@ func Start(startup IStartup) {
 		panic(err)
 	}
 	startup.Startup()
+	configOptions := startup.GetConfigOptions()
+	err = LoadConfig(configOptions)
+	if err != nil {
+		panic(err)
+	}
+	// add the main config into the DI directly
+	servicesConfig.AddConfig(dotNetGoBuilder.Builder, configOptions.Destination)
+
 	startup.ConfigureServices(dotNetGoBuilder.Builder)
 	dotNetGoBuilder.Build()
 	unaryServerInterceptorBuilder := UnaryServerInterceptorBuilder{}
@@ -146,4 +164,25 @@ func asyncServeGRPC(grpcServer *grpc.Server, port int) async.Future {
 	}()
 	return promise.Future()
 
+}
+func changeAllKeysToLowerCase(m map[string]interface{}) {
+	var lcMap = make(map[string]interface{})
+	var currentKeys []string
+	for key, value := range m {
+		currentKeys = append(currentKeys, key)
+		lcMap[strings.ToLower(key)] = value
+	}
+	// delete original values
+	for _, k := range currentKeys {
+		delete(m, k)
+	}
+	// put the lowercase ones in the original map
+	for key, value := range lcMap {
+		m[key] = value
+		vMap, ok := value.(map[string]interface{})
+		if ok {
+			// if the current value is a map[string]interface{}, keep going
+			changeAllKeysToLowerCase(vMap)
+		}
+	}
 }

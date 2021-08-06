@@ -18,6 +18,7 @@ type Service struct {
 	ClaimsPrincipal claimsprincipal.IClaimsPrincipal
 	Logger          servicesLogger.ILogger
 	ServiceProvider servicesServiceProvider.IServiceProvider
+	config          *internal.Config
 }
 
 // SayHello implements helloworld.GreeterServer
@@ -47,6 +48,7 @@ type Service2 struct {
 	ClaimsPrincipal claimsprincipal.IClaimsPrincipal
 	Logger          servicesLogger.ILogger
 	ServiceProvider servicesServiceProvider.IServiceProvider
+	config          *internal.Config
 }
 
 // SayHello implements helloworld.GreeterServer

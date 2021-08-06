@@ -21,6 +21,7 @@ import (
 	grpc_recovery "github.com/fluffy-bunny/grpcdotnetgo/middleware/recovery"
 	grpcDIProtoError "github.com/fluffy-bunny/grpcdotnetgo/proto/error"
 	runtime "github.com/fluffy-bunny/grpcdotnetgo/runtime"
+	pkg "github.com/fluffy-bunny/protoc-gen-go-di/pkg"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/gogo/protobuf/gogoproto"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -35,9 +36,18 @@ var version = "development"
 type Startup struct {
 	port            int
 	MockOIDCService interface{}
+	ConfigOptions   *grpcdotnetgocore.ConfigOptions
 }
 
 func (s *Startup) Startup() {
+	s.ConfigOptions = &grpcdotnetgocore.ConfigOptions{
+		Destination:    &internal.Config{},
+		RootConfigYaml: internal.ConfigDefaultYaml,
+	}
+}
+
+func (s *Startup) GetConfigOptions() *grpcdotnetgocore.ConfigOptions {
+	return s.ConfigOptions
 }
 func (s *Startup) SetPort(port int) {
 	s.port = port
@@ -46,13 +56,18 @@ func (s *Startup) GetPort() int {
 	return s.port
 }
 func (s *Startup) ConfigureServices(builder *di.Builder) {
+	// this is how  you get your config before you register your services
+	config := s.ConfigOptions.Destination.(*internal.Config)
+
 	handlerGreeterService.AddGreeterService(builder)
 	handlerGreeterService.AddGreeter2Service(builder)
 
 	singletonService.AddSingletonService(builder)
 
 	transientService.AddTransientService(builder)
-	transientService.AddTransientService2(builder)
+	if config.EnableTransient2 {
+		transientService.AddTransientService2(builder)
+	}
 
 	backgroundCounterService.AddCronCounterJobProvider(builder)
 	backgroundWelcomeService.AddOneTimeWelcomeJobProvider(builder)
@@ -61,6 +76,9 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 
 }
 func (s *Startup) Configure(
+	// this is how  you get your config before you add in your middleware
+	// config := s.ConfigOptions.Destination.(*internal.Config)
+
 	container di.Container,
 	unaryServerInterceptorBuilder *grpcdotnetgocore.UnaryServerInterceptorBuilder) {
 
@@ -91,9 +109,8 @@ func main() {
 	}
 	runtime.SetVersion(version)
 	fmt.Println("Version:\t", version)
-	config := &internal.Config{}
-	ReadViperConfig(internal.ConfigDefaultYaml, &config)
 
+	fmt.Println(internal.PrettyJSON(pkg.NewFullMethodNameToMap()))
 	runtime.Start(&Startup{})
 
 }
@@ -102,8 +119,8 @@ func exampleAuthFunc(ctx context.Context, fullMethodName string) (context.Contex
 
 	token, err := grpc_auth.AuthFromMD(ctx, "bearer")
 	if err != nil || token == "" {
-		replyFunc, ok := pb.M_helloworldFullMethodNameWithErrorResponseMap[fullMethodName]
-		if ok {
+		replyFunc := pb.Get_helloworldFullEmptyResponseFromFullMethodName(fullMethodName)
+		if replyFunc != nil {
 			reply, ok2 := replyFunc().(grpcDIProtoError.IError)
 			if ok2 {
 				myError := reply.GetError()
@@ -120,8 +137,8 @@ func exampleAuthFunc(ctx context.Context, fullMethodName string) (context.Contex
 func recoveryUnaryFunc(fullMethodName string, p interface{}) (interface{}, error) {
 	fmt.Printf("p: %+v\n", p)
 
-	replyFunc, ok := pb.M_helloworldFullMethodNameWithErrorResponseMap[fullMethodName]
-	if ok {
+	replyFunc := pb.Get_helloworldFullEmptyResponseFromFullMethodName(fullMethodName)
+	if replyFunc != nil {
 		reply, ok2 := replyFunc().(grpcDIProtoError.IError)
 		if ok2 {
 			myError := reply.GetError()
@@ -129,11 +146,8 @@ func recoveryUnaryFunc(fullMethodName string, p interface{}) (interface{}, error
 			myError.Message = "Unexpected error2"
 			return reply, nil
 		}
-		ok = false
+	}
 
-	}
-	if !ok {
-		return nil, status.Errorf(codes.Internal, "Unexpected error1")
-	}
-	return nil, nil
+	return nil, status.Errorf(codes.Internal, "Unexpected error1")
+
 }

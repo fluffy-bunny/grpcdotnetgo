@@ -8,8 +8,13 @@ import (
 type ICoreConfig interface {
 	GetPort() int
 }
+type ConfigOptions struct {
+	Destination    interface{}
+	RootConfigYaml []byte
+}
 type IStartup interface {
 	Startup()
+	GetConfigOptions() *ConfigOptions
 	ConfigureServices(builder *di.Builder)
 	Configure(
 		container di.Container,
