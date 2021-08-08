@@ -3,13 +3,18 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+	"reflect"
+
 	"os"
 	"time"
 
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
 	_ "github.com/fluffy-bunny/grpcdotnetgo/proto/error"
+	"github.com/gogo/googleapis/google/rpc"
+	"github.com/gogo/status"
+	"github.com/rs/zerolog/log"
+
 	"google.golang.org/grpc"
 )
 
@@ -25,7 +30,7 @@ func main() {
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatal().Err(err).Msg("did not connect")
 	}
 	defer conn.Close()
 	c := pb.NewGreeterClient(conn)
@@ -39,10 +44,31 @@ func main() {
 	defer cancel()
 	r, err := c.SayHello(ctx, &pb.HelloRequest{
 		Name:      name,
-		Directive: pb.HelloDirectives_HELLO_DIRECTIVES_PANIC,
+		Directive: pb.HelloDirectives_HELLO_DIRECTIVES_ERROR,
 	})
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		log.Error().Err(err).Msg("could not greet")
+		st, ok := status.FromError(err)
+		if ok {
+			log.Error().Interface("statusError", st).Send()
+			st = status.Convert(err)
+
+			for _, detail := range st.Details() {
+				fmt.Println(reflect.TypeOf(detail))
+				log.Error().Interface("detail", detail).Send()
+				switch t := detail.(type) {
+				case *rpc.BadRequest:
+					fmt.Println("Oops! Your request was rejected by the server.")
+
+					for _, violation := range t.GetFieldViolations() {
+						fmt.Printf("The %q field was wrong:\n", violation.GetField())
+						fmt.Printf("\t%s\n", violation.GetDescription())
+					}
+				}
+			}
+
+		}
+		return
 	}
 	log.Printf("Greeting: %s", internal.PrettyJSON(r))
 
@@ -50,7 +76,11 @@ func main() {
 	defer cancel2()
 	r2, err := c2.SayHello(ctx2, &pb.HelloRequest{Name: name})
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		log.Error().Err(err).Msg("could not greet")
+		st, ok := status.FromError(err)
+		if ok {
+			log.Error().Interface("statusError", st).Send()
+		}
 	}
 	log.Printf("Greeting: %s", internal.PrettyJSON(r2))
 

@@ -128,7 +128,7 @@ func Start(startup IStartup) {
 	if err != nil {
 		panic(err)
 	}
-	startup.Startup()
+
 	configOptions := startup.GetConfigOptions()
 	err = loadConfig(configOptions)
 	if err != nil {

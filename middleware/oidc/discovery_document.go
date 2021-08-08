@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-func newDiscoveryDocument(discoveryURL url.URL) *DiscoveryDocument {
+func NewDiscoveryDocument(discoveryURL url.URL) *DiscoveryDocument {
 	return &DiscoveryDocument{
 		DiscoveryURL: discoveryURL,
 	}

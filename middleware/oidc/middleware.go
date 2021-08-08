@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
+	jwtmiddleware "github.com/fluffy-bunny/go-jwt-middleware"
 	"github.com/fluffy-bunny/grpcdotnetgo/middleware/oidc/introspection"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -17,7 +17,7 @@ func NewGinIntrospectionValidationMiddleware(options *NewGinIntrospectionValidat
 	logger.SetLevel(options.LogLevel)
 	logger.SetOutput(options.Out)
 
-	discoveryDocument := newDiscoveryDocument(*options.DiscoveryURL)
+	discoveryDocument := NewDiscoveryDocument(*options.DiscoveryURL)
 
 	err := discoveryDocument.Initialize()
 	if err != nil {
@@ -55,7 +55,7 @@ func NewGinIntrospectionValidationMiddleware(options *NewGinIntrospectionValidat
 }
 
 func NewAuthenticationMiddleware(options NewJWTValidationMiddlewareOptions) *jwtmiddleware.JWTMiddleware {
-	discoveryDocument := newDiscoveryDocument(*options.DiscoveryURL)
+	discoveryDocument := NewDiscoveryDocument(*options.DiscoveryURL)
 
 	logger := log.New()
 

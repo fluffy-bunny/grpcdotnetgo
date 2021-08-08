@@ -5,11 +5,12 @@ import (
 
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
-	grpcdotnetgoprotoerror "github.com/fluffy-bunny/grpcdotnetgo/proto/error"
+	grpcError "github.com/fluffy-bunny/grpcdotnetgo/grpc/error"
 	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
+	"google.golang.org/grpc/codes"
 )
 
 // Service is used to implement helloworld.GreeterServer.
@@ -30,14 +31,12 @@ func (s *Service) SayHello(in *pb.HelloRequest) (*pb.HelloReply, error) {
 		panic("shits on fire, yo")
 	}
 	if in.Directive == pb.HelloDirectives_HELLO_DIRECTIVES_ERROR {
-		reply := &pb.HelloReply{
-			Error: &grpcdotnetgoprotoerror.Error{
-				Message: "Something Went Boom",
-				Code:    401,
-			},
-		}
-		err := fmt.Errorf("Ermaghd")
-		return reply, err
+		br := grpcError.NewBadRequest()
+		desc := "The username must only contain alphanumeric characters"
+		br.AddViolation("username", desc)
+		errst := br.GetStatusError(codes.InvalidArgument, "HelloDirectives_HELLO_DIRECTIVES_ERROR")
+		//	err := status.Errorf(codes.Internal, "%v", pb.HelloDirectives_HELLO_DIRECTIVES_ERROR)
+		return nil, errst
 	}
 	s.Logger.Info().Msgf("Received: %v", in.GetName())
 	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil

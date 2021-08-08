@@ -4,6 +4,7 @@ import (
 	"io"
 	"net/url"
 
+	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/sirupsen/logrus"
 
 	"github.com/dgrijalva/jwt-go"
@@ -24,9 +25,35 @@ type EntryPointConfig struct {
 
 // OIDCConfig  env:OIDC_CONFIG
 type OIDCConfig struct {
-	Authority   string                      `mapstructure:"AUTHORITY"`
-	EntryPoints map[string]EntryPointConfig `mapstructure:"ENTRY_POINTS"`
+	Authority string `mapstructure:"AUTHORITY"`
+	// CronRefreshSchedule i.e. @every 0h1m0s
+	CronRefreshSchedule string                      `mapstructure:"CRON_REFRESH_SCHEDULE"`
+	EntryPoints         map[string]EntryPointConfig `mapstructure:"ENTRY_POINTS"`
 }
+type IOIDCConfig interface {
+	GetAuthority() string
+	GetCronRefreshSchedule() string
+	GetEntryPoints() map[string]EntryPointConfig
+}
+
+func (c *OIDCConfig) GetAuthority() string {
+	return c.Authority
+}
+func (c *OIDCConfig) GetCronRefreshSchedule() string {
+	return c.CronRefreshSchedule
+}
+func (c *OIDCConfig) GetEntryPoints() map[string]EntryPointConfig {
+	return c.EntryPoints
+}
+
+type IOIDCConfigAccessor interface {
+	GetOIDCConfig() IOIDCConfig
+}
+
+var (
+	TypeIOIDCConfig         = di.GetInterfaceReflectType((*IOIDCConfig)(nil))
+	TypeIOIDCConfigAccessor = di.GetInterfaceReflectType((*IOIDCConfigAccessor)(nil))
+)
 
 type JSONWebKeyResponse struct {
 	Keys []JSONWebKey `json:"keys"`

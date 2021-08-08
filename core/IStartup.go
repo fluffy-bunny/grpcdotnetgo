@@ -14,7 +14,6 @@ type ConfigOptions struct {
 	ConfigPath     string
 }
 type IStartup interface {
-	Startup()
 	GetConfigOptions() *ConfigOptions
 	ConfigureServices(builder *di.Builder)
 	Configure(
