@@ -28,10 +28,14 @@ func (s *service) GetAuthFuncUnary() middleware_grpc_auth.AuthFuncUnary {
 			s.Logger.Error().Msg("Discovery Document is nil, make sure the background job to fetch it is in place.")
 			return ctx, nil, status.Error(codes.Unauthenticated, "Unauthorized")
 		}
-		token, err := middleware_grpc_auth.AuthFromMD(ctx, "bearer")
-		if err != nil || token == "" {
+		entryPoints := s.OIDCConfig.GetEntryPoints()
+		_, ok := entryPoints[fullMethodName]
+		if ok {
+			token, err := middleware_grpc_auth.AuthFromMD(ctx, "bearer")
+			if err != nil || token == "" {
 
-			return ctx, nil, status.Error(codes.Unauthenticated, "Unauthorized")
+				return ctx, nil, status.Error(codes.Unauthenticated, "Unauthorized")
+			}
 		}
 
 		return ctx, nil, nil

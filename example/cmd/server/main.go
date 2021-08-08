@@ -4,10 +4,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
 
 	grpcdotnetgocore "github.com/fluffy-bunny/grpcdotnetgo/core"
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
+	"github.com/rs/zerolog/log"
 
 	services_oidc "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/oidc"
 
@@ -38,6 +41,16 @@ import (
 
 var version = "development"
 
+func getConfigPath() string {
+	var configPath string
+	_, err := os.Stat("../etc/config")
+	if !os.IsNotExist(err) {
+		configPath, _ = filepath.Abs("../etc/config")
+		log.Info().Str("path", configPath).Msg("Configuration Root Folder")
+	}
+	return configPath
+}
+
 type Startup struct {
 	port            int
 	MockOIDCService interface{}
@@ -54,6 +67,7 @@ func (s *Startup) ctor() {
 	s.ConfigOptions = &grpcdotnetgocore.ConfigOptions{
 		Destination:    &internal.Config{},
 		RootConfigYaml: internal.ConfigDefaultYaml,
+		ConfigPath:     getConfigPath(),
 	}
 }
 
