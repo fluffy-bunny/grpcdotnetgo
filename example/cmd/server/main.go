@@ -8,6 +8,9 @@ import (
 	grpcdotnetgocore "github.com/fluffy-bunny/grpcdotnetgo/core"
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
+
+	services_oidc "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/oidc"
+
 	backgroundCounterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/background/cron/counter"
 	backgroundWelcomeService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/background/onetime/welcome"
 	handlerGreeterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/helloworld/handler"
@@ -21,6 +24,7 @@ import (
 	grpcDIProtoError "github.com/fluffy-bunny/grpcdotnetgo/proto/error"
 	runtime "github.com/fluffy-bunny/grpcdotnetgo/runtime"
 	backgroundOidcService "github.com/fluffy-bunny/grpcdotnetgo/services/oidc"
+	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	mockoidcservice "github.com/fluffy-bunny/grpcdotnetgo/services/test/mockoidcservice"
 	pkg "github.com/fluffy-bunny/protoc-gen-go-di/pkg"
 	di "github.com/fluffy-bunny/sarulabsdi"
@@ -83,13 +87,15 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 
 	middleware_oidc.AddOIDCConfigAccessor(builder, config)
 	backgroundOidcService.AddCronOidcJobProvider(builder)
+	services_oidc.AddOIDCAuthHandler(builder)
 
 }
 func (s *Startup) Configure(
-	// this is how  you get your config before you add in your middleware
-	// config := s.ConfigOptions.Destination.(*internal.Config)
-	container di.Container,
+	serviceProvider servicesServiceProvider.IServiceProvider,
 	unaryServerInterceptorBuilder *grpcdotnetgocore.UnaryServerInterceptorBuilder) {
+
+	// this is how  you get your config before you register your services
+	//config := s.ConfigOptions.Destination.(*internal.Config)
 
 	//var recoveryFunc middleware_grpc_recovery.RecoveryHandlerFunc
 	recoveryOpts := []middleware_grpc_recovery.Option{
@@ -101,7 +107,8 @@ func (s *Startup) Configure(
 	unaryServerInterceptorBuilder.Use(middleware_dicontext.UnaryServerInterceptor())
 	unaryServerInterceptorBuilder.Use(middleware_logger.LoggingUnaryServerInterceptor())
 
-	//unaryServerInterceptorBuilder.Use(middleware_grpc_auth.UnaryServerInterceptor(exampleAuthFunc))
+	authHandler := middleware_grpc_auth.GetAuthFuncAccessorFromContainer(serviceProvider.GetContainer())
+	unaryServerInterceptorBuilder.Use(middleware_grpc_auth.UnaryServerInterceptor(authHandler))
 	unaryServerInterceptorBuilder.Use(middleware_grpc_recovery.UnaryServerInterceptor(recoveryOpts...))
 
 	s.MockOIDCService = mockoidcservice.GetMockOIDCService()

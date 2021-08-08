@@ -11,7 +11,7 @@ import (
 // Define an object in the App scope.
 var diServiceNameIServiceProviderScoped = grpcdotnetgoutils.GenerateUnqueServiceName("IServiceProvider-Scoped")
 
-// GetDIServiceProviderFromContainer from the Container
+// GetScopedServiceProviderFromContainer from the Container
 func GetScopedServiceProviderFromContainer(ctn di.Container) IServiceProvider {
 	service := ctn.Get(diServiceNameIServiceProviderScoped).(IServiceProvider)
 	return service

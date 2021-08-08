@@ -24,7 +24,7 @@ func AddCronOidcJobProvider(builder *di.Builder) {
 		Build: func(ctn di.Container) (interface{}, error) {
 			obj := &service{
 				OIDCConfigAccessor: middleware_oidc.GetOIDCConfigAccessorFromContainer(ctn),
-				Storage:            getOidcBackgroundStorageFromContainer(ctn),
+				Storage:            GetOidcBackgroundStorageFromContainer(ctn),
 				Logger:             servicesLogger.GetSingletonLoggerFromContainer(ctn),
 			}
 			return obj, nil
@@ -38,7 +38,7 @@ func AddCronOidcJobProvider(builder *di.Builder) {
 
 }
 
-func getOidcBackgroundStorageFromContainer(ctn di.Container) IOidcBackgroundStorage {
+func GetOidcBackgroundStorageFromContainer(ctn di.Container) IOidcBackgroundStorage {
 	obj := ctn.GetByType(TypeIOidcBackgroundStorage).(IOidcBackgroundStorage)
 	return obj
 }
