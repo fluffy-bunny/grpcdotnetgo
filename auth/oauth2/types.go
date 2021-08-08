@@ -63,7 +63,8 @@ type GrpcFuncAuthConfig struct {
 			{"a", "f"},
 		}
 	*/
-	FuncMapping map[string][]Claim
+	OrFuncMapping  map[string][]Claim
+	AndFuncMapping map[string][]Claim
 }
 
 func NewGrpcFuncAuthConfig(authority string, expectedScheme string, clockSkewMinutes int) *GrpcFuncAuthConfig {
@@ -71,6 +72,7 @@ func NewGrpcFuncAuthConfig(authority string, expectedScheme string, clockSkewMin
 		Authority:        authority,
 		ExpectedScheme:   expectedScheme,
 		ClockSkewMinutes: clockSkewMinutes,
-		FuncMapping:      make(map[string][]Claim),
+		OrFuncMapping:    make(map[string][]Claim),
+		AndFuncMapping:   make(map[string][]Claim),
 	}
 }
