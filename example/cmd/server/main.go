@@ -66,7 +66,6 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 	// this is how  you get your config before you register your services
 	config := s.ConfigOptions.Destination.(*internal.Config)
 
-	middleware_oidc.AddIOIDCConfigAccessor(builder, config)
 	handlerGreeterService.AddGreeterService(builder)
 	handlerGreeterService.AddGreeter2Service(builder)
 
@@ -82,6 +81,7 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 
 	mockoidcservice.AddMockOIDCService(builder)
 
+	middleware_oidc.AddOIDCConfigAccessor(builder, config)
 	backgroundOidcService.AddCronOidcJobProvider(builder)
 
 }

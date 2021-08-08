@@ -3,8 +3,8 @@ package oidc
 import (
 	"reflect"
 
+	grpcdotnetgodi "github.com/fluffy-bunny/grpcdotnetgo/di"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 )
 
 func GetOIDCConfigAccessorFromContainer(ctn di.Container) IOIDCConfigAccessor {
@@ -12,19 +12,16 @@ func GetOIDCConfigAccessorFromContainer(ctn di.Container) IOIDCConfigAccessor {
 	return obj
 }
 
-// AddIOIDCConfigAccessor adds service to the DI container
-func AddIOIDCConfigAccessor(builder *di.Builder, obj interface{}) {
-	log.Info().
-		Msg("IoC: AddIOIDCConfigAccessor")
-	types := di.NewTypeSet()
-	types.Add(TypeIOIDCConfigAccessor)
-
-	builder.Add(di.Def{
-		Scope:            di.App,
-		ImplementedTypes: types,
-		Type:             reflect.TypeOf(obj),
-		Build: func(ctn di.Container) (interface{}, error) {
+// AddOIDCConfigAccessor adds service to the DI container
+func AddOIDCConfigAccessor(builder *di.Builder, obj interface{}) {
+	grpcdotnetgodi.AddByType(
+		builder,
+		di.App,
+		func(ctn di.Container) (interface{}, error) {
 			return obj, nil
 		},
-	})
+		nil,
+		reflect.TypeOf(obj),
+		TypeIOIDCConfigAccessor)
+
 }
