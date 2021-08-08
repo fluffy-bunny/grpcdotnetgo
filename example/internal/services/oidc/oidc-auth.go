@@ -8,6 +8,7 @@ import (
 	services_logger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	services_oidc "github.com/fluffy-bunny/grpcdotnetgo/services/oidc"
 	"github.com/gogo/status"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc/codes"
 )
 
@@ -29,6 +30,7 @@ func (s *service) GetAuthFuncUnary() middleware_grpc_auth.AuthFuncUnary {
 			return ctx, nil, status.Error(codes.Unauthenticated, "Unauthorized")
 		}
 		entryPoints := s.OIDCConfig.GetEntryPoints()
+		log.Info().Interface("config", entryPoints).Send()
 		_, ok := entryPoints[fullMethodName]
 		if ok {
 			token, err := middleware_grpc_auth.AuthFromMD(ctx, "bearer")

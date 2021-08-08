@@ -20,7 +20,8 @@ type ClaimsConfig struct {
 	AND []Claim `mapstructure:"AND"`
 }
 type EntryPointConfig struct {
-	ClaimsConfig ClaimsConfig `mapstructure:"CLAIMS_CONFIG"`
+	FullMethodName string       `mapstructure:"FULL_METHOD_NAME"`
+	ClaimsConfig   ClaimsConfig `mapstructure:"CLAIMS_CONFIG"`
 }
 
 // OIDCConfig  env:OIDC_CONFIG

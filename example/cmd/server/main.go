@@ -84,6 +84,15 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 	// this is how  you get your config before you register your services
 	config := s.ConfigOptions.Destination.(*internal.Config)
 
+	var mm = make(map[string]middleware_oidc.EntryPointConfig)
+
+	for k, v := range config.OIDCConfig.EntryPoints {
+		mm[k] = v
+	}
+	for k, v := range mm {
+		delete(config.OIDCConfig.EntryPoints, k)
+		config.OIDCConfig.EntryPoints[v.FullMethodName] = v
+	}
 	handlerGreeterService.AddGreeterService(builder)
 	handlerGreeterService.AddGreeter2Service(builder)
 

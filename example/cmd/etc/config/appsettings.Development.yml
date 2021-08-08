@@ -2,6 +2,7 @@ OIDC_CONFIG:
   AUTHORITIY: "https://in-environment/"
   ENTRY_POINTS: 
     /helloworld.Greeter/SayHello: 
+      FULL_METHOD_NAME: /helloworld.Greeter/SayHello
       CLAIMS_CONFIG: 
         AND: 
           - 
