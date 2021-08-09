@@ -3,7 +3,7 @@ package oauth2
 import (
 	"context"
 
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/go-grpc-middleware/auth"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
@@ -62,8 +62,8 @@ func BuildOpenIdConnectContext(config *GrpcFuncAuthConfig) (*OAuth2Context, erro
 	oauth2Context, err := BuildOAuth2Context(disco.Issuer, disco.JWKSURL, config)
 	return oauth2Context, nil
 }
-func buildAuthFunction(oauth2Context *OAuth2Context) func(ctx context.Context) (context.Context, error) {
-	return func(ctx context.Context) (context.Context, error) {
+func buildAuthFunction(oauth2Context *OAuth2Context) func(ctx context.Context, fullMethodName string) (context.Context, error) {
+	return func(ctx context.Context, fullMethodName string) (context.Context, error) {
 		token, err := grpc_auth.AuthFromMD(ctx, oauth2Context.Scheme)
 		if err != nil {
 			// not ours

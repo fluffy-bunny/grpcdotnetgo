@@ -21,4 +21,5 @@ require (
 
 replace github.com/fluffy-bunny/grpcdotnetgo => ../
 
+//replace github.com/grpc-ecosystem/go-grpc-middleware => ../../go-grpc-middleware
 //replace github.com/fluffy-bunny/sarulabsdi => ../../sarulabsdi

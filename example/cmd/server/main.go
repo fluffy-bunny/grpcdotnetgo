@@ -121,25 +121,30 @@ func (s *Startup) Configure(
 	grpcFuncAuthConfig := oauth2.NewGrpcFuncAuthConfig(config.OIDCConfig.Authority,
 		"bearer", 5)
 	for _, v := range config.OIDCConfig.EntryPoints {
-		var claims []oauth2.Claim
-		for _, vv := range v.ClaimsConfig.AND {
-			claims = append(claims, oauth2.Claim{
-				Type:  vv.Type,
-				Value: vv.Value,
-			})
-		}
-		grpcFuncAuthConfig.AndFuncMapping[v.FullMethodName] = claims
-		claims = nil
-		for _, vv := range v.ClaimsConfig.OR {
-			claims = append(claims, oauth2.Claim{
-				Type:  vv.Type,
-				Value: vv.Value,
-			})
-		}
-		grpcFuncAuthConfig.OrFuncMapping[v.FullMethodName] = claims
 
+		methodClaims := oauth2.MethodClaims{
+			OR:  []oauth2.Claim{},
+			AND: []oauth2.Claim{},
+		}
+
+		for _, vv := range v.ClaimsConfig.AND {
+			methodClaims.AND = append(methodClaims.AND, oauth2.Claim{
+				Type:  vv.Type,
+				Value: vv.Value,
+			})
+
+		}
+
+		for _, vv := range v.ClaimsConfig.OR {
+			methodClaims.OR = append(methodClaims.OR, oauth2.Claim{
+				Type:  vv.Type,
+				Value: vv.Value,
+			})
+		}
+
+		grpcFuncAuthConfig.FullMethodNameToClaims[v.FullMethodName] = methodClaims
 	}
-	auth0OAuth2Context, err := oauth2.BuildOpenIdConnectContext(grpcFuncAuthConfig)
+	oidcContext, err := oauth2.BuildOpenIdConnectContext(grpcFuncAuthConfig)
 	if err != nil {
 		panic(err)
 	}
@@ -156,7 +161,7 @@ func (s *Startup) Configure(
 
 	//	authHandler := middleware_grpc_auth.GetAuthFuncAccessorFromContainer(serviceProvider.GetContainer())
 	//	unaryServerInterceptorBuilder.Use(middleware_grpc_auth.UnaryServerInterceptor(authHandler))
-	unaryServerInterceptorBuilder.Use(oauth2.OAuth2UnaryServerInterceptor(auth0OAuth2Context))
+	unaryServerInterceptorBuilder.Use(oauth2.OAuth2UnaryServerInterceptor(oidcContext))
 	unaryServerInterceptorBuilder.Use(oauth2.FinalAuthVerificationMiddleware())
 
 	unaryServerInterceptorBuilder.Use(middleware_grpc_recovery.UnaryServerInterceptor(recoveryOpts...))

@@ -36,6 +36,8 @@ require (
 
 replace github.com/fluffy-bunny/go-jwt-middleware => ../go-jwt-middleware
 
+//replace github.com/grpc-ecosystem/go-grpc-middleware => ../go-grpc-middleware
+
 //replace github.com/fluffy-bunny/mockoidc => ../mockoidc
 
 //replace github.com/fluffy-bunny/sarulabsdi => ../sarulabsdi

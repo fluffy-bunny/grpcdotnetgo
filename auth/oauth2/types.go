@@ -50,6 +50,10 @@ type OAuth2Context struct {
 	Scheme         string
 	Config         *GrpcFuncAuthConfig
 }
+type MethodClaims struct {
+	OR  []Claim
+	AND []Claim
+}
 type GrpcFuncAuthConfig struct {
 	Authority        string
 	ExpectedScheme   string
@@ -63,16 +67,15 @@ type GrpcFuncAuthConfig struct {
 			{"a", "f"},
 		}
 	*/
-	OrFuncMapping  map[string][]Claim
-	AndFuncMapping map[string][]Claim
+
+	FullMethodNameToClaims map[string]MethodClaims
 }
 
 func NewGrpcFuncAuthConfig(authority string, expectedScheme string, clockSkewMinutes int) *GrpcFuncAuthConfig {
 	return &GrpcFuncAuthConfig{
-		Authority:        authority,
-		ExpectedScheme:   expectedScheme,
-		ClockSkewMinutes: clockSkewMinutes,
-		OrFuncMapping:    make(map[string][]Claim),
-		AndFuncMapping:   make(map[string][]Claim),
+		Authority:              authority,
+		ExpectedScheme:         expectedScheme,
+		ClockSkewMinutes:       clockSkewMinutes,
+		FullMethodNameToClaims: make(map[string]MethodClaims),
 	}
 }
