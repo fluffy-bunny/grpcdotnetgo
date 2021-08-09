@@ -15,59 +15,87 @@ type ILogger interface {
 	Info() *zerolog.Event
 	Warn() *zerolog.Event
 	Trace() *zerolog.Event
+
+	GetLogger() *zerolog.Logger
+
+	ErrorL(logger *zerolog.Logger) *zerolog.Event
+	DebugL(logger *zerolog.Logger) *zerolog.Event
+	FatalL(logger *zerolog.Logger) *zerolog.Event
+	InfoL(logger *zerolog.Logger) *zerolog.Event
+	WarnL(logger *zerolog.Logger) *zerolog.Event
+	TraceL(logger *zerolog.Logger) *zerolog.Event
 }
 
 type loggerService struct {
 	Logger *zerolog.Logger
 }
 
-func (s *loggerService) Error() *zerolog.Event {
-	sublogger := s.withFileNumber(s.Logger)
+func (s *loggerService) ErrorL(logger *zerolog.Logger) *zerolog.Event {
+	sublogger := s.withFileNumber(logger)
 	return sublogger.Error()
 }
-
-func (s *loggerService) Debug() *zerolog.Event {
-	sublogger := s.withFileNumber(s.Logger)
-	return sublogger.Debug()
+func (s *loggerService) DebugL(logger *zerolog.Logger) *zerolog.Event {
+	sublogger := s.withFileNumber(logger)
+	return sublogger.Error()
 }
-
-func (s *loggerService) Fatal() *zerolog.Event {
+func (s *loggerService) FatalL(logger *zerolog.Logger) *zerolog.Event {
 	sublogger := s.withFileNumber(s.Logger)
 	return sublogger.Fatal()
 }
-
-func (s *loggerService) Info() *zerolog.Event {
+func (s *loggerService) InfoL(logger *zerolog.Logger) *zerolog.Event {
 	e := s.Logger.Debug()
 	if !e.Enabled() {
-		return s.Logger.Info()
+		return logger.Info()
 	}
 	sublogger := s.withFileNumber(s.Logger)
-	return sublogger.Info()
+	return sublogger.Error()
 }
-func (s *loggerService) Warn() *zerolog.Event {
+func (s *loggerService) WarnL(logger *zerolog.Logger) *zerolog.Event {
 	e := s.Logger.Debug()
 	if !e.Enabled() {
-		return s.Logger.Warn()
+		return logger.Warn()
 	}
 	sublogger := s.withFileNumber(s.Logger)
 	return sublogger.Warn()
 }
-func (s *loggerService) Trace() *zerolog.Event {
+func (s *loggerService) TraceL(logger *zerolog.Logger) *zerolog.Event {
 	e := s.Logger.Debug()
 	if !e.Enabled() {
-		return s.Logger.Trace()
+		return logger.Trace()
 	}
 	sublogger := s.withFileNumber(s.Logger)
 	return sublogger.Trace()
 }
 
+func (s *loggerService) GetLogger() *zerolog.Logger {
+	return s.Logger
+}
+func (s *loggerService) Error() *zerolog.Event {
+	return s.ErrorL(s.Logger)
+}
+
+func (s *loggerService) Debug() *zerolog.Event {
+	return s.DebugL(s.Logger)
+}
+
+func (s *loggerService) Fatal() *zerolog.Event {
+	return s.FatalL(s.Logger)
+}
+
+func (s *loggerService) Info() *zerolog.Event {
+	return s.InfoL(s.Logger)
+}
+
+func (s *loggerService) Warn() *zerolog.Event {
+	return s.WarnL(s.Logger)
+}
+
+func (s *loggerService) Trace() *zerolog.Event {
+	return s.TraceL(s.Logger)
+}
+
 // withFileNumber is used internally to make sure our stack filenames are correct.
 func (s *loggerService) withFileNumber(log *zerolog.Logger) *zerolog.Logger {
-	e := log.Debug()
-	if !e.Enabled() {
-		return log
-	}
-
 	pc := make([]uintptr, 15)
 	n := runtime.Callers(3, pc)
 	frames := runtime.CallersFrames(pc[:n])

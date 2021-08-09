@@ -162,7 +162,7 @@ func (s *Startup) Configure(
 	//	authHandler := middleware_grpc_auth.GetAuthFuncAccessorFromContainer(serviceProvider.GetContainer())
 	//	unaryServerInterceptorBuilder.Use(middleware_grpc_auth.UnaryServerInterceptor(authHandler))
 	unaryServerInterceptorBuilder.Use(oauth2.OAuth2UnaryServerInterceptor(oidcContext))
-	unaryServerInterceptorBuilder.Use(oauth2.FinalAuthVerificationMiddleware())
+	unaryServerInterceptorBuilder.Use(oauth2.FinalAuthVerificationMiddleware(oidcContext))
 
 	unaryServerInterceptorBuilder.Use(middleware_grpc_recovery.UnaryServerInterceptor(recoveryOpts...))
 

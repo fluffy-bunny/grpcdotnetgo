@@ -50,19 +50,31 @@ func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken st
 		return nil, err
 	}
 	result := ClaimsPrincipal{
-		Claims: []Claim{},
-		Token:  token,
+		Claims:  []Claim{},
+		Token:   token,
+		FastMap: make(map[string]map[string]bool),
+	}
+
+	var addFastMapClaim = func(key string, value string) {
+		claimParent, ok := result.FastMap[key]
+		if !ok {
+			claimParent = make(map[string]bool)
+			result.FastMap[key] = claimParent
+		}
+		claimParent[value] = true
 	}
 	claimsMap, err := token.AsMap(ctx)
 	for key, element := range claimsMap {
 		switch c := element.(type) {
 		case string:
+			addFastMapClaim(key, element.(string))
 			result.Claims = append(result.Claims, Claim{Type: key, Value: element.(string)})
 			break
 		case []interface{}:
 			for _, value := range c {
 				switch value.(type) {
 				case string:
+					addFastMapClaim(key, value.(string))
 					result.Claims = append(result.Claims, Claim{Type: key, Value: value.(string)})
 					break
 				}
@@ -70,6 +82,7 @@ func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken st
 			break
 		case []string:
 			for _, value := range c {
+				addFastMapClaim(key, value)
 				result.Claims = append(result.Claims, Claim{Type: key, Value: value})
 			}
 			break

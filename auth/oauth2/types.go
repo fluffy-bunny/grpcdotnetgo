@@ -10,7 +10,6 @@ import (
 
 const (
 	CtxClaimsPrincipalKey = "ClaimsPrincipal"
-	CtxClaimsPermissions  = "ClaimsPermissions"
 )
 
 type OAuth2DiscoveryOptions struct {
@@ -41,8 +40,9 @@ type Claim struct {
 	Value string
 }
 type ClaimsPrincipal struct {
-	Token  jwxt.Token
-	Claims []Claim
+	Token   jwxt.Token
+	Claims  []Claim
+	FastMap map[string]map[string]bool
 }
 type OAuth2Context struct {
 	OAuth2Document *OAuth2Document
