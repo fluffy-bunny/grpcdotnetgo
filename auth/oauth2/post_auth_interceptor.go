@@ -4,13 +4,20 @@ import (
 	"context"
 
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
+	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/middleware/oidc"
 	services_logger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
+	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	"github.com/gogo/status"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 )
 
-func FinalAuthVerificationMiddleware(oauth2Context *OAuth2Context) grpc.UnaryServerInterceptor {
+func FinalAuthVerificationMiddleware(serviceProvider servicesServiceProvider.IServiceProvider) grpc.UnaryServerInterceptor {
+	configAccessor := middleware_oidc.GetOIDCConfigAccessorFromContainer(serviceProvider.GetContainer())
+	entryPointConfig := configAccessor.GetOIDCConfig().GetEntryPoints()
+	log.Info().Interface("entryPointConfig", entryPointConfig).Send()
+
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		requestContainer := middleware_dicontext.GetRequestContainer(ctx)
 		logger := services_logger.GetScopedLoggerFromContainer(requestContainer)
@@ -27,9 +34,9 @@ func FinalAuthVerificationMiddleware(oauth2Context *OAuth2Context) grpc.UnarySer
 		}
 
 		claimsPrincipal := data.(*ClaimsPrincipal)
-		elem, ok := oauth2Context.Config.FullMethodNameToClaims[info.FullMethod]
+		elem, ok := entryPointConfig[info.FullMethod]
 		if ok {
-			for _, v := range elem.AND {
+			for _, v := range elem.ClaimsConfig.AND {
 				p, ok := claimsPrincipal.FastMap[v.Type]
 				if !ok {
 					return permissionDeniedFunc()
@@ -40,9 +47,9 @@ func FinalAuthVerificationMiddleware(oauth2Context *OAuth2Context) grpc.UnarySer
 				}
 			}
 
-			if elem.OR != nil && len(elem.OR) > 0 {
+			if elem.ClaimsConfig.OR != nil && len(elem.ClaimsConfig.OR) > 0 {
 				var found bool = false
-				for _, v := range elem.OR {
+				for _, v := range elem.ClaimsConfig.OR {
 					p, ok := claimsPrincipal.FastMap[v.Type]
 					if !ok {
 						continue
