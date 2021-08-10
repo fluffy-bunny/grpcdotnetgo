@@ -4,7 +4,6 @@ go 1.16
 
 require (
 	github.com/bamzi/jobrunner v1.0.0
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210718210524-5997b6c20cc1
 	github.com/fluffy-bunny/sarulabsdi v0.1.12
@@ -13,6 +12,7 @@ require (
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
 	github.com/gogo/status v1.1.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.2.0
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0

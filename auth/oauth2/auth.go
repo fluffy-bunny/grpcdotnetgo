@@ -72,7 +72,7 @@ func buildAuthFunction(oauth2Context *OAuth2Context) func(ctx context.Context, f
 		validatedToken, err := oauth2Context.JWTValidator.ParseToken(ctx, token)
 
 		if err != nil {
-			log.Info().Str("token", token).Msg("could not validate")
+			log.Debug().Str("token", token).Msg("could not validate")
 			return ctx, nil // we don't reject here, that is done in a upcomming middleware.  It is looking for that claims principal
 			//	return nil, status.Errorf(codes.PermissionDenied, "permission denied")
 		} else {

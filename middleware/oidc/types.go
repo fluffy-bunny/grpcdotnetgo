@@ -7,7 +7,7 @@ import (
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/sirupsen/logrus"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
 type Claim struct {

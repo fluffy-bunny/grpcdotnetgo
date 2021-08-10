@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	jwtgoForm3Tech "github.com/form3tech-oss/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
 func getPemCert(JWKSResponse *JSONWebKeyResponse, token *jwtgoForm3Tech.Token) (string, error) {
