@@ -5,6 +5,7 @@ import (
 
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	exampleServices "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services"
+	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/config"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
@@ -40,6 +41,7 @@ func AddTransientService(builder *di.Builder) {
 		Unshared:         true,
 		Build: func(ctn di.Container) (interface{}, error) {
 			service := &Service{
+				config:          servicesConfig.GetConfigFromContainer(ctn),
 				ServiceProvider: servicesServiceProvider.GetSingletonServiceProviderFromContainer(ctn),
 			}
 			return service, nil
@@ -71,6 +73,7 @@ func AddTransientService2(builder *di.Builder) {
 		Unshared:         true,
 		Build: func(ctn di.Container) (interface{}, error) {
 			service := &Service2{
+				config:          servicesConfig.GetConfigFromContainer(ctn),
 				ServiceProvider: servicesServiceProvider.GetSingletonServiceProviderFromContainer(ctn),
 			}
 			return service, nil

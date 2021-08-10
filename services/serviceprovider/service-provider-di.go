@@ -4,14 +4,13 @@ import (
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
 // Define an object in the App scope.
 var diServiceNameIServiceProviderScoped = grpcdotnetgoutils.GenerateUnqueServiceName("IServiceProvider-Scoped")
 
-// GetDIServiceProviderFromContainer from the Container
+// GetScopedServiceProviderFromContainer from the Container
 func GetScopedServiceProviderFromContainer(ctn di.Container) IServiceProvider {
 	service := ctn.Get(diServiceNameIServiceProviderScoped).(IServiceProvider)
 	return service
@@ -53,7 +52,7 @@ func AddSingletonServiceProvider(builder *di.Builder) {
 		Scope: di.App,
 		Build: func(ctn di.Container) (interface{}, error) {
 			return &serviceProvider{
-				Logger:    &zerolog.Logger{},
+				Logger:    servicesLogger.GetSingletonLoggerFromContainer(ctn),
 				Container: ctn,
 			}, nil
 		},

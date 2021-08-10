@@ -12,7 +12,7 @@ import (
 // Define an object in the App scope.
 var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("IOauth2")
 
-// GetDIServiceProviderFromContainer from the Container
+// GetOauth2ServiceFromContainer from the Container
 func GetOauth2ServiceFromContainer(ctn di.Container) IOauth2 {
 	service := ctn.Get(diServiceName).(IOauth2)
 	return service

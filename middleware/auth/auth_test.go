@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/grpc-ecosystem/go-grpc-middleware/auth"
-	"github.com/grpc-ecosystem/go-grpc-middleware/testing"
+	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/go-grpc-middleware/auth"
+	grpc_testing "github.com/grpc-ecosystem/go-grpc-middleware/testing"
 	pb_testproto "github.com/grpc-ecosystem/go-grpc-middleware/testing/testproto"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/stretchr/testify/assert"
@@ -34,8 +34,8 @@ var (
 
 // TODO(mwitkow): Add auth from metadata client dialer, which requires TLS.
 
-func buildDummyAuthFunction(expectedScheme string, expectedToken string) func(ctx context.Context) (context.Context, error) {
-	return func(ctx context.Context) (context.Context, error) {
+func buildDummyAuthFunction(expectedScheme string, expectedToken string) func(ctx context.Context, fullMethodName string) (context.Context, error) {
+	return func(ctx context.Context, fullMethodName string) (context.Context, error) {
 		token, err := grpc_auth.AuthFromMD(ctx, expectedScheme)
 		if err != nil {
 			return nil, err
@@ -155,7 +155,7 @@ type authOverrideTestService struct {
 
 func (s *authOverrideTestService) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
 	assert.NotEmpty(s.T, fullMethodName, "method name of caller is passed around")
-	return buildDummyAuthFunction("bearer", overrideAuthToken)(ctx)
+	return buildDummyAuthFunction("bearer", overrideAuthToken)(ctx, fullMethodName)
 }
 
 func TestAuthOverrideTestSuite(t *testing.T) {

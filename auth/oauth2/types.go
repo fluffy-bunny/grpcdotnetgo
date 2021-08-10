@@ -10,7 +10,6 @@ import (
 
 const (
 	CtxClaimsPrincipalKey = "ClaimsPrincipal"
-	CtxClaimsPermissions  = "ClaimsPermissions"
 )
 
 type OAuth2DiscoveryOptions struct {
@@ -41,14 +40,19 @@ type Claim struct {
 	Value string
 }
 type ClaimsPrincipal struct {
-	Token  jwxt.Token
-	Claims []Claim
+	Token   jwxt.Token
+	Claims  []Claim
+	FastMap map[string]map[string]bool
 }
 type OAuth2Context struct {
 	OAuth2Document *OAuth2Document
 	JWTValidator   *JWTValidator
 	Scheme         string
 	Config         *GrpcFuncAuthConfig
+}
+type MethodClaims struct {
+	OR  []Claim
+	AND []Claim
 }
 type GrpcFuncAuthConfig struct {
 	Authority        string
@@ -63,14 +67,15 @@ type GrpcFuncAuthConfig struct {
 			{"a", "f"},
 		}
 	*/
-	FuncMapping map[string][]Claim
+
+	FullMethodNameToClaims map[string]MethodClaims
 }
 
 func NewGrpcFuncAuthConfig(authority string, expectedScheme string, clockSkewMinutes int) *GrpcFuncAuthConfig {
 	return &GrpcFuncAuthConfig{
-		Authority:        authority,
-		ExpectedScheme:   expectedScheme,
-		ClockSkewMinutes: clockSkewMinutes,
-		FuncMapping:      make(map[string][]Claim),
+		Authority:              authority,
+		ExpectedScheme:         expectedScheme,
+		ClockSkewMinutes:       clockSkewMinutes,
+		FullMethodNameToClaims: make(map[string]MethodClaims),
 	}
 }

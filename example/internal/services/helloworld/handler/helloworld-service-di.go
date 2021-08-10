@@ -4,6 +4,7 @@ import (
 	"reflect"
 
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
+	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/config"
 	"github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
@@ -25,6 +26,7 @@ func AddGreeterService(builder *di.Builder) {
 		Type:             reflect.TypeOf(&Service{}),
 		Build: func(ctn di.Container) (interface{}, error) {
 			return &Service{
+				config:          servicesConfig.GetConfigFromContainer(ctn),
 				ContextAccessor: contextaccessor.GetContextAccessorFromContainer(ctn),
 				ClaimsPrincipal: claimsprincipal.GetClaimsPrincipalFromContainer(ctn),
 				Logger:          servicesLogger.GetScopedLoggerFromContainer(ctn),
@@ -47,6 +49,7 @@ func AddGreeter2Service(builder *di.Builder) {
 		Type:             reflect.TypeOf(&Service2{}),
 		Build: func(ctn di.Container) (interface{}, error) {
 			return &Service2{
+				config:          servicesConfig.GetConfigFromContainer(ctn),
 				ContextAccessor: contextaccessor.GetContextAccessorFromContainer(ctn),
 				ClaimsPrincipal: claimsprincipal.GetClaimsPrincipalFromContainer(ctn),
 				Logger:          servicesLogger.GetScopedLoggerFromContainer(ctn),

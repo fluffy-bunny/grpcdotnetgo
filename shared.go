@@ -25,6 +25,17 @@ func GetContainer() di.Container {
 	return container
 }
 
+func NewEmptyDotNetGoBuilder() (*DotNetGoBuilder, error) {
+	builder, err := di.NewBuilder(di.App, di.Request, "transient")
+	if err != nil {
+		return nil, err
+	}
+	return &DotNetGoBuilder{
+		Builder: builder,
+	}, nil
+
+}
+
 func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 	builder, err := di.NewBuilder(di.App, di.Request, "transient")
 	if err != nil {

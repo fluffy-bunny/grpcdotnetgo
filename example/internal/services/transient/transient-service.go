@@ -1,6 +1,7 @@
 package transient
 
 import (
+	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 )
 
@@ -8,6 +9,7 @@ import (
 type Service struct {
 	ServiceProvider servicesServiceProvider.IServiceProvider
 	name            string
+	config          *internal.Config
 }
 
 // SetName ...
@@ -23,6 +25,7 @@ func (s *Service) GetName() string {
 type Service2 struct {
 	ServiceProvider servicesServiceProvider.IServiceProvider
 	name            string
+	config          *internal.Config
 }
 
 // SetName ...

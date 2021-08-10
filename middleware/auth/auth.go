@@ -6,6 +6,7 @@ package grpc_auth
 import (
 	"context"
 
+	di "github.com/fluffy-bunny/sarulabsdi"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"google.golang.org/grpc"
 )
@@ -24,6 +25,20 @@ import (
 type AuthFuncStream func(ctx context.Context, fullMethodName string) (context.Context, error)
 type AuthFuncUnary func(ctx context.Context, fullMethodName string) (context.Context, interface{}, error)
 
+type IAuthFuncAccessor interface {
+	GetAuthFuncStream() AuthFuncStream
+	GetAuthFuncUnary() AuthFuncUnary
+}
+
+var (
+	TypeIAuthFuncAccessor = di.GetInterfaceReflectType((*IAuthFuncAccessor)(nil))
+)
+
+// GetAuthFuncAccessorFromContainer from the Container
+func GetAuthFuncAccessorFromContainer(ctn di.Container) IAuthFuncAccessor {
+	return ctn.GetByType(TypeIAuthFuncAccessor).(IAuthFuncAccessor)
+}
+
 // ServiceAuthFuncOverride allows a given gRPC service implementation to override the global `AuthFunc`.
 //
 // If a service implements the AuthFuncOverride method, it takes precedence over the `AuthFunc` method,
@@ -34,7 +49,7 @@ type ServiceAuthFuncOverride interface {
 }
 
 // UnaryServerInterceptor returns a new unary server interceptors that performs per-request auth.
-func UnaryServerInterceptor(authFunc AuthFuncUnary) grpc.UnaryServerInterceptor {
+func UnaryServerInterceptor(authFuncAccessor IAuthFuncAccessor) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		var newCtx context.Context
 		var err error
@@ -45,6 +60,7 @@ func UnaryServerInterceptor(authFunc AuthFuncUnary) grpc.UnaryServerInterceptor 
 				return resp, err
 			}
 		} else {
+			authFunc := authFuncAccessor.GetAuthFuncUnary()
 			newCtx, resp, err = authFunc(ctx, info.FullMethod)
 			if resp != nil {
 				return resp, nil
@@ -58,13 +74,14 @@ func UnaryServerInterceptor(authFunc AuthFuncUnary) grpc.UnaryServerInterceptor 
 }
 
 // StreamServerInterceptor returns a new unary server interceptors that performs per-request auth.
-func StreamServerInterceptor(authFunc AuthFuncStream) grpc.StreamServerInterceptor {
+func StreamServerInterceptor(authFuncAccessor IAuthFuncAccessor) grpc.StreamServerInterceptor {
 	return func(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
 		var newCtx context.Context
 		var err error
 		if overrideSrv, ok := srv.(ServiceAuthFuncOverride); ok {
 			newCtx, err = overrideSrv.AuthFuncOverrideStream(stream.Context(), info.FullMethod)
 		} else {
+			authFunc := authFuncAccessor.GetAuthFuncStream()
 			newCtx, err = authFunc(stream.Context(), info.FullMethod)
 		}
 		if err != nil {

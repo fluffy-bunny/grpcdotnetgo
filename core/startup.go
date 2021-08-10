@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"path"
+	"strings"
 
 	"net"
 
@@ -11,6 +13,8 @@ import (
 	"github.com/fluffy-bunny/grpcdotnetgo"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/async"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
+	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/services/config"
+	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	"github.com/fluffy-bunny/grpcdotnetgo/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -31,30 +35,62 @@ APPLICATION_ENVIRONMENT: in-environment
 GRPC_PORT: 0000
 `)
 
-func loadCoreConfig() (*Config, error) {
-	v := viper.New()
-
+// ValidateConfigPath just makes sure, that the path provided is a file,
+// that can be read
+func ValidateConfigPath(configPath string) error {
+	s, err := os.Stat(configPath)
+	if err != nil {
+		return err
+	}
+	if s.IsDir() {
+		return fmt.Errorf("'%s' is a directory, not a normal file", configPath)
+	}
+	return nil
+}
+func loadConfig(configOptions *ConfigOptions) error {
+	v := viper.NewWithOptions(viper.KeyDelimiter("__"))
 	var err error
 	v.SetConfigType("yaml")
 	// Environment Variables override everything.
 	v.AutomaticEnv()
 
 	// 1. Read in as buffer to set a default baseline.
-	err = v.ReadConfig(bytes.NewBuffer(coreConfigBaseYaml))
+	err = v.ReadConfig(bytes.NewBuffer(configOptions.RootConfigYaml))
 	if err != nil {
 		log.Err(err).Msg("ConfigDefaultYaml did not read in")
-		return nil, err
+		return err
 	}
 
-	dst := Config{}
+	environment := os.Getenv("APPLICATION_ENVIRONMENT")
+
+	if len(environment) > 0 && len(configOptions.ConfigPath) != 0 {
+		v.AddConfigPath(configOptions.ConfigPath)
+
+		configFile := "appsettings." + coreConfig.Environment + ".yml"
+		configPath := path.Join(configOptions.ConfigPath, configFile)
+		err = ValidateConfigPath(configPath)
+		if err == nil {
+			v.SetConfigFile(configPath)
+			err = v.MergeInConfig()
+			if err != nil {
+				return err
+			}
+			log.Info().Str("configPath", configPath).Msg("Merging in config")
+		} else {
+			log.Info().Str("configPath", configPath).Msg("Config file not present")
+		}
+	}
+
 	// we need to do a viper Unmarshal because that is the only way we get the
 	// ENV variables to come in
-	err = v.Unmarshal(&dst)
+	err = v.Unmarshal(configOptions.Destination)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	// we do all settings here, becuase a v.AllSettings will NOT bring in the ENV variables
-	allSettings := structs.Map(dst)
+	structs.DefaultTagName = "mapstructure"
+	allSettings := structs.Map(configOptions.Destination)
+	changeAllKeysToLowerCase(allSettings)
 
 	// normal viper stuff
 	myViperEx, err := viperEx.New(allSettings, func(ve *viperEx.ViperEx) error {
@@ -62,19 +98,28 @@ func loadCoreConfig() (*Config, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, err
+		return err
 	}
 	myViperEx.UpdateFromEnv()
-	err = myViperEx.Unmarshal(&dst)
-	if err != nil {
-		return nil, err
-	}
-	return &dst, nil
-
+	err = myViperEx.Unmarshal(configOptions.Destination)
+	return err
 }
 
+func loadCoreConfig() (*Config, error) {
+	var err error
+	dst := Config{}
+	err = loadConfig(&ConfigOptions{
+		Destination:    &dst,
+		RootConfigYaml: coreConfigBaseYaml,
+	})
+	return &dst, err
+}
+
+var coreConfig *Config
+
 func Start(startup IStartup) {
-	coreConfig, err := loadCoreConfig()
+	var err error
+	coreConfig, err = loadCoreConfig()
 	if err != nil {
 		panic(err)
 	}
@@ -84,11 +129,20 @@ func Start(startup IStartup) {
 	if err != nil {
 		panic(err)
 	}
-	startup.Startup()
+
+	configOptions := startup.GetConfigOptions()
+	err = loadConfig(configOptions)
+	if err != nil {
+		panic(err)
+	}
+	// add the main config into the DI directly
+	servicesConfig.AddConfig(dotNetGoBuilder.Builder, configOptions.Destination)
+
 	startup.ConfigureServices(dotNetGoBuilder.Builder)
 	dotNetGoBuilder.Build()
 	unaryServerInterceptorBuilder := UnaryServerInterceptorBuilder{}
-	startup.Configure(grpcdotnetgo.GetContainer(), &unaryServerInterceptorBuilder)
+	serviceProvider := servicesServiceProvider.GetSingletonServiceProviderFromContainer(grpcdotnetgo.GetContainer())
+	startup.Configure(serviceProvider, &unaryServerInterceptorBuilder)
 
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
@@ -146,4 +200,25 @@ func asyncServeGRPC(grpcServer *grpc.Server, port int) async.Future {
 	}()
 	return promise.Future()
 
+}
+func changeAllKeysToLowerCase(m map[string]interface{}) {
+	var lcMap = make(map[string]interface{})
+	var currentKeys []string
+	for key, value := range m {
+		currentKeys = append(currentKeys, key)
+		lcMap[strings.ToLower(key)] = value
+	}
+	// delete original values
+	for _, k := range currentKeys {
+		delete(m, k)
+	}
+	// put the lowercase ones in the original map
+	for key, value := range lcMap {
+		m[key] = value
+		vMap, ok := value.(map[string]interface{})
+		if ok {
+			// if the current value is a map[string]interface{}, keep going
+			changeAllKeysToLowerCase(vMap)
+		}
+	}
 }

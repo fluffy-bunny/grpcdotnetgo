@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-import "grpcdotnetgo/proto/error/error.proto";
+//import "grpcdotnetgo/proto/error/error.proto";
 
 option go_package = "google.golang.org/grpc/examples/helloworld/helloworld";
 option java_multiple_files = true;
@@ -51,7 +51,7 @@ message HelloRequest {
 // The response message containing the greetings
 message HelloReply {
   string message = 1;
-  error.Error error = 999;
+  //error.Error error = 999;
 }
 
 message HelloReply2 {

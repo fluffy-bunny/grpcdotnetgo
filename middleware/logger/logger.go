@@ -9,6 +9,8 @@ package logger
 import (
 	"context"
 
+	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
+	services_logger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
@@ -25,7 +27,9 @@ func EnsureContextLoggingUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 // LoggingUnaryServerInterceptor returns a new unary server interceptors that performs request logging in JSON format
 func LoggingUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-		log.Debug().
+		requestContainer := middleware_dicontext.GetRequestContainer(ctx)
+		logger := services_logger.GetScopedLoggerFromContainer(requestContainer)
+		logger.Debug().
 			Interface("request", req).
 			Msg("Handling request")
 		return handler(ctx, req)
