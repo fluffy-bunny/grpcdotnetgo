@@ -3,20 +3,18 @@ module github.com/fluffy-bunny/grpcdotnetgo
 go 1.16
 
 require (
-	github.com/ahmetb/go-linq/v3 v3.2.0
 	github.com/bamzi/jobrunner v1.0.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/structs v1.1.0
-	github.com/fluffy-bunny/go-jwt-middleware v1.0.2-0.20210807195809-b69be5a94f26
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210718210524-5997b6c20cc1
 	github.com/fluffy-bunny/sarulabsdi v0.1.12
 	github.com/fluffy-bunny/viperEx v0.0.12
 	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
-	github.com/gin-gonic/gin v1.7.3
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
 	github.com/gogo/status v1.1.0
 	github.com/google/uuid v1.2.0
+	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/lestrrat-go/jwx v1.2.4
 	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7
@@ -24,6 +22,7 @@ require (
 	github.com/rs/xid v1.3.0
 	github.com/rs/zerolog v1.23.0
 	github.com/sirupsen/logrus v1.7.0
+	github.com/smartystreets/assertions v1.1.0 // indirect
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
@@ -34,7 +33,7 @@ require (
 
 )
 
-replace github.com/fluffy-bunny/go-jwt-middleware => ../go-jwt-middleware
+// replace github.com/fluffy-bunny/go-jwt-middleware => ../go-jwt-middleware
 
 //replace github.com/grpc-ecosystem/go-grpc-middleware => ../go-grpc-middleware
 
