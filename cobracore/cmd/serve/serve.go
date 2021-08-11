@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	grpcdotnetgocore "github.com/fluffy-bunny/grpcdotnetgo/core"
+
 	"github.com/spf13/cobra"
 )
 
@@ -104,18 +105,13 @@ var command = &cobra.Command{
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		env := os.Getenv("GRPC_PORT")
-		port, _ := strconv.ParseInt(env, 0, 64)
+		//		env := os.Getenv("GRPC_PORT")
+		//		port, _ := strconv.ParseInt(env, 0, 64)
 
-		appStartup.SetPort(int(port))
-		grpcdotnetgocore.Start(appStartup)
+		//	appStartup.SetPort(int(port))
+		grpcdotnetgocore.Start()
 
 	},
-}
-var appStartup grpcdotnetgocore.IStartup
-
-func SetStartup(startup grpcdotnetgocore.IStartup) {
-	appStartup = startup
 }
 
 var envsets []string

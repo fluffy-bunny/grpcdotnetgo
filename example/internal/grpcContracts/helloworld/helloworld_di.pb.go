@@ -46,9 +46,11 @@ type greeterServer struct {
 	UnimplementedGreeterServer
 }
 
-func RegisterGreeterServerDI(s grpc.ServiceRegistrar) {
+func RegisterGreeterServerDI(s grpc.ServiceRegistrar) interface{} {
 	// Register the server
-	RegisterGreeterServer(s, &greeterServer{})
+	var server = &greeterServer{}
+	RegisterGreeterServer(s, server)
+	return server
 }
 
 func (s *greeterServer) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error) {
@@ -85,9 +87,11 @@ type greeter2Server struct {
 	UnimplementedGreeter2Server
 }
 
-func RegisterGreeter2ServerDI(s grpc.ServiceRegistrar) {
+func RegisterGreeter2ServerDI(s grpc.ServiceRegistrar) interface{} {
 	// Register the server
-	RegisterGreeter2Server(s, &greeter2Server{})
+	var server = &greeter2Server{}
+	RegisterGreeter2Server(s, server)
+	return server
 }
 
 func (s *greeter2Server) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply2, error) {

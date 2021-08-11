@@ -1,4 +1,4 @@
-package core
+package types
 
 import (
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
@@ -9,22 +9,20 @@ import (
 type ICoreConfig interface {
 	GetPort() int
 }
-type ConfigOptions struct {
-	Destination    interface{}
-	RootConfigYaml []byte
-	ConfigPath     string
-}
+
 type IStartup interface {
 	GetConfigOptions() *ConfigOptions
 	ConfigureServices(builder *di.Builder)
 	Configure(
 		serviceProvider servicesServiceProvider.IServiceProvider,
-		unaryServerInterceptorBuilder *UnaryServerInterceptorBuilder)
+		unaryServerInterceptorBuilder IUnaryServerInterceptorBuilder)
 	GetPort() int
 	SetPort(port int)
-	RegisterGRPCEndpoints(server *grpc.Server)
+	RegisterGRPCEndpoints(server *grpc.Server) []interface{}
+	SetRootContainer(container di.Container)
 }
 
 type IUnaryServerInterceptorBuilder interface {
+	GetUnaryServerInterceptors() []grpc.UnaryServerInterceptor
 	Use(intercepter grpc.UnaryServerInterceptor)
 }

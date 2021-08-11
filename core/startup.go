@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 
 	"net"
@@ -12,6 +13,8 @@ import (
 	"github.com/fatih/structs"
 	"github.com/fluffy-bunny/grpcdotnetgo"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/async"
+	"github.com/fluffy-bunny/grpcdotnetgo/core/types"
+	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/plugin"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/services/config"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
@@ -47,7 +50,7 @@ func ValidateConfigPath(configPath string) error {
 	}
 	return nil
 }
-func loadConfig(configOptions *ConfigOptions) error {
+func loadConfig(configOptions *types.ConfigOptions) error {
 	v := viper.NewWithOptions(viper.KeyDelimiter("__"))
 	var err error
 	v.SetConfigType("yaml")
@@ -108,7 +111,7 @@ func loadConfig(configOptions *ConfigOptions) error {
 func loadCoreConfig() (*Config, error) {
 	var err error
 	dst := Config{}
-	err = loadConfig(&ConfigOptions{
+	err = loadConfig(&types.ConfigOptions{
 		Destination:    &dst,
 		RootConfigYaml: coreConfigBaseYaml,
 	})
@@ -117,49 +120,88 @@ func loadCoreConfig() (*Config, error) {
 
 var coreConfig *Config
 
-func Start(startup IStartup) {
+type ServerInstance struct {
+	Server          *grpc.Server
+	Future          async.Future
+	DotNetGoBuilder *grpcdotnetgo.DotNetGoBuilder
+	Endpoints       []interface{}
+}
+
+var serverInstances []*ServerInstance
+
+func GetServerInstances() []*ServerInstance {
+	return serverInstances
+}
+func Start() {
+
+	plugins := grpcdotnetgo_plugin.GetPlugins()
 	var err error
 	coreConfig, err = loadCoreConfig()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(coreConfig.Environment)
+	si := &ServerInstance{}
+
 	// Create a Builder with the default scopes (App, Request, SubRequest).
-	dotNetGoBuilder, err := grpcdotnetgo.NewDotNetGoBuilder()
+	si.DotNetGoBuilder, err = grpcdotnetgo.NewDotNetGoBuilder()
 	if err != nil {
 		panic(err)
 	}
+	si.DotNetGoBuilder.AddDefaultService()
 
+	var startup types.IStartup
+	for _, plugin := range plugins {
+		startup = plugin.GetStartup()
+		env := os.Getenv("GRPC_PORT")
+		port, _ := strconv.ParseInt(env, 0, 64)
+		startup.SetPort(int(port))
+
+	}
 	configOptions := startup.GetConfigOptions()
 	err = loadConfig(configOptions)
 	if err != nil {
 		panic(err)
 	}
 	// add the main config into the DI directly
-	servicesConfig.AddConfig(dotNetGoBuilder.Builder, configOptions.Destination)
+	servicesConfig.AddConfig(si.DotNetGoBuilder.Builder, configOptions.Destination)
 
-	startup.ConfigureServices(dotNetGoBuilder.Builder)
-	dotNetGoBuilder.Build()
-	unaryServerInterceptorBuilder := UnaryServerInterceptorBuilder{}
-	serviceProvider := servicesServiceProvider.GetSingletonServiceProviderFromContainer(grpcdotnetgo.GetContainer())
-	startup.Configure(serviceProvider, &unaryServerInterceptorBuilder)
+	startup.ConfigureServices(si.DotNetGoBuilder.Builder)
+	si.DotNetGoBuilder.Build()
+	rootContainer := si.DotNetGoBuilder.Container
+	startup.SetRootContainer(rootContainer)
+	unaryServerInterceptorBuilder := NewUnaryServerInterceptorBuilder()
+	serviceProvider := servicesServiceProvider.GetSingletonServiceProviderFromContainer(rootContainer)
+	startup.Configure(serviceProvider, unaryServerInterceptorBuilder)
 
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			unaryServerInterceptorBuilder.UnaryServerInterceptors...,
+			unaryServerInterceptorBuilder.GetUnaryServerInterceptors()...,
 		)),
 	)
-	startup.RegisterGRPCEndpoints(grpcServer)
-	servicesBackgroundTasks.GetBackgroundTasksFromContainer(grpcdotnetgo.GetContainer())
+	si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
+	servicesBackgroundTasks.GetBackgroundTasksFromContainer(rootContainer)
 
 	future := asyncServeGRPC(grpcServer, startup.GetPort())
+	si.Server = grpcServer
+	si.Future = future
+
+	serverInstances = append(serverInstances, si)
 
 	sig := utils.WaitSignal()
 	log.Info().Str("sig", sig.String()).Msg("Interupt triggered")
 
-	grpcServer.Stop()
-	grpcdotnetgo.GetContainer().DeleteWithSubContainers()
-	future.Get()
+	for _, v := range serverInstances {
+		// tell all grpc servers to stop
+		v.Server.Stop()
+		// tear down the DI Container
+		v.DotNetGoBuilder.Container.DeleteWithSubContainers()
+	}
+
+	// do a future wait
+	for _, v := range serverInstances {
+		v.Future.Get()
+	}
 
 }
 

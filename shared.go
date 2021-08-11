@@ -14,18 +14,12 @@ const (
 	SupportPackageIsVersion7 = true
 )
 
-// Container for our IoC
-var container di.Container
-
 type DotNetGoBuilder struct {
-	Builder *di.Builder
+	Builder   *di.Builder
+	Container di.Container
 }
 
-func GetContainer() di.Container {
-	return container
-}
-
-func NewEmptyDotNetGoBuilder() (*DotNetGoBuilder, error) {
+func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 	builder, err := di.NewBuilder(di.App, di.Request, "transient")
 	if err != nil {
 		return nil, err
@@ -36,11 +30,8 @@ func NewEmptyDotNetGoBuilder() (*DotNetGoBuilder, error) {
 
 }
 
-func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
-	builder, err := di.NewBuilder(di.App, di.Request, "transient")
-	if err != nil {
-		return nil, err
-	}
+func (dngbuilder *DotNetGoBuilder) AddDefaultService() {
+	builder := dngbuilder.Builder
 
 	claimsprincipal.AddClaimsPrincipal(builder)
 
@@ -53,13 +44,9 @@ func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 	servicesServiceProvider.AddSingletonServiceProvider(builder)
 
 	servicesBackgroundTasks.AddBackgroundTasks(builder)
-
-	return &DotNetGoBuilder{
-		Builder: builder,
-	}, nil
 }
 
 func (b *DotNetGoBuilder) Build() di.Container {
-	container = b.Builder.Build()
-	return container
+	b.Container = b.Builder.Build()
+	return b.Container
 }

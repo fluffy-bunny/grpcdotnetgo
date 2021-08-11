@@ -1,7 +1,6 @@
 package mockoidcservice
 
 import (
-	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
 	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 
@@ -12,10 +11,6 @@ import (
 
 var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("mockoidcservice")
 
-func GetMockOIDCService() interface{} {
-
-	return GetMockOIDCServiceFromContainer(grpcdotnetgo.GetContainer())
-}
 func GetMockOIDCServiceFromContainer(ctn di.Container) interface{} {
 	service := ctn.Get(diServiceName)
 	return service
