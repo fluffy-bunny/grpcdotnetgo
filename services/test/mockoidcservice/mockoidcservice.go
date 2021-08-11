@@ -1,14 +1,12 @@
 package mockoidcservice
 
 import (
-	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	"github.com/fluffy-bunny/mockoidc"
 	"github.com/rs/zerolog/log"
 )
 
 type service struct {
-	ServiceProvider servicesServiceProvider.IServiceProvider
-	MockOIDC        *mockoidc.MockOIDC
+	MockOIDC *mockoidc.MockOIDC
 }
 
 func (s *service) Run() {

@@ -16,7 +16,7 @@ import (
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/plugin"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/services/config"
-	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
+
 	"github.com/fluffy-bunny/grpcdotnetgo/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -163,9 +163,9 @@ func Start() {
 		si.DotNetGoBuilder.Build()
 		rootContainer := si.DotNetGoBuilder.Container
 		startup.SetRootContainer(rootContainer)
+
 		unaryServerInterceptorBuilder := NewUnaryServerInterceptorBuilder()
-		serviceProvider := servicesServiceProvider.GetSingletonServiceProviderFromContainer(rootContainer)
-		startup.Configure(serviceProvider, unaryServerInterceptorBuilder)
+		startup.Configure(unaryServerInterceptorBuilder)
 
 		grpcServer := grpc.NewServer(
 			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(

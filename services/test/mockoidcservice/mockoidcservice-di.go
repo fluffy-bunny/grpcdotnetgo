@@ -1,7 +1,6 @@
 package mockoidcservice
 
 import (
-	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
@@ -25,9 +24,7 @@ func AddMockOIDCService(builder *di.Builder) {
 		Name:  diServiceName,
 		Scope: di.App,
 		Build: func(ctn di.Container) (interface{}, error) {
-			obj := &service{
-				ServiceProvider: servicesServiceProvider.GetSingletonServiceProviderFromContainer(ctn),
-			}
+			obj := &service{}
 			obj.Run()
 			return obj, nil
 		},

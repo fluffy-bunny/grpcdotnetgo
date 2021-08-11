@@ -9,7 +9,6 @@ import (
 	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
-	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	"google.golang.org/grpc/codes"
 )
 
@@ -18,7 +17,6 @@ type Service struct {
 	ContextAccessor contextaccessor.IContextAccessor
 	ClaimsPrincipal claimsprincipal.IClaimsPrincipal
 	Logger          servicesLogger.ILogger
-	ServiceProvider servicesServiceProvider.IServiceProvider
 	config          *internal.Config
 }
 
@@ -46,7 +44,6 @@ type Service2 struct {
 	ContextAccessor contextaccessor.IContextAccessor
 	ClaimsPrincipal claimsprincipal.IClaimsPrincipal
 	Logger          servicesLogger.ILogger
-	ServiceProvider servicesServiceProvider.IServiceProvider
 	config          *internal.Config
 }
 

@@ -6,15 +6,16 @@ import (
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/middleware/oidc"
 	services_logger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
-	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
+	di "github.com/fluffy-bunny/sarulabsdi"
+
 	"github.com/gogo/status"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 )
 
-func FinalAuthVerificationMiddleware(serviceProvider servicesServiceProvider.IServiceProvider) grpc.UnaryServerInterceptor {
-	configAccessor := middleware_oidc.GetOIDCConfigAccessorFromContainer(serviceProvider.GetContainer())
+func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInterceptor {
+	configAccessor := middleware_oidc.GetOIDCConfigAccessorFromContainer(container)
 	entryPointConfig := configAccessor.GetOIDCConfig().GetEntryPoints()
 	log.Info().Interface("entryPointConfig", entryPointConfig).Send()
 

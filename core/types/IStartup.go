@@ -1,7 +1,6 @@
 package types
 
 import (
-	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"google.golang.org/grpc"
 )
@@ -13,9 +12,7 @@ type ICoreConfig interface {
 type IStartup interface {
 	GetConfigOptions() *ConfigOptions
 	ConfigureServices(builder *di.Builder)
-	Configure(
-		serviceProvider servicesServiceProvider.IServiceProvider,
-		unaryServerInterceptorBuilder IUnaryServerInterceptorBuilder)
+	Configure(unaryServerInterceptorBuilder IUnaryServerInterceptorBuilder)
 	GetPort() int
 
 	RegisterGRPCEndpoints(server *grpc.Server) []interface{}

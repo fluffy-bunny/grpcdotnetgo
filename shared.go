@@ -5,7 +5,6 @@ import (
 	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
-	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	_ "github.com/gogo/protobuf/gogoproto" // ensures that go mod vendor brings it down
 )
@@ -32,17 +31,10 @@ func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 
 func (dngbuilder *DotNetGoBuilder) AddDefaultService() {
 	builder := dngbuilder.Builder
-
 	claimsprincipal.AddClaimsPrincipal(builder)
-
 	contextaccessor.AddContextAccessor(builder)
-
 	servicesLogger.AddScopedLogger(builder)
 	servicesLogger.AddSingletonLogger(builder)
-
-	servicesServiceProvider.AddScopedServiceProvider(builder)
-	servicesServiceProvider.AddSingletonServiceProvider(builder)
-
 	servicesBackgroundTasks.AddBackgroundTasks(builder)
 }
 

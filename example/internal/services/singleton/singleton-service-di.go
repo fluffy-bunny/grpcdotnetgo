@@ -2,7 +2,6 @@ package singleton
 
 import (
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/config"
-	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
@@ -26,8 +25,7 @@ func AddSingletonService(builder *di.Builder) {
 		Scope: di.App,
 		Build: func(ctn di.Container) (interface{}, error) {
 			return &service{
-				config:          servicesConfig.GetConfigFromContainer(ctn),
-				ServiceProvider: servicesServiceProvider.GetSingletonServiceProviderFromContainer(ctn),
+				config: servicesConfig.GetConfigFromContainer(ctn),
 			}, nil
 		},
 	})

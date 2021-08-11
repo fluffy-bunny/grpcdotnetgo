@@ -19,7 +19,6 @@ import (
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/middleware/oidc"
 	middleware_grpc_recovery "github.com/fluffy-bunny/grpcdotnetgo/middleware/recovery"
 	grpcDIProtoError "github.com/fluffy-bunny/grpcdotnetgo/proto/error"
-	servicesServiceProvider "github.com/fluffy-bunny/grpcdotnetgo/services/serviceprovider"
 	mockoidcservice "github.com/fluffy-bunny/grpcdotnetgo/services/test/mockoidcservice"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -105,9 +104,7 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 	//	services_oidc.AddOIDCAuthHandler(builder)
 
 }
-func (s *Startup) Configure(
-	serviceProvider servicesServiceProvider.IServiceProvider,
-	unaryServerInterceptorBuilder grpcdotnetgo_core_types.IUnaryServerInterceptorBuilder) {
+func (s *Startup) Configure(unaryServerInterceptorBuilder grpcdotnetgo_core_types.IUnaryServerInterceptorBuilder) {
 
 	// this is how  you get your config before you register your services
 	config := s.ConfigOptions.Destination.(*internal.Config)
@@ -157,7 +154,7 @@ func (s *Startup) Configure(
 	//	unaryServerInterceptorBuilder.Use(middleware_grpc_auth.UnaryServerInterceptor(authHandler))
 
 	unaryServerInterceptorBuilder.Use(oauth2.OAuth2UnaryServerInterceptor(oidcContext))
-	unaryServerInterceptorBuilder.Use(oauth2.FinalAuthVerificationMiddleware(serviceProvider))
+	unaryServerInterceptorBuilder.Use(oauth2.FinalAuthVerificationMiddleware(s.RootContainer))
 
 	unaryServerInterceptorBuilder.Use(middleware_grpc_recovery.UnaryServerInterceptor(recoveryOpts...))
 
