@@ -138,50 +138,49 @@ func Start() {
 		panic(err)
 	}
 	fmt.Println(coreConfig.Environment)
-	si := &ServerInstance{}
 
-	// Create a Builder with the default scopes (App, Request, SubRequest).
-	si.DotNetGoBuilder, err = grpcdotnetgo.NewDotNetGoBuilder()
-	if err != nil {
-		panic(err)
-	}
-	si.DotNetGoBuilder.AddDefaultService()
-
-	var startup types.IStartup
 	for _, plugin := range plugins {
-		startup = plugin.GetStartup()
+		si := &ServerInstance{}
 
+		// Create a Builder with the default scopes (App, Request, SubRequest).
+		si.DotNetGoBuilder, err = grpcdotnetgo.NewDotNetGoBuilder()
+		if err != nil {
+			panic(err)
+		}
+		si.DotNetGoBuilder.AddDefaultService()
+
+		startup := plugin.GetStartup()
+
+		configOptions := startup.GetConfigOptions()
+		err = loadConfig(configOptions)
+		if err != nil {
+			panic(err)
+		}
+		// add the main config into the DI directly
+		servicesConfig.AddConfig(si.DotNetGoBuilder.Builder, configOptions.Destination)
+
+		startup.ConfigureServices(si.DotNetGoBuilder.Builder)
+		si.DotNetGoBuilder.Build()
+		rootContainer := si.DotNetGoBuilder.Container
+		startup.SetRootContainer(rootContainer)
+		unaryServerInterceptorBuilder := NewUnaryServerInterceptorBuilder()
+		serviceProvider := servicesServiceProvider.GetSingletonServiceProviderFromContainer(rootContainer)
+		startup.Configure(serviceProvider, unaryServerInterceptorBuilder)
+
+		grpcServer := grpc.NewServer(
+			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+				unaryServerInterceptorBuilder.GetUnaryServerInterceptors()...,
+			)),
+		)
+		si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
+		servicesBackgroundTasks.GetBackgroundTasksFromContainer(rootContainer)
+
+		future := asyncServeGRPC(grpcServer, startup.GetPort())
+		si.Server = grpcServer
+		si.Future = future
+
+		serverInstances = append(serverInstances, si)
 	}
-	configOptions := startup.GetConfigOptions()
-	err = loadConfig(configOptions)
-	if err != nil {
-		panic(err)
-	}
-	// add the main config into the DI directly
-	servicesConfig.AddConfig(si.DotNetGoBuilder.Builder, configOptions.Destination)
-
-	startup.ConfigureServices(si.DotNetGoBuilder.Builder)
-	si.DotNetGoBuilder.Build()
-	rootContainer := si.DotNetGoBuilder.Container
-	startup.SetRootContainer(rootContainer)
-	unaryServerInterceptorBuilder := NewUnaryServerInterceptorBuilder()
-	serviceProvider := servicesServiceProvider.GetSingletonServiceProviderFromContainer(rootContainer)
-	startup.Configure(serviceProvider, unaryServerInterceptorBuilder)
-
-	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			unaryServerInterceptorBuilder.GetUnaryServerInterceptors()...,
-		)),
-	)
-	si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
-	servicesBackgroundTasks.GetBackgroundTasksFromContainer(rootContainer)
-
-	future := asyncServeGRPC(grpcServer, startup.GetPort())
-	si.Server = grpcServer
-	si.Future = future
-
-	serverInstances = append(serverInstances, si)
-
 	sig := utils.WaitSignal()
 	log.Info().Str("sig", sig.String()).Msg("Interupt triggered")
 
