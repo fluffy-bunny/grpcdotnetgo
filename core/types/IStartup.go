@@ -17,7 +17,7 @@ type IStartup interface {
 		serviceProvider servicesServiceProvider.IServiceProvider,
 		unaryServerInterceptorBuilder IUnaryServerInterceptorBuilder)
 	GetPort() int
-	SetPort(port int)
+
 	RegisterGRPCEndpoints(server *grpc.Server) []interface{}
 	SetRootContainer(container di.Container)
 }

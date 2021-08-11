@@ -30,7 +30,6 @@ The frawework relies on the following environment variables, which can be overri
 NAME | Value Type | Usage |
 ------ | ------ | ------
 APPLICATION_ENVIRONMENT   | String | typeically used to load configs Appsettings.{APPLICATION_ENVIRONMENT}.yml |
-GRPC_PORT   | Int | i.e. 5015 |
 
 ### CLI Override 
 All environment variables can be override by the following cli argument and can be added multiple times.

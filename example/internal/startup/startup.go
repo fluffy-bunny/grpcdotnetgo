@@ -64,15 +64,14 @@ func (s *Startup) ctor() {
 func (s *Startup) GetConfigOptions() *grpcdotnetgo_core_types.ConfigOptions {
 	return s.ConfigOptions
 }
-func (s *Startup) SetPort(port int) {
-	s.port = port
-}
+
 func (s *Startup) SetRootContainer(container di.Container) {
 	s.RootContainer = container
 }
 
 func (s *Startup) GetPort() int {
-	return s.port
+	config := s.ConfigOptions.Destination.(*internal.Config)
+	return config.Example.GRPCPort
 }
 func (s *Startup) ConfigureServices(builder *di.Builder) {
 	// this is how  you get your config before you register your services
@@ -80,12 +79,12 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 
 	var mm = make(map[string]middleware_oidc.EntryPointConfig)
 
-	for k, v := range config.OIDCConfig.EntryPoints {
+	for k, v := range config.Example.OIDCConfig.EntryPoints {
 		mm[k] = v
 	}
 	for k, v := range mm {
-		delete(config.OIDCConfig.EntryPoints, k)
-		config.OIDCConfig.EntryPoints[v.FullMethodName] = v
+		delete(config.Example.OIDCConfig.EntryPoints, k)
+		config.Example.OIDCConfig.EntryPoints[v.FullMethodName] = v
 	}
 	handlerGreeterService.AddGreeterService(builder)
 	handlerGreeterService.AddGreeter2Service(builder)
@@ -93,7 +92,7 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 	singletonService.AddSingletonService(builder)
 
 	transientService.AddTransientService(builder)
-	if config.EnableTransient2 {
+	if config.Example.EnableTransient2 {
 		transientService.AddTransientService2(builder)
 	}
 
@@ -114,9 +113,9 @@ func (s *Startup) Configure(
 	// this is how  you get your config before you register your services
 	config := s.ConfigOptions.Destination.(*internal.Config)
 
-	grpcFuncAuthConfig := oauth2.NewGrpcFuncAuthConfig(config.OIDCConfig.Authority,
+	grpcFuncAuthConfig := oauth2.NewGrpcFuncAuthConfig(config.Example.OIDCConfig.Authority,
 		"bearer", 5)
-	for _, v := range config.OIDCConfig.EntryPoints {
+	for _, v := range config.Example.OIDCConfig.EntryPoints {
 
 		methodClaims := oauth2.MethodClaims{
 			OR:  []oauth2.Claim{},

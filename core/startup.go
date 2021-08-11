@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"strconv"
 	"strings"
 
 	"net"
@@ -29,13 +28,11 @@ import (
 
 type Config struct {
 	Environment string `mapstructure:"APPLICATION_ENVIRONMENT"`
-	GRPCPort    int    `mapstructure:"GRPC_PORT"`
 }
 
 // ConfigDefaultYaml default yaml
 var coreConfigBaseYaml = []byte(`
 APPLICATION_ENVIRONMENT: in-environment
-GRPC_PORT: 0000
 `)
 
 // ValidateConfigPath just makes sure, that the path provided is a file,
@@ -153,9 +150,6 @@ func Start() {
 	var startup types.IStartup
 	for _, plugin := range plugins {
 		startup = plugin.GetStartup()
-		env := os.Getenv("GRPC_PORT")
-		port, _ := strconv.ParseInt(env, 0, 64)
-		startup.SetPort(int(port))
 
 	}
 	configOptions := startup.GetConfigOptions()

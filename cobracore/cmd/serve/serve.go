@@ -33,10 +33,6 @@ var wellKnownEnvDefinitions = []EnvDefinition{
 		Type: String,
 		Name: "APPLICATION_ENVIRONMENT",
 	},
-	{
-		Type: Int,
-		Name: "GRPC_PORT",
-	},
 }
 
 func setAdditionalEnvDefs(additional ...EnvDefinition) {
@@ -105,12 +101,7 @@ var command = &cobra.Command{
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		//		env := os.Getenv("GRPC_PORT")
-		//		port, _ := strconv.ParseInt(env, 0, 64)
-
-		//	appStartup.SetPort(int(port))
 		grpcdotnetgocore.Start()
-
 	},
 }
 
