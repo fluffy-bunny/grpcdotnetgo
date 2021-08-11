@@ -41,16 +41,15 @@ func getConfigPath() string {
 }
 
 type Startup struct {
-	port            int
 	MockOIDCService interface{}
 	ConfigOptions   *grpcdotnetgo_core_types.ConfigOptions
 	RootContainer   di.Container
 }
 
 func NewStartup() grpcdotnetgo_core_types.IStartup {
-	obj := &Startup{}
-	obj.ctor()
-	return obj
+	startup := &Startup{}
+	startup.ctor()
+	return startup
 }
 
 func (s *Startup) ctor() {
