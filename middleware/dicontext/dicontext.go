@@ -3,65 +3,16 @@ package dicontext
 import (
 	"context"
 
-	grpcdotnetgo_core "github.com/fluffy-bunny/grpcdotnetgo/core"
-	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
-	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/google/uuid"
-	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
 )
 
-const ctxRequestContainer = "ctx-request-container"
+const ctxRequestContainer string = "ctx-request-container"
 
 func GetRequestContainer(ctx context.Context) di.Container {
 	requestContainer := ctx.Value(ctxRequestContainer).(di.Container)
 	return requestContainer
 }
-func setRequestContainer(ctx context.Context, requestContainer di.Container) context.Context {
+func SetRequestContainer(ctx context.Context, requestContainer di.Container) context.Context {
 	ctx = context.WithValue(ctx, ctxRequestContainer, requestContainer)
 	return ctx
-}
-
-// UnaryServerInterceptor returns a new unary server interceptors that performs request rate limiting.
-func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
-	var serverInstances []*grpcdotnetgo_core.ServerInstance
-	var endpointToServerInstance = make(map[interface{}]*grpcdotnetgo_core.ServerInstance)
-	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-
-		if serverInstances == nil {
-			serverInstances = grpcdotnetgo_core.GetServerInstances()
-			log.Info().Interface("serverInstances", serverInstances).Msg("DIContext Middleware")
-			for _, v := range serverInstances {
-				for _, e := range v.Endpoints {
-					endpointToServerInstance[e] = v
-				}
-			}
-
-		}
-		var rootContainer di.Container
-		d, ok := endpointToServerInstance[info.Server]
-		if ok {
-			rootContainer = d.DotNetGoBuilder.Container
-		}
-		// Create a request and delete it once it has been handled.
-		// Deleting the request will close the connection.
-		requestContainer, _ := rootContainer.SubContainer()
-		defer requestContainer.Delete()
-
-		ctx = setRequestContainer(ctx, requestContainer)
-
-		contextaccessor := contextaccessor.GetInternalGetContextAccessorFromContainer(requestContainer)
-		contextaccessor.SetContext(ctx)
-
-		// get a fresh ClaimsPrincipal from the request container and populate it with uuid data
-
-		claimsPrincipal := claimsprincipal.GetClaimsPrincipalFromContainer(requestContainer)
-		claimsPrincipal.AddClaim(claimsprincipal.Claim{
-			Type:  "d",
-			Value: uuid.New().String(),
-		})
-
-		return handler(ctx, req)
-	}
 }

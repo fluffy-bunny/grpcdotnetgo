@@ -14,7 +14,7 @@ import (
 	handlerGreeterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/helloworld/handler"
 	singletonService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
-	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
+	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext/middleware"
 	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/middleware/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/middleware/oidc"
 	middleware_grpc_recovery "github.com/fluffy-bunny/grpcdotnetgo/middleware/recovery"
