@@ -199,10 +199,7 @@ func Start() {
 }
 
 func asyncServeGRPC(grpcServer *grpc.Server, port int) async.Future {
-
-	promise := async.NewPromise()
-
-	go func() {
+	return grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise) {
 		var err error
 		log.Info().Msg("gRPC Server Starting up")
 
@@ -217,11 +214,6 @@ func asyncServeGRPC(grpcServer *grpc.Server, port int) async.Future {
 			}
 		}()
 
-		defer promise.Success(&grpcdotnetgoasync.AsyncResponse{
-			Message: "End Serve - grpc Server",
-			Error:   err,
-		})
-
 		lis, err := net.Listen("tcp", fmt.Sprintf(":%v", port))
 		if err != nil {
 			return
@@ -231,11 +223,9 @@ func asyncServeGRPC(grpcServer *grpc.Server, port int) async.Future {
 			return
 		}
 		log.Info().Msg("grpc Server has shut down....")
-
-	}()
-	return promise.Future()
-
+	})
 }
+
 func changeAllKeysToLowerCase(m map[string]interface{}) {
 	var lcMap = make(map[string]interface{})
 	var currentKeys []string
