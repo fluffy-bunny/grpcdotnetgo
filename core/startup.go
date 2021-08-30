@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"strings"
 
 	"net"
 
@@ -90,7 +89,6 @@ func loadConfig(configOptions *types.ConfigOptions) error {
 	// we do all settings here, becuase a v.AllSettings will NOT bring in the ENV variables
 	structs.DefaultTagName = "mapstructure"
 	allSettings := structs.Map(configOptions.Destination)
-	changeAllKeysToLowerCase(allSettings)
 
 	// normal viper stuff
 	myViperEx, err := viperEx.New(allSettings, func(ve *viperEx.ViperEx) error {
@@ -224,26 +222,4 @@ func asyncServeGRPC(grpcServer *grpc.Server, port int) async.Future {
 		}
 		log.Info().Msg("grpc Server has shut down....")
 	})
-}
-
-func changeAllKeysToLowerCase(m map[string]interface{}) {
-	var lcMap = make(map[string]interface{})
-	var currentKeys []string
-	for key, value := range m {
-		currentKeys = append(currentKeys, key)
-		lcMap[strings.ToLower(key)] = value
-	}
-	// delete original values
-	for _, k := range currentKeys {
-		delete(m, k)
-	}
-	// put the lowercase ones in the original map
-	for key, value := range lcMap {
-		m[key] = value
-		vMap, ok := value.(map[string]interface{})
-		if ok {
-			// if the current value is a map[string]interface{}, keep going
-			changeAllKeysToLowerCase(vMap)
-		}
-	}
 }
