@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/fluffy-bunny/grpcdotnetgo/core/types"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
 	"google.golang.org/grpc"
 )
 

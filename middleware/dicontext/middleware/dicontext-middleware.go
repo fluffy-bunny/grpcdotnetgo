@@ -3,8 +3,8 @@ package dicontext
 import (
 	"context"
 
-	grpcdotnetgo_core "github.com/fluffy-bunny/grpcdotnetgo/core"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
+	grpcdotnetgo_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/core"
 	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	di "github.com/fluffy-bunny/sarulabsdi"

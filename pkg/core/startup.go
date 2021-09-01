@@ -10,8 +10,8 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/fluffy-bunny/grpcdotnetgo"
-	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/async"
-	"github.com/fluffy-bunny/grpcdotnetgo/core/types"
+	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/plugin"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/services/config"

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	grpcdotnetgocore "github.com/fluffy-bunny/grpcdotnetgo/core"
+	grpcdotnetgocore "github.com/fluffy-bunny/grpcdotnetgo/pkg/core"
 
 	"github.com/spf13/cobra"
 )

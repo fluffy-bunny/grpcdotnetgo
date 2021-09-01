@@ -1,7 +1,7 @@
 package types
 
 import (
-	grpcdotnetgo_core_types "github.com/fluffy-bunny/grpcdotnetgo/core/types"
+	grpcdotnetgo_core_types "github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
 )
 
 type IGRPCDotNetGoPlugin interface {
