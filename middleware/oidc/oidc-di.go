@@ -3,7 +3,7 @@ package oidc
 import (
 	"reflect"
 
-	grpcdotnetgodi "github.com/fluffy-bunny/grpcdotnetgo/di"
+	grpcdotnetgodi "github.com/fluffy-bunny/grpcdotnetgo/pkg/di"
 	di "github.com/fluffy-bunny/sarulabsdi"
 )
 
