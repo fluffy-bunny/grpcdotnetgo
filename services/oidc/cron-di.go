@@ -3,7 +3,7 @@ package oidc
 import (
 	"reflect"
 
-	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/middleware/oidc"
+	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"

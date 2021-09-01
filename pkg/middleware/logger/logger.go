@@ -9,7 +9,7 @@ package logger
 import (
 	"context"
 
-	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
+	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	services_logger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"

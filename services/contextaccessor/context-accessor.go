@@ -3,7 +3,7 @@ package contextaccessor
 import (
 	"context"
 
-	"github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	di "github.com/fluffy-bunny/sarulabsdi"
 )
 

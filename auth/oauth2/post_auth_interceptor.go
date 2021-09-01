@@ -3,8 +3,8 @@ package oauth2
 import (
 	"context"
 
-	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
-	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/middleware/oidc"
+	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
+	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	services_logger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 
