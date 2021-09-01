@@ -16,7 +16,7 @@ import (
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/services/config"
 
-	"github.com/fluffy-bunny/grpcdotnetgo/utils"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/reugn/async"

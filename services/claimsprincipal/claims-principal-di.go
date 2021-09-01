@@ -1,7 +1,7 @@
 package claimsprincipal
 
 import (
-	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/utils"
+	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
