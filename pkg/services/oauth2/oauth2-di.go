@@ -1,9 +1,9 @@
 package oauth2
 
 import (
+	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
+	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
-	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 
 	"github.com/rs/zerolog/log"

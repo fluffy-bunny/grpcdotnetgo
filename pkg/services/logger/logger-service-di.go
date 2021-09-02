@@ -1,8 +1,8 @@
 package logger
 
 import (
+	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
-	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

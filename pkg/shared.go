@@ -1,10 +1,10 @@
-package grpcdotnetgo
+package pkg
 
 import (
-	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
-	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
-	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
+	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
+	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
+	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
+	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	_ "github.com/gogo/protobuf/gogoproto" // ensures that go mod vendor brings it down
 )

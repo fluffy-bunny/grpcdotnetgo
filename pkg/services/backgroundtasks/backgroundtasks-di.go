@@ -4,7 +4,7 @@ import (
 	"reflect"
 
 	"github.com/bamzi/jobrunner"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
+	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )

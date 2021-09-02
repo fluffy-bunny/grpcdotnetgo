@@ -5,8 +5,8 @@ import (
 
 	grpcdotnetgo_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/core"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
-	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
-	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
+	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
+	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"

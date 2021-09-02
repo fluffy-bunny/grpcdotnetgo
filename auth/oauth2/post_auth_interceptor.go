@@ -5,7 +5,7 @@ import (
 
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
-	services_logger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
+	services_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 
 	"github.com/gogo/status"

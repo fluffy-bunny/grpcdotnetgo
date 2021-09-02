@@ -3,7 +3,7 @@ package welcome
 import (
 	"reflect"
 
-	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
+	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"

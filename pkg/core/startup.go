@@ -9,12 +9,12 @@ import (
 	"net"
 
 	"github.com/fatih/structs"
-	"github.com/fluffy-bunny/grpcdotnetgo"
+	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
+	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
+	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/plugin"
-	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
-	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/services/config"
 
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/fluffy-bunny/viperEx"

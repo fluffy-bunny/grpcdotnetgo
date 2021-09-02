@@ -3,7 +3,7 @@ package welcome
 import (
 	"time"
 
-	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
+	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
 	"github.com/rs/zerolog/log"
 )

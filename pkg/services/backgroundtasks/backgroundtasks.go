@@ -3,7 +3,7 @@ package backgroundtasks
 import (
 	"time"
 
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
+	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/robfig/cron/v3"
 )
