@@ -70,16 +70,16 @@ func buildAuthFunction(oauth2Context *OAuth2Context) func(ctx context.Context, f
 			return ctx, nil
 		}
 		validatedToken, err := oauth2Context.JWTValidator.ParseToken(ctx, token)
-
+		var newCtx context.Context
 		if err != nil {
-			log.Debug().Str("token", token).Msg("could not validate")
-			return ctx, nil // we don't reject here, that is done in a upcomming middleware.  It is looking for that claims principal
-			//	return nil, status.Errorf(codes.PermissionDenied, "permission denied")
+			log.Debug().Str("token", token).Msg("could not validate, returning empty claims principal")
+			// make an empty one
+			validatedToken = oauth2Context.JWTValidator.NewEmptyClaimsPrincipal()
 		} else {
 			log.Debug().Str("subject", validatedToken.Token.Subject()).Msg("Validated user")
 		}
 
-		newCtx := context.WithValue(ctx, CtxClaimsPrincipalKey, validatedToken)
+		newCtx = context.WithValue(ctx, CtxClaimsPrincipalKey, validatedToken)
 
 		return newCtx, nil
 	}

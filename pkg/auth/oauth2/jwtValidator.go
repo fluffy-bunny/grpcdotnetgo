@@ -27,6 +27,10 @@ func NewJWTValidator(options *JWTValidatorOptions) *JWTValidator {
 		Options: options,
 	}
 }
+
+func (jwtValidator *JWTValidator) NewEmptyClaimsPrincipal() *ClaimsPrincipal {
+	return &ClaimsPrincipal{}
+}
 func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken string) (*ClaimsPrincipal, error) {
 	var validationOpts []jwxt.ValidateOption
 	// Parse the JWT
