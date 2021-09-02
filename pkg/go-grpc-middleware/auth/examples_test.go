@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/go-grpc-middleware/auth"
+	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/pkg/go-grpc-middleware/auth"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	pb "github.com/grpc-ecosystem/go-grpc-middleware/testing/testproto"
 )

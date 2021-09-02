@@ -3,7 +3,7 @@ package oauth2
 import (
 	"context"
 
-	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/go-grpc-middleware/auth"
+	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/pkg/go-grpc-middleware/auth"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )

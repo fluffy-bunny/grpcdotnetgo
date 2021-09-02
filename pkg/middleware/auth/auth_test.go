@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/go-grpc-middleware/auth"
+	grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/pkg/go-grpc-middleware/auth"
 	grpc_testing "github.com/grpc-ecosystem/go-grpc-middleware/testing"
 	pb_testproto "github.com/grpc-ecosystem/go-grpc-middleware/testing/testproto"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
