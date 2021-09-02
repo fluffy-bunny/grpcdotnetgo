@@ -5,10 +5,10 @@ import (
 
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
-	grpcError "github.com/fluffy-bunny/grpcdotnetgo/grpc/error"
-	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
-	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
+	grpcError "github.com/fluffy-bunny/grpcdotnetgo/pkg/grpc/error"
+	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
+	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
+	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	"google.golang.org/grpc/codes"
 )
 

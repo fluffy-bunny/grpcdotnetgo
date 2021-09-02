@@ -10,7 +10,7 @@ import (
 
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
-	_ "github.com/fluffy-bunny/grpcdotnetgo/proto/error"
+	_ "github.com/fluffy-bunny/grpcdotnetgo/pkg/proto/error"
 	"github.com/gogo/googleapis/google/rpc"
 	"github.com/gogo/status"
 	"github.com/rs/zerolog/log"

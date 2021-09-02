@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/services/backgroundtasks"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
+	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
+	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	"github.com/rs/zerolog/log"
 )
 

@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
-	servicesGrpcDotNetGoConfig "github.com/fluffy-bunny/grpcdotnetgo/services/config"
+	servicesGrpcDotNetGoConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
 	di "github.com/fluffy-bunny/sarulabsdi"
 )
 
