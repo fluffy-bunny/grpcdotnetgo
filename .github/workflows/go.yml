@@ -5,6 +5,7 @@ on:
     branches: [ '**' ]
     paths-ignore:
       - 'README.md'
+      - 'example/README.md'
       - 'docs/**'
       - '.github/dependabot.yml'
   pull_request:
