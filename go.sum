@@ -77,7 +77,6 @@ github.com/decred/dcrd/chaincfg/chainhash v1.0.2/go.mod h1:BpbrGgrPTr3YJYRN3Bm+D
 github.com/decred/dcrd/crypto/blake256 v1.0.0/go.mod h1:sQl2p6Y26YV+ZOcSTP6thNdn47hh8kt6rqSlvmrXFAc=
 github.com/decred/dcrd/dcrec/secp256k1/v3 v3.0.0 h1:sgNeV1VRMDzs6rzyPpxyM0jp317hnwiq58Filgag2xw=
 github.com/decred/dcrd/dcrec/secp256k1/v3 v3.0.0/go.mod h1:J70FGZSbzsjecRTiTzER+3f1KZLNaXkuv+yeFTKoxM8=
-github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumCAMpl/TFQ4/5kLM=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8PWV+bWy6jNmig1y/TA+kYO4g3RSRF0IAv0no=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
@@ -90,8 +89,8 @@ github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
 github.com/fatih/structs v1.1.0 h1:Q7juDM0QtcnhCpeyLGQKyg4TOIghuNXrkL32pHAUMxo=
 github.com/fatih/structs v1.1.0/go.mod h1:9NiDSp5zOcgEDl+j00MP/WkGVPOlPRLejGD8Ga6PJ7M=
-github.com/fluffy-bunny/mockoidc v0.0.0-20210718210524-5997b6c20cc1 h1:Sl4/6PcGD3dKPyMMoVMQc2g2ckdY3xbZ+k5Hokb0fxc=
-github.com/fluffy-bunny/mockoidc v0.0.0-20210718210524-5997b6c20cc1/go.mod h1:j47cuVhme/Jz2QGhs7DGxyi0JxLVJQuOpWRtxUjN2Qw=
+github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422 h1:YX0YIKuY6YVqBNGZsp9ucKPOuDSPFjurYhtu4jyGyio=
+github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422/go.mod h1:kQoL+ILrIYTARa/bTroJeI+AHfQgvJSBE7huNBoRwms=
 github.com/fluffy-bunny/sarulabsdi v0.1.12 h1:c8CDjTqD9eZWs+Yp4Q36dYEk1T19SURB7NsJD04bCu8=
 github.com/fluffy-bunny/sarulabsdi v0.1.12/go.mod h1:Fv7Ce67PYl9D7UR5OUX1ccwDfX/8VUP3SaTu0IpT4W8=
 github.com/fluffy-bunny/viperEx v0.0.17 h1:LxrUOZlEcax2sCnFL/KxNfvZYiQ7D373K7oOjXx9LJI=

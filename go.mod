@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/bamzi/jobrunner v1.0.0
 	github.com/fatih/structs v1.1.0
-	github.com/fluffy-bunny/mockoidc v0.0.0-20210718210524-5997b6c20cc1
+	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
 	github.com/fluffy-bunny/sarulabsdi v0.1.12
 	github.com/fluffy-bunny/viperEx v0.0.17
 	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
@@ -37,7 +37,6 @@ require (
 	cloud.google.com/go v0.81.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v3 v3.0.0 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/goccy/go-json v0.7.4 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect

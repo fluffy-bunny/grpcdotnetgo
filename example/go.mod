@@ -22,9 +22,8 @@ require (
 require (
 	github.com/bamzi/jobrunner v1.0.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v3 v3.0.0 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fatih/structs v1.1.0 // indirect
-	github.com/fluffy-bunny/mockoidc v0.0.0-20210718210524-5997b6c20cc1 // indirect
+	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422 // indirect
 	github.com/form3tech-oss/jwt-go v3.2.3+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/goccy/go-json v0.7.4 // indirect
