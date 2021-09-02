@@ -3,11 +3,11 @@ package oidc
 import (
 	"reflect"
 
-	grpcdotnetgo_di "github.com/fluffy-bunny/grpcdotnetgo/di"
-	middleware_auth "github.com/fluffy-bunny/grpcdotnetgo/middleware/auth"
-	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/middleware/oidc"
-	services_Logger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
-	services_oidc "github.com/fluffy-bunny/grpcdotnetgo/services/oidc"
+	grpcdotnetgo_di "github.com/fluffy-bunny/grpcdotnetgo/pkg/di"
+	middleware_auth "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/auth"
+	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
+	services_Logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
+	services_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/oidc"
 	di "github.com/fluffy-bunny/sarulabsdi"
 )
 

@@ -5,9 +5,9 @@ import (
 
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/config"
-	"github.com/fluffy-bunny/grpcdotnetgo/services/claimsprincipal"
-	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/services/contextaccessor"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
+	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
+	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )

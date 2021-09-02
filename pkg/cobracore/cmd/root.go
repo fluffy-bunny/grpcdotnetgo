@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fluffy-bunny/grpcdotnetgo/cobracore/cmd/serve"
-	"github.com/fluffy-bunny/grpcdotnetgo/cobracore/cmd/version"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/cobracore/cmd/serve"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/cobracore/cmd/version"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

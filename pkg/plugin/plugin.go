@@ -1,7 +1,7 @@
 package plugin
 
 import (
-	grpcdotnetgo_plugin_types "github.com/fluffy-bunny/grpcdotnetgo/plugin/types"
+	grpcdotnetgo_plugin_types "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin/types"
 	"github.com/rs/zerolog/log"
 )
 

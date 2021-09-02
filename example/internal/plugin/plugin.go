@@ -1,10 +1,10 @@
 package plugin
 
 import (
-	grpcdotnetgo_core_types "github.com/fluffy-bunny/grpcdotnetgo/core/types"
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal/startup"
-	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/plugin"
-	grpcdotnetgo_plugin_types "github.com/fluffy-bunny/grpcdotnetgo/plugin/types"
+	grpcdotnetgo_core_types "github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
+	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
+	grpcdotnetgo_plugin_types "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin/types"
 )
 
 func init() {

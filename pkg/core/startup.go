@@ -12,9 +12,9 @@ import (
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
+	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
-	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/plugin"
 
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/fluffy-bunny/viperEx"

@@ -4,8 +4,8 @@ package helloworld
 
 import (
 	context "context"
-	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo"
-	dicontext "github.com/fluffy-bunny/grpcdotnetgo/middleware/dicontext"
+	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
+	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	pkg "github.com/fluffy-bunny/protoc-gen-go-di/pkg"
 	sarulabsdi "github.com/fluffy-bunny/sarulabsdi"
 	grpc "google.golang.org/grpc"

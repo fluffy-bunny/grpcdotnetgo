@@ -1,8 +1,8 @@
 package runtime
 
 import (
-	"github.com/fluffy-bunny/grpcdotnetgo/cobracore/cmd"
-	cmdVersion "github.com/fluffy-bunny/grpcdotnetgo/cobracore/cmd/version"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/cobracore/cmd"
+	cmdVersion "github.com/fluffy-bunny/grpcdotnetgo/pkg/cobracore/cmd/version"
 )
 
 var Version string
