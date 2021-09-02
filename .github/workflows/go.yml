@@ -2,7 +2,7 @@ name: Go
 
 on:
   push:
-    branches: [ main ]
+    branches: [ '**' ]
     paths-ignore:
       - 'README.md'
       - 'docs/**'
@@ -41,6 +41,12 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+
+    - name: Test Example
+      run: |
+        cd ./example  
+        go test -v ./...  
+        cd ..  
 
     - name: Generate coverage report
       run: go test -cover -coverprofile="c.out" ./... && go tool cover -html="c.out" -o coverage.html

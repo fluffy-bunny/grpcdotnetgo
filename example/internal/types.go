@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"github.com/fluffy-bunny/grpcdotnetgo/middleware/oidc"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 )
 
 type ExampleConfig struct {

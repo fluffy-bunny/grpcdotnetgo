@@ -3,10 +3,10 @@ package oidc
 import (
 	"context"
 
-	middleware_grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/middleware/auth"
-	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/middleware/oidc"
-	services_logger "github.com/fluffy-bunny/grpcdotnetgo/services/logger"
-	services_oidc "github.com/fluffy-bunny/grpcdotnetgo/services/oidc"
+	middleware_grpc_auth "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/auth"
+	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
+	services_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
+	services_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/oidc"
 	"github.com/gogo/status"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc/codes"
