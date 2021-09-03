@@ -1,7 +1,7 @@
 package types
 
 type ConfigOptions struct {
-	Destination    interface{}
-	RootConfigYaml []byte
-	ConfigPath     string
+	Destination interface{}
+	RootConfig  []byte
+	ConfigPath  string
 }

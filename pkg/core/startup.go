@@ -25,15 +25,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-type Config struct {
-	Environment string `mapstructure:"APPLICATION_ENVIRONMENT"`
-}
-
-// ConfigDefaultYaml default yaml
-var coreConfigBaseYaml = []byte(`
-APPLICATION_ENVIRONMENT: in-environment
-`)
-
 // ValidateConfigPath just makes sure, that the path provided is a file,
 // that can be read
 func ValidateConfigPath(configPath string) error {
@@ -49,12 +40,12 @@ func ValidateConfigPath(configPath string) error {
 func loadConfig(configOptions *types.ConfigOptions) error {
 	v := viper.NewWithOptions(viper.KeyDelimiter("__"))
 	var err error
-	v.SetConfigType("yaml")
+	v.SetConfigType("json")
 	// Environment Variables override everything.
 	v.AutomaticEnv()
 
 	// 1. Read in as buffer to set a default baseline.
-	err = v.ReadConfig(bytes.NewBuffer(configOptions.RootConfigYaml))
+	err = v.ReadConfig(bytes.NewBuffer(configOptions.RootConfig))
 	if err != nil {
 		log.Err(err).Msg("ConfigDefaultYaml did not read in")
 		return err
@@ -65,7 +56,7 @@ func loadConfig(configOptions *types.ConfigOptions) error {
 	if len(environment) > 0 && len(configOptions.ConfigPath) != 0 {
 		v.AddConfigPath(configOptions.ConfigPath)
 
-		configFile := "appsettings." + coreConfig.Environment + ".yml"
+		configFile := "appsettings." + environment + ".json"
 		configPath := path.Join(configOptions.ConfigPath, configFile)
 		err = ValidateConfigPath(configPath)
 		if err == nil {
@@ -103,18 +94,6 @@ func loadConfig(configOptions *types.ConfigOptions) error {
 	return err
 }
 
-func loadCoreConfig() (*Config, error) {
-	var err error
-	dst := Config{}
-	err = loadConfig(&types.ConfigOptions{
-		Destination:    &dst,
-		RootConfigYaml: coreConfigBaseYaml,
-	})
-	return &dst, err
-}
-
-var coreConfig *Config
-
 type ServerInstance struct {
 	Server          *grpc.Server
 	Future          async.Future
@@ -131,11 +110,6 @@ func Start() {
 
 	plugins := grpcdotnetgo_plugin.GetPlugins()
 	var err error
-	coreConfig, err = loadCoreConfig()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(coreConfig.Environment)
 
 	for _, plugin := range plugins {
 		si := &ServerInstance{}

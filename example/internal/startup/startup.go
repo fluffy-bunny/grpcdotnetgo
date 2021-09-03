@@ -53,9 +53,9 @@ func NewStartup() grpcdotnetgo_core_types.IStartup {
 
 func (s *Startup) ctor() {
 	s.ConfigOptions = &grpcdotnetgo_core_types.ConfigOptions{
-		Destination:    &internal.Config{},
-		RootConfigYaml: internal.ConfigDefaultYaml,
-		ConfigPath:     getConfigPath(),
+		Destination: &internal.Config{},
+		RootConfig:  internal.ConfigDefaultYaml,
+		ConfigPath:  getConfigPath(),
 	}
 }
 

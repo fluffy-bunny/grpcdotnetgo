@@ -21,11 +21,15 @@ func (c *Config) GetOIDCConfig() oidc.IOIDCConfig {
 
 // ConfigDefaultYaml default yaml
 var ConfigDefaultYaml = []byte(`
-APPLICATION_ENVIRONMENT: in-environment
-EXAMPLE: 
-  ENABLE_TRANSIENT_2: true
-  GRPC_PORT: 1111
-  OIDC_CONFIG: 
-    AUTHORITY: "https://in-environment/"
-    CRON_REFRESH_SCHEDULE: "@every 0h1m0s"
+{
+	"APPLICATION_ENVIRONMENT": "in-environment",
+	"EXAMPLE": {
+	  "ENABLE_TRANSIENT_2": true,
+	  "GRPC_PORT": 1111,
+	  "OIDC_CONFIG": {
+		"AUTHORITY": "https://in-environment/",
+		"CRON_REFRESH_SCHEDULE": "@every 0h1m0s"
+	  }
+	}
+  }
 `)
