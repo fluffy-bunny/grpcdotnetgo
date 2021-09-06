@@ -8,7 +8,7 @@ require (
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
 	github.com/fluffy-bunny/sarulabsdi v0.1.12
 	github.com/fluffy-bunny/viperEx v0.0.18
-	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
+	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
 	github.com/gogo/status v1.1.0
