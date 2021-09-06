@@ -1,7 +1,7 @@
 syntax = "proto3";
 
  
-option go_package = "github.com/fluffy-bunny/grpcdotnetgo/proto/error";
+option go_package = "github.com/fluffy-bunny/grpcdotnetgo/pkg/proto/error";
 option java_multiple_files = true;
 option java_package = "io.grpcdotnetgo.proto.error";
 option java_outer_classname = "ErrorProto";

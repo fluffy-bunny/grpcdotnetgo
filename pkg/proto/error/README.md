@@ -22,5 +22,6 @@ cd example
 
 go get -u github.com/fluffy-bunny/protoc-gen-go-di/cmd/protoc-gen-go-di
 
-protoc --proto_path=. --proto_path=vendor --go_out=. --go_opt=paths=source_relative  proto\error\error.proto
+cd pkg
+protoc --proto_path=. --proto_path=../vendor --go_out=. --go_opt=paths=source_relative  proto\error\error.proto
 ```
