@@ -18,7 +18,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/lestrrat-go/jwx v1.2.6
 	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7
-	github.com/robfig/cron/v3 v3.0.0
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/xid v1.3.0
 	github.com/rs/zerolog v1.24.0
 	github.com/sirupsen/logrus v1.7.0
