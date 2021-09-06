@@ -3,8 +3,8 @@ package transient
 import (
 	"reflect"
 
-	exampleServices "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/config"
+	exampleServices "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/contracts"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
