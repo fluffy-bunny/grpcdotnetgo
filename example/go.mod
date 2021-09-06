@@ -5,38 +5,39 @@ go 1.17
 require (
 	github.com/fluffy-bunny/grpcdotnetgo v0.1.26
 	github.com/fluffy-bunny/protoc-gen-go-di v0.0.21
-	github.com/fluffy-bunny/sarulabsdi v0.1.12
-	github.com/fluffy-bunny/viperEx v0.0.17
+	github.com/fluffy-bunny/sarulabsdi v0.1.13
+	github.com/fluffy-bunny/viperEx v0.0.18
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
 	github.com/gogo/status v1.1.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/jnewmano/grpc-json-proxy v0.0.3
-	github.com/rs/zerolog v1.23.0
+	github.com/rs/zerolog v1.24.0
 	github.com/spf13/viper v1.8.1
 	google.golang.org/genproto v0.0.0-20210805201207-89edb61ffb67 // indirect
-	google.golang.org/grpc v1.39.0
+	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.27.1
 )
 
 require (
 	github.com/bamzi/jobrunner v1.0.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v3 v3.0.0 // indirect
+	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422 // indirect
-	github.com/form3tech-oss/jwt-go v3.2.3+incompatible // indirect
+	github.com/form3tech-oss/jwt-go v3.2.5+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
-	github.com/goccy/go-json v0.7.4 // indirect
+	github.com/goccy/go-json v0.7.6 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/uuid v1.2.0 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/lestrrat-go/backoff/v2 v2.0.7 // indirect
+	github.com/lestrrat-go/backoff/v2 v2.0.8 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.0 // indirect
 	github.com/lestrrat-go/httpcc v1.0.0 // indirect
 	github.com/lestrrat-go/iter v1.0.1 // indirect
-	github.com/lestrrat-go/jwx v1.2.4 // indirect
+	github.com/lestrrat-go/jwx v1.2.6 // indirect
 	github.com/lestrrat-go/option v1.0.0 // indirect
 	github.com/lestrrat-go/pdebug/v3 v3.0.1 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
@@ -44,9 +45,9 @@ require (
 	github.com/pelletier/go-toml v1.9.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7 // indirect
-	github.com/robfig/cron/v3 v3.0.0 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/xid v1.3.0 // indirect
-	github.com/sirupsen/logrus v1.7.0 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.2.1 // indirect
