@@ -4,9 +4,9 @@ package helloworld
 
 import (
 	context "context"
-	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
+	pkg "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
-	pkg "github.com/fluffy-bunny/protoc-gen-go-di/pkg"
+	pkg1 "github.com/fluffy-bunny/protoc-gen-go-di/pkg"
 	sarulabsdi "github.com/fluffy-bunny/sarulabsdi"
 	grpc "google.golang.org/grpc"
 	reflect "reflect"
@@ -14,7 +14,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpcdotnetgo.SupportPackageIsVersion7
+const _ = pkg.SupportPackageIsVersion7
 
 func setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(dst interface{}, field string) {
 	v := reflect.ValueOf(dst).Elem().FieldByName(field)
@@ -116,7 +116,7 @@ func New_helloworldFullMethodNameSlice() []string {
 }
 func init() {
 	r := New_helloworldFullMethodNameSlice()
-	pkg.AddFullMethodNameSliceToMap(r)
+	pkg1.AddFullMethodNameSliceToMap(r)
 }
 
 // helloworldFullMethodNameEmptyResponseMap keys match that of grpc.UnaryServerInfo.FullMethodName
