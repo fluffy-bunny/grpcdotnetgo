@@ -80,9 +80,13 @@ jobs:
 
     - name: Test
       run: |
-        go test -v ./...   
+        go test -v ./... 
+        
     - name: Generate coverage report
-      run: go test -cover -coverprofile="c.out" ./... && go tool cover -html="c.out" -o coverage-example.html
+      run: |
+        go test -cover -coverprofile="c.out" ./...  
+        go tool cover -html="c.out" -o coverage-example.html
+        ls
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v2
