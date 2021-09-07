@@ -14,7 +14,20 @@ env:
   BINARY: 'server'
 
 jobs:
+ # Lint check, using https://github.com/mgechev/revive
+  lint:
+    runs-on: ubuntu-latest
 
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Run Revive Action
+        uses: docker://morphy/revive-action:v2
+        with:
+          config: ./revive.toml
+          name: "Linter"
   framework:
     runs-on: ubuntu-latest
     steps:
