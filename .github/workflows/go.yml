@@ -34,20 +34,8 @@ jobs:
     - name: GO MOD VENDOR
       run: go mod vendor
 
-    - name: Build
-      run: |
-        cd ./example  
-        go build -v -a -tags netgo -ldflags "-X 'main.version=${{ steps.tag_version.outputs.new_tag }}' -extldflags '-static'" ./cmd/${{ env.BINARY }}  
-        cd ..  
-
     - name: Test
       run: go test -v ./...
-
-    - name: Test Example
-      run: |
-        cd ./example  
-        go test -v ./...  
-        cd ..  
 
     - name: Generate coverage report
       run: go test -cover -coverprofile="c.out" ./... && go tool cover -html="c.out" -o coverage.html
@@ -64,20 +52,6 @@ jobs:
         name: vendor
         path: ./vendor
 
-    - name: Upload build
-      uses: actions/upload-artifact@v2
-      with:
-        name: build
-        path: ./example/${{ env.BINARY }}
-
-    - name: Create a GitHub release
-      uses: actions/create-release@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag }}
-          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
   example-app:
     needs: [framework]
     runs-on: ubuntu-latest
@@ -101,3 +75,33 @@ jobs:
     - name: Test
       run: |
         go test -v ./...   
+    - name: Generate coverage report
+      run: go test -cover -coverprofile="c.out" ./... && go tool cover -html="c.out" -o coverage-example.html
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-example-report
+        path: coverage-example.html
+
+    - name: Upload build
+      uses: actions/upload-artifact@v2
+      with:
+        name: build
+        path: ./${{ env.BINARY }}
+
+  release:
+    needs: [framework,example-app]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: example
+        
+    - name: Create a GitHub release
+      uses: actions/create-release@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
