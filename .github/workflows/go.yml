@@ -97,6 +97,7 @@ jobs:
       run:
         working-directory: example
         
+    steps:
     - name: Create a GitHub release
       uses: actions/create-release@v1
       env:
