@@ -92,7 +92,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: coverage-example-report
-        path: coverage-example.html
+        path: ./example/coverage-example.html
 
     - name: Upload build
       uses: actions/upload-artifact@v2
