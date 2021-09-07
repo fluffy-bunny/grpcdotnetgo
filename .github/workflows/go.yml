@@ -60,7 +60,6 @@ jobs:
         path: ./vendor
 
   example-app:
-    needs: [framework]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -89,15 +88,19 @@ jobs:
 
     - name: Test
       run: |
-        go test -v ./...   
+        go test -v ./... 
+        
     - name: Generate coverage report
-      run: go test -cover -coverprofile="c.out" ./... && go tool cover -html="c.out" -o coverage-example.html
+      run: |
+        go test -cover -coverprofile="c.out" ./...  
+        go tool cover -html="c.out" -o coverage-example.html
+        ls
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v2
       with:
         name: coverage-example-report
-        path: coverage-example.html
+        path: ./example/coverage-example.html
 
     - name: Upload build
       uses: actions/upload-artifact@v2
