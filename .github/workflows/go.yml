@@ -60,7 +60,6 @@ jobs:
         path: ./vendor
 
   example-app:
-    needs: [framework]
     runs-on: ubuntu-latest
     defaults:
       run:
