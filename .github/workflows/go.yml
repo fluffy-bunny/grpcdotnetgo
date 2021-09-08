@@ -169,6 +169,6 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          tag_name: ${{ pre-flight.tag_version.outputs.new_tag }}
-          release_name: Release ${{ pre-flight.tag_version.outputs.new_tag }}
-          body: ${{ pre-flight.tag_version.outputs.changelog }}
+          tag_name: ${{ jobs.pre-flight.tag_version.outputs.new_tag }}
+          release_name: Release ${{ jobs.pre-flightt.tag_version.outputs.new_tag }}
+          body: ${{ jobs.pre-flight.tag_version.outputs.changelog }}
