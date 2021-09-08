@@ -81,8 +81,8 @@ jobs:
 
     - name: Install protoc Plugins
       run:  |
-        go get -d github.com/fluffy-bunny/protoc-gen-go-di/cmd/protoc-gen-go-di
-        go get -d github.com/golang/protobuf/protoc-gen-go
+        go get -u github.com/fluffy-bunny/protoc-gen-go-di/cmd/protoc-gen-go-di
+        go get -u github.com/golang/protobuf/protoc-gen-go
     
     - name: make proto go
       run: |
