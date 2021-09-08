@@ -43,7 +43,7 @@ jobs:
           
   framework:
     runs-on: ubuntu-latest
-    needs: pre_flight
+    needs: [pre_flight]
     steps:
     - uses: actions/checkout@v2
    
@@ -134,7 +134,7 @@ jobs:
   sonar:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
-    needs: [framework]
+    needs: [pre_flight,framework]
  
     steps:
       - uses: actions/checkout@master
@@ -164,7 +164,7 @@ jobs:
         commit_message: Apply Protoc Changes
         
   release:
-    needs: [pre-release]
+    needs: [pre_flight,pre-release]
     runs-on: ubuntu-latest
 
     steps:
