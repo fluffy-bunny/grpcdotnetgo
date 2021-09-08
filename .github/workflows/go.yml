@@ -130,7 +130,7 @@ jobs:
         path: ./${{ env.BINARY }}
 
   # Copied from https://github.com/remast/service_sonar/tree/feature/go-build
-  #         and https://dev.to/remast/go-for-sonarcloud-with-github-actions-3pmn
+  #         and https://dev.to/remast/go-for-sonarcloud-with-github-actions-3pmn  
   sonar:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
