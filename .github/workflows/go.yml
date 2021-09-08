@@ -81,8 +81,8 @@ jobs:
 
     - name: Install protoc Plugins
       run:  |
+        go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
         go get -u github.com/fluffy-bunny/protoc-gen-go-di/cmd/protoc-gen-go-di
-        go get -u github.com/golang/protobuf/protoc-gen-go
     
     - name: make proto go
       run: |
