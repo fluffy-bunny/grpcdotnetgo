@@ -59,12 +59,6 @@ jobs:
         name: coverage-report
         path: coverage
 
-    - name: Upload Vendor
-      uses: actions/upload-artifact@v2
-      with:
-        name: vendor
-        path: ./vendor
-
   example-app:
     runs-on: ubuntu-latest
     defaults:
@@ -121,12 +115,28 @@ jobs:
         name: build
         path: ./${{ env.BINARY }}
 
-  release:
+  pre-release:
     needs: [framework,example-app]
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: example
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: "^1.17"
+    
+    - name: GO MOD VENDOR
+      run: go mod vendor
+     # NOTE: This will NOT trigger another run of the workflow
+    - name: AutoCommit
+      uses: stefanzweifel/git-auto-commit-action@v4.11.0
+      with:
+        commit_message: Apply Protoc Changes
+        
+  release:
+    needs: [pre-release]
+    runs-on: ubuntu-latest
 
     steps:
     - name: Bump version and push tag
