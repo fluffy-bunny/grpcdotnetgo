@@ -32,8 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     
     outputs:
-      tag_version: ${{ steps.tag_version.outputs }}
-      
+      new_tag: ${{ steps.tag_version.outputs.new_tag }}
+      changelog : ${{ steps.tag_version.outputs.changelog }}
     steps:
     - name: Establish tags and versions
       id: tag_version
@@ -46,6 +46,7 @@ jobs:
     needs: pre_flight
     steps:
     - uses: actions/checkout@v2
+    - run: echo ${{needs.pre_flight.outputs.new_tag}} ${{needs.pre_flight.outputs.changelog}}
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -173,6 +174,6 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          tag_name: ${{ needs.pre_flight.outputs.tag_version.new_tag  }}
-          release_name: Release ${{ needs.pre_flight.outputs.tag_version.new_tag }}
-          body: ${{ needs.pre_flight.outputs.tag_version.new_tag }}
+          tag_name: ${{ needs.pre_flight.outputs.new_tag  }}
+          release_name: Release ${{ needs.pre_flight.outputs.new_tag }}
+          body: ${{ needs.pre_flight.outputs.changelog }}
