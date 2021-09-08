@@ -92,11 +92,11 @@ jobs:
 
     - name: Test
       run: |
-        go test -v ./... 
+        go test -mod=mod -v ./... 
         
     - name: Generate coverage report
       run: |
-        go test -cover -coverprofile="c.out" ./...  
+        go test -mod=mod -cover -coverprofile="c.out" ./...  
         go tool cover -html="c.out" -o coverage-example.html
         ls
 
