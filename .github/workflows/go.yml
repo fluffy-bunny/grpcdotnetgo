@@ -143,6 +143,19 @@ jobs:
         with:
           name: coverage-report
           path: coverage
+      - name: Update version in SonarCloud config
+        run: |
+          echo "" >> sonar-project.properties
+          echo "sonar.projectVersion=${{needs.pre_flight.outputs.new_tag}}" >> sonar-project.properties
+      - name: Fix GoLint paths
+        run: sed -i 's~${{ github.workspace }}~/github/workspace~g' coverage/golint.txt
+
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          
           
   pre-release:
     needs: [framework,example-app]
