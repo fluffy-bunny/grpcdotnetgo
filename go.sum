@@ -83,8 +83,8 @@ github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422 h1:YX0YIKuY6
 github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422/go.mod h1:kQoL+ILrIYTARa/bTroJeI+AHfQgvJSBE7huNBoRwms=
 github.com/fluffy-bunny/sarulabsdi v0.1.13 h1:QmLM+DtE2BIEKlfSVo2cNGXDnibSZR20nMriy85PgD4=
 github.com/fluffy-bunny/sarulabsdi v0.1.13/go.mod h1:Fv7Ce67PYl9D7UR5OUX1ccwDfX/8VUP3SaTu0IpT4W8=
-github.com/fluffy-bunny/viperEx v0.0.20 h1:RC1tiu/1MSbkNWm9E2LKzvoKrRJMgwDBIzMSpAg4yr4=
-github.com/fluffy-bunny/viperEx v0.0.20/go.mod h1:btk0DbT7X+7zT2jJN06US7mzJ/AxQ+Z2q952hEfBRek=
+github.com/fluffy-bunny/viperEx v0.0.23 h1:ghL8qnIlWX1WfR7gmNyIt5YoZGoE1mFuAXwbZF8uSpE=
+github.com/fluffy-bunny/viperEx v0.0.23/go.mod h1:btk0DbT7X+7zT2jJN06US7mzJ/AxQ+Z2q952hEfBRek=
 github.com/form3tech-oss/jwt-go v3.2.5+incompatible h1:/l4kBbb4/vGSsdtB5nUe8L7B9mImVMaBPw9L/0TBHU8=
 github.com/form3tech-oss/jwt-go v3.2.5+incompatible/go.mod h1:pbq4aXjuKjdthFRnoDwaVPLA+WlJuPGy+QneDUgJi2k=
 github.com/fsnotify/fsnotify v1.4.9 h1:hsms1Qyu0jgnwNXIxa+/V/PDsU6CfLf6CNO8H7IWoS4=
