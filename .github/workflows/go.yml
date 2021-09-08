@@ -46,8 +46,7 @@ jobs:
     needs: pre_flight
     steps:
     - uses: actions/checkout@v2
-    - run: echo ${{needs.pre_flight.outputs.new_tag}} ${{needs.pre_flight.outputs.changelog}}
-
+   
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
@@ -144,6 +143,7 @@ jobs:
         with:
           name: coverage-report
           path: coverage
+          
   pre-release:
     needs: [framework,example-app]
     runs-on: ubuntu-latest
@@ -168,12 +168,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
+    - run: |
+        echo new_tag: ${{needs.pre_flight.outputs.new_tag}} 
+        echo changelog: ${{needs.pre_flight.outputs.changelog}}
+    
     - name: Create a GitHub release
       uses: actions/create-release@v1
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          tag_name: ${{ needs.pre_flight.outputs.new_tag  }}
-          release_name: Release ${{ needs.pre_flight.outputs.new_tag }}
-          body: ${{ needs.pre_flight.outputs.changelog }}
+          tag_name: ${{needs.pre_flight.outputs.new_tag}}
+          release_name: Release ${{needs.pre_flight.outputs.new_tag}} 
+          body:  ${{needs.pre_flight.outputs.changelog}}
+    
