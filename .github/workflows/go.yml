@@ -32,8 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     
     outputs:
-      new_tag: ${{ steps.tag_version.outputs.new_tag }}
-      changelog: ${{ steps.tag_version.outputs.changelog }}
+      tag_version: ${{ steps.tag_version.outputs }}
       
     steps:
     - name: Establish tags and versions
@@ -174,6 +173,6 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          tag_name: ${{ needs.pre_flight.outputs.new_tag }}
-          release_name: Release ${{ needs.pre_flight.outputs.new_tag }}
-          body: ${{ needs.pre_flight.outputs.changelog }}
+          tag_name: ${{ needs.pre_flight.outputs.tag_version.new_tag  }}
+          release_name: Release ${{ needs.pre_flight.outputs.tag_version.new_tag }}
+          body: ${{ needs.pre_flight.outputs.tag_version.new_tag }}
