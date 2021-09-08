@@ -17,10 +17,14 @@ type JWTValidator struct {
 	Options *JWTValidatorOptions
 }
 
+const (
+	optionsCannotBeNil = "options cannot be nil"
+)
+
 func NewJWTValidator(options *JWTValidatorOptions) *JWTValidator {
 	if options == nil {
-		log.Fatal().Msg("options cannot be nil")
-		panic("options cannot be nil")
+		log.Fatal().Msg(optionsCannotBeNil)
+		panic(optionsCannotBeNil)
 	}
 
 	return &JWTValidator{
@@ -35,24 +39,27 @@ func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken st
 	var validationOpts []jwxt.ValidateOption
 	// Parse the JWT
 	jwkSet, err := jwtValidator.Options.OAuth2Document.fetchJwks(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	token, err := jwxt.ParseString(accessToken, jwxt.WithKeySet(jwkSet))
 	if err != nil {
 		return nil, err
 	}
-	if err == nil {
-		// This set had a key that worked
-		validationOpts = append(validationOpts, jwxt.WithIssuer(jwtValidator.Options.OAuth2Document.Issuer))
 
-	}
+	// This set had a key that worked
+	validationOpts = append(validationOpts, jwxt.WithIssuer(jwtValidator.Options.OAuth2Document.Issuer))
+
 	// Allow clock skew
 	validationOpts = append(validationOpts, jwxt.WithAcceptableSkew(time.Minute*time.Duration(jwtValidator.Options.ClockSkewMinutes)))
 
 	opts := validationOpts
 	err = jwxt.Validate(token, opts...)
-
 	if err != nil {
 		return nil, err
 	}
+
 	result := ClaimsPrincipal{
 		Claims:  []Claim{},
 		Token:   token,
@@ -68,28 +75,29 @@ func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken st
 		claimParent[value] = true
 	}
 	claimsMap, err := token.AsMap(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	for key, element := range claimsMap {
 		switch c := element.(type) {
 		case string:
 			addFastMapClaim(key, element.(string))
 			result.Claims = append(result.Claims, Claim{Type: key, Value: element.(string)})
-			break
+
 		case []interface{}:
 			for _, value := range c {
-				switch value.(type) {
+				switch claimValue := value.(type) {
 				case string:
-					addFastMapClaim(key, value.(string))
-					result.Claims = append(result.Claims, Claim{Type: key, Value: value.(string)})
-					break
+					addFastMapClaim(key, claimValue)
+					result.Claims = append(result.Claims, Claim{Type: key, Value: claimValue})
 				}
 			}
-			break
 		case []string:
 			for _, value := range c {
 				addFastMapClaim(key, value)
 				result.Claims = append(result.Claims, Claim{Type: key, Value: value})
 			}
-			break
 		}
 
 	}

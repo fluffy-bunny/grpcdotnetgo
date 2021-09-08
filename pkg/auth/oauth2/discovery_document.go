@@ -14,6 +14,10 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const (
+	OptionsCannotBeNil = "options cannot be nil"
+)
+
 func (p OAuth2Document) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("JWKSURL", p.JWKSURL)
 }
@@ -23,8 +27,8 @@ func (p DiscoveryDocument) MarshalZerologObject(e *zerolog.Event) {
 }
 func newOAuth2Document(options *OAuth2DiscoveryOptions) (*OAuth2Document, error) {
 	if options == nil {
-		log.Fatal().Msg("options cannot be nil")
-		panic("options cannot be nil")
+		log.Fatal().Msg(OptionsCannotBeNil)
+		panic(OptionsCannotBeNil)
 	}
 
 	return &OAuth2Document{
@@ -33,8 +37,8 @@ func newOAuth2Document(options *OAuth2DiscoveryOptions) (*OAuth2Document, error)
 }
 func newDiscoveryDocument(options *DiscoveryDocumentOptions) (*DiscoveryDocument, error) {
 	if options == nil {
-		log.Fatal().Msg("options cannot be nil")
-		panic("options cannot be nil")
+		log.Fatal().Msg(OptionsCannotBeNil)
+		panic(OptionsCannotBeNil)
 	}
 	u, err := url.Parse(options.Authority)
 	if err != nil {

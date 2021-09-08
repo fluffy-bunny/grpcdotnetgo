@@ -5,8 +5,8 @@ go 1.17
 require (
 	github.com/fluffy-bunny/grpcdotnetgo v0.1.26
 	github.com/fluffy-bunny/protoc-gen-go-di v0.0.21
-	github.com/fluffy-bunny/sarulabsdi v0.1.13
-	github.com/fluffy-bunny/viperEx v0.0.18
+	github.com/fluffy-bunny/sarulabsdi v0.1.14
+	github.com/fluffy-bunny/viperEx v0.0.23
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
 	github.com/gogo/status v1.1.0

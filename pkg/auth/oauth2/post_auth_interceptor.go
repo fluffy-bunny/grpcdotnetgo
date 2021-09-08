@@ -14,6 +14,43 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
+func validateAND(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal *ClaimsPrincipal) bool {
+	if claimsConfig.AND == nil || len(claimsConfig.AND) > 0 {
+		return true
+	}
+	for _, v := range claimsConfig.AND {
+		p, ok := claimsPrincipal.FastMap[v.Type]
+		if !ok {
+			return false
+		}
+		_, ok = p[v.Value]
+		if !ok {
+			return false
+		}
+	}
+	return true
+}
+func validateOR(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal *ClaimsPrincipal) bool {
+	if claimsConfig.OR == nil || len(claimsConfig.OR) > 0 {
+		return true
+	}
+
+	var found bool = false
+	for _, v := range claimsConfig.OR {
+		p, ok := claimsPrincipal.FastMap[v.Type]
+		if !ok {
+			continue
+		}
+		_, ok = p[v.Value]
+		if !ok {
+			continue
+		}
+		found = true
+		break
+	}
+	return found
+}
+
 func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInterceptor {
 	configAccessor := middleware_oidc.GetOIDCConfigAccessorFromContainer(container)
 	entryPointConfig := configAccessor.GetOIDCConfig().GetEntryPoints()
@@ -29,47 +66,23 @@ func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInt
 			logger.DebugL(&subLogger).Msg("")
 			return nil, status.Errorf(codes.PermissionDenied, "permission denied")
 		}
-		data := ctx.Value(CtxClaimsPrincipalKey)
-		if data == nil {
+
+		switch claimsPrincipal := ctx.Value(CtxClaimsPrincipalKey).(type) {
+		default:
 			return permissionDeniedFunc()
-		}
-
-		claimsPrincipal := data.(*ClaimsPrincipal)
-		elem, ok := entryPointConfig[info.FullMethod]
-		if ok {
-			for _, v := range elem.ClaimsConfig.AND {
-				p, ok := claimsPrincipal.FastMap[v.Type]
-				if !ok {
-					return permissionDeniedFunc()
-				}
-				_, ok = p[v.Value]
-				if !ok {
-					return permissionDeniedFunc()
-				}
+		case *ClaimsPrincipal:
+			elem, ok := entryPointConfig[info.FullMethod]
+			if !ok {
+				break
 			}
-
-			if elem.ClaimsConfig.OR != nil && len(elem.ClaimsConfig.OR) > 0 {
-				var found bool = false
-				for _, v := range elem.ClaimsConfig.OR {
-					p, ok := claimsPrincipal.FastMap[v.Type]
-					if !ok {
-						continue
-					}
-					_, ok = p[v.Value]
-					if !ok {
-						continue
-					}
-					found = true
-					break
-				}
-				if !found {
-					return permissionDeniedFunc()
-				}
+			if !validateAND(elem.ClaimsConfig, claimsPrincipal) {
+				return permissionDeniedFunc()
+			}
+			if !validateOR(elem.ClaimsConfig, claimsPrincipal) {
+				return permissionDeniedFunc()
 			}
 
 		}
-
 		return handler(ctx, req)
 	}
-
 }

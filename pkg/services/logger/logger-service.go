@@ -36,7 +36,7 @@ func (s *loggerService) ErrorL(logger *zerolog.Logger) *zerolog.Event {
 }
 func (s *loggerService) DebugL(logger *zerolog.Logger) *zerolog.Event {
 	sublogger := s.withFileNumber(logger)
-	return sublogger.Error()
+	return sublogger.Debug()
 }
 func (s *loggerService) FatalL(logger *zerolog.Logger) *zerolog.Event {
 	sublogger := s.withFileNumber(s.Logger)
@@ -48,7 +48,7 @@ func (s *loggerService) InfoL(logger *zerolog.Logger) *zerolog.Event {
 		return logger.Info()
 	}
 	sublogger := s.withFileNumber(s.Logger)
-	return sublogger.Error()
+	return sublogger.Info()
 }
 func (s *loggerService) WarnL(logger *zerolog.Logger) *zerolog.Event {
 	e := s.Logger.Debug()
