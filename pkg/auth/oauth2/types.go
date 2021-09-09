@@ -79,3 +79,41 @@ func NewGrpcFuncAuthConfig(authority string, expectedScheme string, clockSkewMin
 		FullMethodNameToClaims: make(map[string]MethodClaims),
 	}
 }
+func ClaimsPrincipalFromClaimsMap(claimsMap map[string]interface{}) *ClaimsPrincipal {
+	result := ClaimsPrincipal{
+		Claims:  []Claim{},
+		FastMap: make(map[string]map[string]bool),
+	}
+	var addFastMapClaim = func(key string, value string) {
+		claimParent, ok := result.FastMap[key]
+		if !ok {
+			claimParent = make(map[string]bool)
+			result.FastMap[key] = claimParent
+		}
+		claimParent[value] = true
+	}
+
+	for key, element := range claimsMap {
+		switch value := element.(type) {
+		case string:
+			addFastMapClaim(key, value)
+			result.Claims = append(result.Claims, Claim{Type: key, Value: value})
+
+		case []interface{}:
+			for _, value := range value {
+				switch claimValue := value.(type) {
+				case string:
+					addFastMapClaim(key, claimValue)
+					result.Claims = append(result.Claims, Claim{Type: key, Value: claimValue})
+				}
+			}
+		case []string:
+			for _, value := range value {
+				addFastMapClaim(key, value)
+				result.Claims = append(result.Claims, Claim{Type: key, Value: value})
+			}
+		}
+
+	}
+	return &result
+}

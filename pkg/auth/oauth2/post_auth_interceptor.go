@@ -14,8 +14,17 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
+func validate(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal *ClaimsPrincipal) bool {
+	if !validateAND(claimsConfig, claimsPrincipal) {
+		return false
+	}
+	if !validateOR(claimsConfig, claimsPrincipal) {
+		return false
+	}
+	return true
+}
 func validateAND(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal *ClaimsPrincipal) bool {
-	if claimsConfig.AND == nil || len(claimsConfig.AND) > 0 {
+	if claimsConfig.AND == nil || len(claimsConfig.AND) == 0 {
 		return true
 	}
 	for _, v := range claimsConfig.AND {
@@ -31,7 +40,7 @@ func validateAND(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal *Cla
 	return true
 }
 func validateOR(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal *ClaimsPrincipal) bool {
-	if claimsConfig.OR == nil || len(claimsConfig.OR) > 0 {
+	if claimsConfig.OR == nil || len(claimsConfig.OR) == 0 {
 		return true
 	}
 
@@ -73,12 +82,13 @@ func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInt
 		case *ClaimsPrincipal:
 			elem, ok := entryPointConfig[info.FullMethod]
 			if !ok {
+				// we don't have an entry so it is valid
+				// TODO: Add in security option that must have an entry even if the AND and OR are empty.  That way
+				// We have proof someone purposefully wanted it with no validation
+				// return permissionDeniedFunc()
 				break
 			}
-			if !validateAND(elem.ClaimsConfig, claimsPrincipal) {
-				return permissionDeniedFunc()
-			}
-			if !validateOR(elem.ClaimsConfig, claimsPrincipal) {
+			if !validate(elem.ClaimsConfig, claimsPrincipal) {
 				return permissionDeniedFunc()
 			}
 

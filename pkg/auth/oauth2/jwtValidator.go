@@ -35,6 +35,7 @@ func NewJWTValidator(options *JWTValidatorOptions) *JWTValidator {
 func (jwtValidator *JWTValidator) NewEmptyClaimsPrincipal() *ClaimsPrincipal {
 	return &ClaimsPrincipal{}
 }
+
 func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken string) (*ClaimsPrincipal, error) {
 	var validationOpts []jwxt.ValidateOption
 	// Parse the JWT
@@ -59,48 +60,12 @@ func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken st
 	if err != nil {
 		return nil, err
 	}
-
-	result := ClaimsPrincipal{
-		Claims:  []Claim{},
-		Token:   token,
-		FastMap: make(map[string]map[string]bool),
-	}
-
-	var addFastMapClaim = func(key string, value string) {
-		claimParent, ok := result.FastMap[key]
-		if !ok {
-			claimParent = make(map[string]bool)
-			result.FastMap[key] = claimParent
-		}
-		claimParent[value] = true
-	}
 	claimsMap, err := token.AsMap(ctx)
 	if err != nil {
 		return nil, err
 	}
+	result := ClaimsPrincipalFromClaimsMap(claimsMap)
+	result.Token = token
 
-	for key, element := range claimsMap {
-		switch c := element.(type) {
-		case string:
-			addFastMapClaim(key, element.(string))
-			result.Claims = append(result.Claims, Claim{Type: key, Value: element.(string)})
-
-		case []interface{}:
-			for _, value := range c {
-				switch claimValue := value.(type) {
-				case string:
-					addFastMapClaim(key, claimValue)
-					result.Claims = append(result.Claims, Claim{Type: key, Value: claimValue})
-				}
-			}
-		case []string:
-			for _, value := range c {
-				addFastMapClaim(key, value)
-				result.Claims = append(result.Claims, Claim{Type: key, Value: value})
-			}
-		}
-
-	}
-
-	return &result, nil
+	return result, nil
 }
