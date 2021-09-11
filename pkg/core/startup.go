@@ -94,6 +94,7 @@ func loadConfig(configOptions *types.ConfigOptions) error {
 	return err
 }
 
+// ServerInstance represents an instance of a plugin
 type ServerInstance struct {
 	Server          *grpc.Server
 	Future          async.Future
@@ -103,11 +104,13 @@ type ServerInstance struct {
 
 var serverInstances []*ServerInstance
 
+// GetServerInstances gets the array or service instances
 func GetServerInstances() []*ServerInstance {
 	return serverInstances
 }
-func Start() {
 
+// Start starts up the server
+func Start() {
 	plugins := grpcdotnetgo_plugin.GetPlugins()
 	var err error
 
@@ -167,7 +170,6 @@ func Start() {
 	for _, v := range serverInstances {
 		v.Future.Get()
 	}
-
 }
 
 func asyncServeGRPC(grpcServer *grpc.Server, port int) async.Future {
