@@ -1,12 +1,20 @@
 # gRPC-dot-net-go
 
+## Stand-Alone Samples
+
+[samples](https://github.com/fluffy-bunny/grpcdotnetgo-samples)  
+
 ## Contracts  
 It all starts with a [proto file](example/internal/grpcContracts/helloworld/helloworld.proto).  In our case we want to have a custom server implementation that understands that the real downstream hanlder is in our DI.  Fortunately we can use a protoc plugin to generate the GO code for that.  
 
 ```powershell
 cd example
-go get -u github.com/fluffy-bunny/protoc-gen-go-di/cmd/protoc-gen-go-di
-protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative internal\grpcContracts\helloworld\helloworld.proto
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.26
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
+go get -u github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/cmd/protoc-gen-go-di
+
+protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative ./example/internal/grpcContracts/helloworld/helloworld.proto
+
 ```
 This will generate all the [go files](example/internal/grpcContracts/helloworld) from our ```helloworld.proto```  
 
