@@ -12,12 +12,26 @@
             "program": "${workspaceFolder}/example/cmd/server",
             "env": {
                 "APPLICATION_ENVIRONMENT":"Development",
-                "CORE__APPLICATION_ENVIRONMENT":"Development",
-                "CORE__GRPC_PORT":5105,
-                "dGRPC_PORT":5105,
-                "MODE":"ddd"
+                "MODE":"ddd",
+                "EXAMPLE__GRPC_PORT": 1111,
+                //"OIDC_CONFIG__AUTHORITY": "https://some.oidc.authority/",
+                "ENABLE_TRANSIENT_2": false               
             },
             "args": ["serve", "-e=EXAMPLE__GRPC_PORT=5105" ]
+        },
+        {
+            "name": "Client",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/example/cmd/client",
+            "env": {
+                "APPLICATION_ENVIRONMENT":"Development",
+                "MODE":"ddd",
+                "GRPC_PORT": 1111,
+                //"OIDC_CONFIG__AUTHORITY": "https://some.oidc.authority/",
+                "ENABLE_TRANSIENT_2": false               
+            } 
         }
 
     ]
