@@ -8,11 +8,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// Options is a struct for specifying configuration options.
+// JWTValidatorOptions is a struct for specifying configuration options.
 type JWTValidatorOptions struct {
 	OAuth2Document   *OAuth2Document
 	ClockSkewMinutes int
 }
+
+// JWTValidator struct
 type JWTValidator struct {
 	Options *JWTValidatorOptions
 }
@@ -21,6 +23,7 @@ const (
 	optionsCannotBeNil = "options cannot be nil"
 )
 
+// NewJWTValidator creates a new *JWTValidator
 func NewJWTValidator(options *JWTValidatorOptions) *JWTValidator {
 	if options == nil {
 		log.Fatal().Msg(optionsCannotBeNil)
@@ -32,10 +35,12 @@ func NewJWTValidator(options *JWTValidatorOptions) *JWTValidator {
 	}
 }
 
+// NewEmptyClaimsPrincipal creates an empty *ClaimsPrincipal
 func (jwtValidator *JWTValidator) NewEmptyClaimsPrincipal() *ClaimsPrincipal {
 	return &ClaimsPrincipal{}
 }
 
+// ParseToken validates an produces a claims principal
 func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken string) (*ClaimsPrincipal, error) {
 	var validationOpts []jwxt.ValidateOption
 	// Parse the JWT
