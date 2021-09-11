@@ -76,7 +76,7 @@ jobs:
 
     - name: Build
       run: |
-        go build -mod=mod -v -a -tags netgo -ldflags "-X 'main.version=${{ steps.tag_version.outputs.new_tag }}' -extldflags '-static'" ./example/cmd/server/main.go 
+        go build -mod=mod -v -a -tags netgo -ldflags "-X 'main.version=${{ steps.tag_version.outputs.new_tag }}' -extldflags '-static'" ./example/cmd/server
 
     - name: Generate coverage report and lint
       run: |
