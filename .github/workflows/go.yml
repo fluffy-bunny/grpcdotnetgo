@@ -66,8 +66,17 @@ jobs:
     - name: GO MOD VENDOR
       run: go mod vendor
 
+    - name: make proto go
+      run: |
+        protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative ./protoc-gen-go-di/helloworld/helloworld.proto
+        protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative ./example/internal/grpcContracts/helloworld/helloworld.proto
+
     - name: Test
       run: go test -v -short -p=1 -count=1 -race ./...
+
+    - name: Build
+      run: |
+        go build -mod=mod -v -a -tags netgo -ldflags "-X 'main.version=${{ steps.tag_version.outputs.new_tag }}' -extldflags '-static'" ./example/cmd/server  
 
     - name: Generate coverage report and lint
       run: |
@@ -84,10 +93,9 @@ jobs:
         name: coverage-report
         path: coverage
 
-    - name: make proto go
-      run: |
-        protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative ./protoc-gen-go-di/helloworld/helloworld.proto
  
+
+
   example-app:
     runs-on: ubuntu-latest
     defaults:
