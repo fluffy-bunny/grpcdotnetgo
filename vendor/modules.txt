@@ -60,6 +60,7 @@ github.com/gogo/status
 github.com/golang-jwt/jwt
 # github.com/golang/protobuf v1.5.2
 ## explicit; go 1.9
+github.com/golang/protobuf/jsonpb
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
@@ -90,6 +91,9 @@ github.com/hashicorp/hcl/json/token
 # github.com/inconshreveable/mousetrap v1.0.0
 ## explicit
 github.com/inconshreveable/mousetrap
+# github.com/jnewmano/grpc-json-proxy v0.0.3
+## explicit; go 1.15
+github.com/jnewmano/grpc-json-proxy/codec
 # github.com/lestrrat-go/backoff/v2 v2.0.8
 ## explicit; go 1.16
 github.com/lestrrat-go/backoff/v2
@@ -290,12 +294,14 @@ google.golang.org/grpc/tap
 # google.golang.org/protobuf v1.27.1
 ## explicit; go 1.9
 google.golang.org/protobuf/compiler/protogen
+google.golang.org/protobuf/encoding/protojson
 google.golang.org/protobuf/encoding/prototext
 google.golang.org/protobuf/encoding/protowire
 google.golang.org/protobuf/internal/descfmt
 google.golang.org/protobuf/internal/descopts
 google.golang.org/protobuf/internal/detrand
 google.golang.org/protobuf/internal/encoding/defval
+google.golang.org/protobuf/internal/encoding/json
 google.golang.org/protobuf/internal/encoding/messageset
 google.golang.org/protobuf/internal/encoding/tag
 google.golang.org/protobuf/internal/encoding/text
