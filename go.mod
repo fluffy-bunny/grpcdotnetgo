@@ -21,7 +21,7 @@ require (
 	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/xid v1.3.0
-	github.com/rs/zerolog v1.24.0
+	github.com/rs/zerolog v1.25.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1
