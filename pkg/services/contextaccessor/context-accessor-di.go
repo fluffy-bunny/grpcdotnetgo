@@ -29,7 +29,7 @@ func GetInternalGetContextAccessorFromContainer(ctn di.Container) IInternalConte
 	return obj
 }
 
-// ContextAccessor adds service to the DI container
+// AddContextAccessor adds service to the DI container
 func AddContextAccessor(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddContextAccessor")

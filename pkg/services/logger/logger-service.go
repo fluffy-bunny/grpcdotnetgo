@@ -8,6 +8,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// ILogger interface
 type ILogger interface {
 	Error() *zerolog.Event
 	Debug() *zerolog.Event
@@ -39,31 +40,31 @@ func (s *loggerService) DebugL(logger *zerolog.Logger) *zerolog.Event {
 	return sublogger.Debug()
 }
 func (s *loggerService) FatalL(logger *zerolog.Logger) *zerolog.Event {
-	sublogger := s.withFileNumber(s.Logger)
+	sublogger := s.withFileNumber(logger)
 	return sublogger.Fatal()
 }
 func (s *loggerService) InfoL(logger *zerolog.Logger) *zerolog.Event {
-	e := s.Logger.Debug()
+	e := logger.Debug()
 	if !e.Enabled() {
 		return logger.Info()
 	}
-	sublogger := s.withFileNumber(s.Logger)
+	sublogger := s.withFileNumber(logger)
 	return sublogger.Info()
 }
 func (s *loggerService) WarnL(logger *zerolog.Logger) *zerolog.Event {
-	e := s.Logger.Debug()
+	e := logger.Debug()
 	if !e.Enabled() {
 		return logger.Warn()
 	}
-	sublogger := s.withFileNumber(s.Logger)
+	sublogger := s.withFileNumber(logger)
 	return sublogger.Warn()
 }
 func (s *loggerService) TraceL(logger *zerolog.Logger) *zerolog.Event {
-	e := s.Logger.Debug()
+	e := logger.Debug()
 	if !e.Enabled() {
 		return logger.Trace()
 	}
-	sublogger := s.withFileNumber(s.Logger)
+	sublogger := s.withFileNumber(logger)
 	return sublogger.Trace()
 }
 

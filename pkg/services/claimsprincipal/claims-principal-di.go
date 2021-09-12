@@ -1,27 +1,32 @@
 package claimsprincipal
 
 import (
-	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
+	"reflect"
+
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
 
-// Define an object in the App scope.
-var diServiceName = grpcdotnetgoutils.GenerateUnqueServiceName("IClaimsPrincipal")
+var (
+	rtClaimsPrincipal           = reflect.TypeOf(&claimsPrincipal{}).Elem()
+	reflectTypeIClaimsPrincipal = di.GetInterfaceReflectType((*IClaimsPrincipal)(nil))
+)
 
 // GetClaimsPrincipalFromContainer from the Container
 func GetClaimsPrincipalFromContainer(ctn di.Container) IClaimsPrincipal {
-	return ctn.Get(diServiceName).(IClaimsPrincipal)
+	return ctn.GetByType(reflectTypeIClaimsPrincipal).(IClaimsPrincipal)
 }
 
-// ClaimsPrincipal adds service to the DI container
+// AddClaimsPrincipal adds service to the DI container
 func AddClaimsPrincipal(builder *di.Builder) {
 	log.Info().
-		Str("serviceName", diServiceName).
 		Msg("IoC: AddClaimsPrincipal")
+	implementedTypes := di.NewTypeSet()
+	implementedTypes.Add(reflectTypeIClaimsPrincipal)
 	builder.Add(di.Def{
-		Name:  diServiceName,
-		Scope: di.Request,
+		Type:             reflect.TypeOf(&claimsPrincipal{}),
+		ImplementedTypes: implementedTypes,
+		Scope:            di.Request,
 		Build: func(ctn di.Container) (interface{}, error) {
 			return &claimsPrincipal{
 				claims: make(map[string][]string),

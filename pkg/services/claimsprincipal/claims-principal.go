@@ -4,10 +4,13 @@ import (
 	"fmt"
 )
 
+// Claim type
 type Claim struct {
 	Type  string
 	Value string
 }
+
+// IClaimsPrincipal interface
 type IClaimsPrincipal interface {
 	GetClaims() []Claim
 	HasClaim(claim Claim) bool
@@ -28,6 +31,7 @@ func removeIndex(s []string, index int) []string {
 	return s
 }
 
+// RemoveClaim removes a claims
 func (c *claimsPrincipal) RemoveClaim(claim Claim) {
 	claims, ok := c.claims[claim.Type]
 	if !ok {
@@ -46,6 +50,7 @@ func (c *claimsPrincipal) RemoveClaim(claim Claim) {
 	}
 }
 
+// HasClaim ...
 func (c *claimsPrincipal) HasClaim(claim Claim) bool {
 	claims, ok := c.claims[claim.Type]
 	if !ok {
@@ -59,6 +64,8 @@ func (c *claimsPrincipal) HasClaim(claim Claim) bool {
 	}
 	return false
 }
+
+// AddClaim ...
 func (c *claimsPrincipal) AddClaim(claim Claim) {
 	if c.HasClaim(claim) {
 		return
@@ -75,6 +82,7 @@ func (c *claimsPrincipal) AddClaim(claim Claim) {
 	claims = append(claims, claim.Value)
 }
 
+// GetClaims ...
 func (c *claimsPrincipal) GetClaims() []Claim {
 	var result []Claim
 	for claimType, claimValues := range c.claims {
@@ -83,7 +91,6 @@ func (c *claimsPrincipal) GetClaims() []Claim {
 				Type: claimType, Value: claimValue,
 			})
 		}
-
 	}
 	return result
 }
