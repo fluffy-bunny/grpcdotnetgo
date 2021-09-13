@@ -137,7 +137,7 @@ jobs:
       run: go mod vendor
      # NOTE: This will NOT trigger another run of the workflow
     - name: AutoCommit
-      uses: stefanzweifel/git-auto-commit-action@v4.11.0
+      uses: stefanzweifel/git-auto-commit-action@v4.12.0
       with:
         commit_message: Apply Protoc Changes
         
