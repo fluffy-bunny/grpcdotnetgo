@@ -52,8 +52,7 @@ func (g *containerGetter) SafeGetByType(ctn *container, rtIn reflect.Type) (inte
 	if rt.Kind() == reflect.Ptr {
 		rt = rt.Elem()
 	}
-	key := GenerateReproducableTypeKey(rt)
-	defs, ok := ctn.typeDefMap[key]
+	defs, ok := ctn.typeDefMap[rt]
 	if ok {
 		for _, def := range defs {
 			obj, err := g.SafeGet(ctn, def.Name)
@@ -68,8 +67,7 @@ func (g *containerGetter) SafeGetByType(ctn *container, rtIn reflect.Type) (inte
 
 func (g *containerGetter) SafeGetManyByType(ctn *container, rt reflect.Type) ([]interface{}, error) {
 	var result []interface{}
-	key := GenerateReproducableTypeKey(rt)
-	defs, ok := ctn.typeDefMap[key]
+	defs, ok := ctn.typeDefMap[rt]
 	if !ok {
 		return result, fmt.Errorf("could not get types of `%s` because the definition does not exist", getTypeFullPath(rt))
 	}

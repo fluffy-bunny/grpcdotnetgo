@@ -1,6 +1,7 @@
 package di
 
 import (
+	"reflect"
 	"sync"
 )
 
@@ -34,7 +35,7 @@ type containerCore struct {
 	lastUniqueID    int
 	deleteIfNoChild bool
 	dependencies    *graph
-	typeDefMap      map[string]deflist
+	typeDefMap      map[reflect.Type]deflist
 }
 
 func (ctn *containerCore) Definitions() map[string]Def {

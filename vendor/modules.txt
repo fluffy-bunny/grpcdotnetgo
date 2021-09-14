@@ -13,13 +13,16 @@ github.com/decred/dcrd/dcrec/secp256k1/v4
 # github.com/fatih/structs v1.1.0
 ## explicit
 github.com/fatih/structs
+# github.com/fatih/structtag v1.2.0
+## explicit; go 1.12
+github.com/fatih/structtag
 # github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
 ## explicit; go 1.17
 github.com/fluffy-bunny/mockoidc
 # github.com/fluffy-bunny/protoc-gen-go-di v0.0.33
 ## explicit; go 1.16
 github.com/fluffy-bunny/protoc-gen-go-di/pkg
-# github.com/fluffy-bunny/sarulabsdi v0.1.14
+# github.com/fluffy-bunny/sarulabsdi v0.1.23
 ## explicit; go 1.17
 github.com/fluffy-bunny/sarulabsdi
 # github.com/fluffy-bunny/viperEx v0.0.23
