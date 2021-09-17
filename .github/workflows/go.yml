@@ -81,9 +81,9 @@ jobs:
     - name: Generate coverage report and lint
       run: |
         mkdir -p coverage
-        go test ./... -cover -short -coverpkg ./... -coverprofile=coverage/cov.out -json > coverage/report.json
-        go tool cover -html=coverage/cov.out -o coverage/cov.html
-        go tool cover -func=coverage/cov.out > coverage/byfunc.txt
+        go test ./... -cover -short -coverpkg ./... -coverprofile=coverage/cov -json > coverage/report.json
+        go tool cover -html=coverage/cov -o coverage/cov.html
+        go tool cover -func=coverage/cov > coverage/byfunc.txt
         go install github.com/mgechev/revive@latest
         revive -config ./revive.toml -formatter default ./... > coverage/golint.txt
 
