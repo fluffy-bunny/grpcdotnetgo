@@ -85,7 +85,8 @@ jobs:
         go tool cover -html=coverage/cov.out -o coverage/cov.html
         go tool cover -func=coverage/cov.out > coverage/byfunc.txt
         go install github.com/mgechev/revive@latest
-        revive -config ./revive.toml -formatter default ./... > coverage/golint.txt
+        revive -config ./revive.toml -formatter default ./... > coverage/golint.txt  
+        
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v2
