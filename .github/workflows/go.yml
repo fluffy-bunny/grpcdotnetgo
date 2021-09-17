@@ -11,6 +11,7 @@ on:
   pull_request:
     branches: [ main ]
 env:
+  GO111MODULE: 'on'
   BINARY: 'server'
 
 jobs:
