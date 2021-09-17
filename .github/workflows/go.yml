@@ -51,7 +51,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: "^1.17"
+        go-version: "1.17"
 
     - name: Setting Up protoc
       uses: arduino/setup-protoc@v1
@@ -82,7 +82,7 @@ jobs:
     - name: Generate coverage report and lint
       run: |
         mkdir -p coverage
-        go test ./... -cover -short -coverpkg=./... -coverprofile=coverage/cov.out -json > coverage/report.json
+        go test ./... -cover -short -coverprofile=coverage/cov.out -json > coverage/report.json
         go tool cover -html=coverage/cov.out -o coverage/cov.html
         go tool cover -func=coverage/cov.out > coverage/byfunc.txt
 
