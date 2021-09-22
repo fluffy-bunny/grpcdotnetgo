@@ -78,10 +78,13 @@ jobs:
       run: |
         go build -mod=mod -v -a -tags netgo -ldflags "-X 'main.version=${{ steps.tag_version.outputs.new_tag }}' -extldflags '-static'" ./example/cmd/server
 
+    # https://github.com/actions/runner/issues/1353
+    # -coverpkg not working in this project, but it does work elsewhere
+    #    go test -v ./... -cover -short -coverpkg=./... -coverprofile=coverage/cov.out -json > coverage/report.json
     - name: Generate coverage report and lint
       run: |
         mkdir -p coverage
-        go test -v ./... -cover -short -coverpkg=./... -coverprofile=coverage/cov.out -json > coverage/report.json
+        go test -v ./... -cover -short -coverprofile=coverage/cov.out -json > coverage/report.json
         go tool cover -html=coverage/cov.out -o coverage/cov.html
         go tool cover -func=coverage/cov.out > coverage/byfunc.txt
         go install github.com/mgechev/revive@latest
