@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"strings"
 
 	"google.golang.org/protobuf/compiler/protogen"
@@ -23,7 +22,7 @@ const (
 
 type genFileContext struct {
 	packageName string
-	uniqueRunId string
+	uniqueRunID string
 	gen         *protogen.Plugin
 	file        *protogen.File
 	filename    string
@@ -34,7 +33,7 @@ func newGenFileContext(gen *protogen.Plugin, file *protogen.File) *genFileContex
 	ctx := &genFileContext{
 		file:        file,
 		gen:         gen,
-		uniqueRunId: randomString(32),
+		uniqueRunID: randomString(32),
 		packageName: string(file.GoPackageName),
 		filename:    file.GeneratedFilenamePrefix + "_di.pb.go",
 	}
@@ -42,6 +41,7 @@ func newGenFileContext(gen *protogen.Plugin, file *protogen.File) *genFileContex
 	return ctx
 }
 
+// MethodInfo type
 type MethodInfo struct {
 	NewResponseWithErrorFunc string
 	NewResponseFunc          string
@@ -54,7 +54,7 @@ type methodGenContext struct {
 	file           *protogen.File
 	g              *protogen.GeneratedFile
 	service        *protogen.Service
-	uniqueRunId    string
+	uniqueRunID    string
 }
 type serviceGenContext struct {
 	packageName     string
@@ -63,13 +63,13 @@ type serviceGenContext struct {
 	file            *protogen.File
 	g               *protogen.GeneratedFile
 	service         *protogen.Service
-	uniqueRunId     string
+	uniqueRunID     string
 }
 
 func newServiceGenContext(packageName string, uniqueRunId string, gen *protogen.Plugin, file *protogen.File, g *protogen.GeneratedFile, service *protogen.Service) *serviceGenContext {
 	ctx := &serviceGenContext{
 		packageName:     packageName,
-		uniqueRunId:     uniqueRunId,
+		uniqueRunID:     uniqueRunId,
 		gen:             gen,
 		file:            file,
 		g:               g,
@@ -80,7 +80,7 @@ func newServiceGenContext(packageName string, uniqueRunId string, gen *protogen.
 }
 func newMethodGenContext(uniqueRunId string, protogenMethod *protogen.Method, gen *protogen.Plugin, file *protogen.File, g *protogen.GeneratedFile, service *protogen.Service) *methodGenContext {
 	ctx := &methodGenContext{
-		uniqueRunId:    uniqueRunId,
+		uniqueRunID:    uniqueRunId,
 		MethodInfo:     &MethodInfo{},
 		ProtogenMethod: protogenMethod,
 		gen:            gen,
@@ -115,7 +115,6 @@ func getFileName(file *protogen.File) string {
 
 // generateFileContent generates the DI service definitions, excluding the package statement.
 func (s *genFileContext) generateFileContent() {
-
 	gen := s.gen
 	file := s.file
 	g := s.g
@@ -125,7 +124,7 @@ func (s *genFileContext) generateFileContent() {
 	g.P("const _ = ", grpcDIInternalPackage.Ident("SupportPackageIsVersion7"))
 	g.P()
 
-	g.P("func setNewField_", s.uniqueRunId, "(dst interface{}, field string) {")
+	g.P("func setNewField_", s.uniqueRunID, "(dst interface{}, field string) {")
 	g.P("\tv := ", reflectPackage.Ident("ValueOf"), "(dst).Elem().FieldByName(field)")
 	g.P("\tif v.IsValid() {")
 	g.P("\t\tv.Set(", reflectPackage.Ident("New"), "(v.Type().Elem()))")
@@ -135,7 +134,7 @@ func (s *genFileContext) generateFileContent() {
 	var serviceGenCtxs []*serviceGenContext
 	// Generate each service
 	for _, service := range file.Services {
-		serviceGenCtx := newServiceGenContext(s.packageName, s.uniqueRunId, gen, file, g, service)
+		serviceGenCtx := newServiceGenContext(s.packageName, s.uniqueRunID, gen, file, g, service)
 		serviceGenCtx.genService()
 		serviceGenCtxs = append(serviceGenCtxs, serviceGenCtx)
 	}
@@ -154,7 +153,7 @@ func (s *genFileContext) generateFileContent() {
 	g.P("}")
 
 	g.P("func init() {")
-	g.P("  r := New_helloworldFullMethodNameSlice()")
+	g.P("  r := New_", getFileName(file), "FullMethodNameSlice()")
 	g.P("  ", protocGenGoDiPackage.Ident("AddFullMethodNameSliceToMap(r)"))
 	g.P("}")
 
@@ -164,7 +163,6 @@ func (s *genFileContext) generateFileContent() {
 	for _, sctx := range serviceGenCtxs {
 		for k, v := range sctx.MethodMapGenCtx {
 			g.P("    \"", k, "\": ", v.MethodInfo.NewResponseFunc, ",")
-
 		}
 	}
 	g.P("}")
@@ -183,7 +181,6 @@ func (s *genFileContext) generateFileContent() {
 	for _, sctx := range serviceGenCtxs {
 		for k, v := range sctx.MethodMapGenCtx {
 			g.P("    \"", k, "\": ", v.MethodInfo.NewResponseWithErrorFunc, ",")
-
 		}
 	}
 	g.P("}")
@@ -218,7 +215,7 @@ func (s *serviceGenContext) genService() {
 	g.P("// ", interfaceServerName, " defines the grpc server")
 	g.P("type ", interfaceServerName, " interface {")
 	for _, method := range service.Methods {
-		methodGenCtx := newMethodGenContext(s.uniqueRunId, method, gen, file, g, service)
+		methodGenCtx := newMethodGenContext(s.uniqueRunID, method, gen, file, g, service)
 		g.P(methodGenCtx.serverSignature())
 	}
 	g.P("}")
@@ -230,7 +227,7 @@ func (s *serviceGenContext) genService() {
 	for _, method := range service.Methods {
 		serverType := method.Parent.GoName
 		key := "/" + s.packageName + "." + serverType + "/" + method.GoName
-		methodGenCtx := newMethodGenContext(s.uniqueRunId, method, gen, file, g, service)
+		methodGenCtx := newMethodGenContext(s.uniqueRunID, method, gen, file, g, service)
 
 		methodGenCtx.genDownstreamMethodSignature()
 		s.MethodMapGenCtx[key] = methodGenCtx
@@ -319,7 +316,7 @@ func (s *methodGenContext) genServerMethodShim() {
 				ret := &%v{}
 				setNewField_%v(ret, "Error")
 				return ret 
-			}`, g.QualifiedGoIdent(method.Output.GoIdent), s.uniqueRunId)
+			}`, g.QualifiedGoIdent(method.Output.GoIdent), s.uniqueRunID)
 
 		s.MethodInfo.ExecuteFunc = fmt.Sprintf(
 			`func(service I%vServer, ctx context.Context, request interface{}) (interface{}, error) {
@@ -378,13 +375,4 @@ func (s *methodGenContext) serverSignature() string {
 		reqArgs = append(reqArgs, method.Parent.GoName+"_"+method.GoName+"Server")
 	}
 	return method.GoName + "(" + strings.Join(reqArgs, ", ") + ") " + ret
-}
-func randomString(n int) string {
-	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-
-	s := make([]rune, n)
-	for i := range s {
-		s[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(s)
 }
