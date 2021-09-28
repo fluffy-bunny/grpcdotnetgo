@@ -66,7 +66,7 @@ func (c *claimsPrincipal) HasClaim(claim Claim) bool {
 }
 
 // AddClaim ...
-func (c *claimsPrincipal) AddClaim(claim contractsIdentity.Claim) {
+func (c *claimsPrincipal) AddClaim(claim Claim) {
 	if c.HasClaim(claim) {
 		return
 	}
