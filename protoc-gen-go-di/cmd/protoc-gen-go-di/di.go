@@ -17,7 +17,7 @@ const (
 	grpcDIInternalPackage = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg")
 	grpcDIProtoError      = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg/proto/error")
 	diContextPackage      = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext")
-	protocGenGoDiPackage  = protogen.GoImportPath("github.com/fluffy-bunny/protoc-gen-go-di/pkg")
+	protocGenGoDiPackage  = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/pkg")
 )
 
 type genFileContext struct {

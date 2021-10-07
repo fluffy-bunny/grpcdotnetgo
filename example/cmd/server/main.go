@@ -7,7 +7,7 @@ import (
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	_ "github.com/fluffy-bunny/grpcdotnetgo/example/internal/plugin"
 	runtime "github.com/fluffy-bunny/grpcdotnetgo/pkg/runtime"
-	pkg "github.com/fluffy-bunny/protoc-gen-go-di/pkg"
+	pkg "github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/pkg"
 	"github.com/gogo/protobuf/gogoproto"
 	_ "github.com/jnewmano/grpc-json-proxy/codec"
 )
@@ -29,7 +29,6 @@ func main() {
 	)))
 
 	runtime.Start()
-
 }
 
 // Wondering where your grpc app actually is?

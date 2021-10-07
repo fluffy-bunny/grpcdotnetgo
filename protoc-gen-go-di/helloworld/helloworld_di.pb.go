@@ -6,7 +6,7 @@ import (
 	context "context"
 	pkg "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
-	pkg1 "github.com/fluffy-bunny/protoc-gen-go-di/pkg"
+	pkg1 "github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/pkg"
 	sarulabsdi "github.com/fluffy-bunny/sarulabsdi"
 	grpc "google.golang.org/grpc"
 	reflect "reflect"
@@ -123,12 +123,10 @@ func init() {
 // i.e. /helloworld.Greeter/SayHello
 var helloworldFullMethodNameEmptyResponseMap = map[string]func() interface{}{
 	"/helloworld.Greeter/SayHello": func() interface{} {
-		// rabbit
 		ret := &HelloReply{}
 		return ret
 	},
 	"/helloworld.Greeter2/SayHello": func() interface{} {
-		// rabbit
 		ret := &HelloReply2{}
 		return ret
 	},

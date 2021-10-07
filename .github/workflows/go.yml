@@ -61,7 +61,7 @@ jobs:
       run:  |
         go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.26
         go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
-        go get -u github.com/fluffy-bunny/protoc-gen-go-di/cmd/protoc-gen-go-di
+        go install github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/cmd/protoc-gen-go-di
 
     - name: GO MOD VENDOR
       run: go mod vendor
@@ -137,14 +137,6 @@ jobs:
       with:
         go-version: "^1.17"
     
-    - name: GO MOD VENDOR
-      run: go mod vendor
-     # NOTE: This will NOT trigger another run of the workflow
-    - name: AutoCommit
-      uses: stefanzweifel/git-auto-commit-action@v4.12.0
-      with:
-        commit_message: Apply Protoc Changes
-        
   release:
     needs: [pre_flight,pre-release]
     runs-on: ubuntu-latest
