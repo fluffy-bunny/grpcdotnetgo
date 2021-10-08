@@ -6,10 +6,11 @@ import (
 	"sync/atomic"
 	"time"
 
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
+
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
@@ -74,7 +75,7 @@ func (j *oidcDiscoveryJob) Run() {
 // Job Provider
 //------------------------------------------
 type service struct {
-	Logger             servicesLogger.ILogger
+	Logger             loggerContracts.ILogger
 	OIDCConfigAccessor middleware_oidc.IOIDCConfigAccessor
 	Storage            IOidcBackgroundStorage
 }

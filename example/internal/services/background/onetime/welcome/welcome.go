@@ -4,8 +4,8 @@ import (
 	"time"
 
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	"github.com/rs/zerolog/log"
 )
 
@@ -28,7 +28,7 @@ func (j *welcomeJob) Run() {
 // Job Provider
 //------------------------------------------
 type service struct {
-	Logger servicesLogger.ILogger
+	Logger loggerContracts.ILogger
 }
 
 func (s *service) GetOneTimeJobs() backgroundtasksContracts.OneTimeJobs {

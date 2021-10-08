@@ -18,7 +18,7 @@ func GetOauth2ServiceFromContainer(ctn di.Container) IOauth2 {
 	return service
 }
 
-// AddServiceProvider adds service to the DI container
+// AddOauth2Service adds service to the DI container
 func AddOauth2Service(builder *di.Builder) {
 	log.Info().
 		Str("serviceName", diServiceName).

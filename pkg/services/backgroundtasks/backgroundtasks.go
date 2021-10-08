@@ -4,7 +4,7 @@ import (
 	"time"
 
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/robfig/cron/v3"
 )
@@ -37,5 +37,5 @@ var (
 )
 
 type serviceBackgroundTasks struct {
-	Logger servicesLogger.ILogger
+	Logger loggerContracts.ILogger
 }

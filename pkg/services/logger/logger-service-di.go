@@ -3,6 +3,7 @@ package logger
 import (
 	"reflect"
 
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
@@ -14,12 +15,12 @@ import (
 var diServiceNameILoggerScoped = grpcdotnetgoutils.GenerateUnqueServiceName("ILogger-Scoped")
 
 var (
-	reflectTypeILogger = di.GetInterfaceReflectType((*ILogger)(nil))
+	reflectTypeILogger = di.GetInterfaceReflectType((*loggerContracts.ILogger)(nil))
 )
 
 // GetScopedLoggerFromContainer from the Container
-func GetScopedLoggerFromContainer(ctn di.Container) ILogger {
-	service := ctn.GetByType(reflectTypeILogger).(ILogger)
+func GetScopedLoggerFromContainer(ctn di.Container) loggerContracts.ILogger {
+	service := ctn.GetByType(reflectTypeILogger).(loggerContracts.ILogger)
 	return service
 }
 
@@ -48,8 +49,8 @@ func AddScopedLogger(builder *di.Builder) {
 var diServiceNameILoggerSingleton = grpcdotnetgoutils.GenerateUnqueServiceName("ILogger-Singleton")
 
 //GetSingletonLoggerFromContainer ...
-func GetSingletonLoggerFromContainer(ctn di.Container) ILogger {
-	service := ctn.Get(diServiceNameILoggerSingleton).(ILogger)
+func GetSingletonLoggerFromContainer(ctn di.Container) loggerContracts.ILogger {
+	service := ctn.Get(diServiceNameILoggerSingleton).(loggerContracts.ILogger)
 	return service
 }
 

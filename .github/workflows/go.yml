@@ -94,8 +94,9 @@ jobs:
         go mod tidy
         go mod download
         genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/contracts/backgroundtasks/interface-types.go -pkg backgroundtasks gen "InterfaceType=IBackgroundTasks,IJobsProvider"
-        genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/contracts/core/interface-types.go -pkg core gen "InterfaceType=IHealthServer,IStartup,ICoreConfig,IUnaryServerInterceptorBuilder"
+        genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/contracts/core/interface-types.go            -pkg core            gen "InterfaceType=IHealthServer,IStartup,ICoreConfig,IUnaryServerInterceptorBuilder"
         genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/contracts/claimsprincipal/interface-types.go -pkg claimsprincipal gen "InterfaceType=IClaimsPrincipal"
+        genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/contracts/logger/interface-types.go          -pkg logger          gen "InterfaceType=ILogger"
         rm -rf ./genny/sarulabsdi/
 
       # NOTE: This will NOT trigger another run of CI.yml
