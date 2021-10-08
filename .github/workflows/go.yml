@@ -94,6 +94,7 @@ jobs:
         go mod tidy
         go mod download
         genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/core/types/interface-types.go -pkg types gen "InterfaceType=IHealthServer"
+        rm -rf ./genny/sarulabsdi/
 
       # NOTE: This will NOT trigger another run of CI.yml
     - name: AutoCommit
