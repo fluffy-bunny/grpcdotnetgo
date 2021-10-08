@@ -5,10 +5,12 @@ import (
 	"google.golang.org/grpc"
 )
 
+// ICoreConfig ...
 type ICoreConfig interface {
 	GetPort() int
 }
 
+// IStartup contract that matches asp.net core closely
 type IStartup interface {
 	GetConfigOptions() *ConfigOptions
 	ConfigureServices(builder *di.Builder)
@@ -19,6 +21,7 @@ type IStartup interface {
 	SetRootContainer(container di.Container)
 }
 
+// IUnaryServerInterceptorBuilder ...
 type IUnaryServerInterceptorBuilder interface {
 	GetUnaryServerInterceptors() []grpc.UnaryServerInterceptor
 	Use(intercepter grpc.UnaryServerInterceptor)

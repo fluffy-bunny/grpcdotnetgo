@@ -149,6 +149,8 @@ func Start() {
 		)
 		si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
 		servicesBackgroundTasks.GetBackgroundTasksFromContainer(rootContainer)
+		// TODO: Add Health check
+		//		health.RegisterHealthServer(grpcServer, g.config.GTMgRPC.(health.HealthServer))
 
 		future := asyncServeGRPC(grpcServer, startup.GetPort())
 		si.Server = grpcServer

@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/bamzi/jobrunner v1.0.0
+	github.com/cheekybits/genny v1.0.0
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
 	github.com/fluffy-bunny/sarulabsdi v0.1.29
@@ -26,7 +27,7 @@ require (
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602
-	google.golang.org/grpc v1.40.0
+	google.golang.org/grpc v1.41.0
 	google.golang.org/protobuf v1.27.1
 
 )

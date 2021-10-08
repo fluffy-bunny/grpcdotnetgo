@@ -63,13 +63,43 @@ jobs:
         go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
         go install github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/cmd/protoc-gen-go-di
 
-    - name: GO MOD VENDOR
-      run: go mod vendor
+    - name: go mod vendor
+      run: |
+        go mod tidy
+        go mod download
+        go mod vendor
 
     - name: make proto go
       run: |
         protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative ./protoc-gen-go-di/helloworld/helloworld.proto
         protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative ./example/internal/grpcContracts/helloworld/helloworld.proto
+
+
+    - name: move vendor sub folders
+      run: |
+        mv ./vendor/github.com/fluffy-bunny/sarulabsdi/genny/ ./genny/sarulabsdi/
+
+    - name: delete vendor folder
+      run: |
+        rm -rf ./vendor/
+
+    - name: Install genny
+      run: |
+        go version
+        go get github.com/cheekybits/genny@latest
+  
+    - name: generate generics
+      run: |
+        # NOTE: go mod tidy and go mod download brings everything down so that genny has everthing it needs
+        go mod tidy
+        go mod download
+        genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/core/types/interface-types.go -pkg types gen "InterfaceType=IHealthServer"
+
+      # NOTE: This will NOT trigger another run of CI.yml
+    - name: AutoCommit
+      uses: stefanzweifel/git-auto-commit-action@v4.11.0
+      with:
+        commit_message: Apply genny and mockgen changes
 
     - name: Test
       run: go test -v -short -p=1 -count=1 -race ./...

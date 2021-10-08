@@ -66,10 +66,10 @@ type serviceGenContext struct {
 	uniqueRunID     string
 }
 
-func newServiceGenContext(packageName string, uniqueRunId string, gen *protogen.Plugin, file *protogen.File, g *protogen.GeneratedFile, service *protogen.Service) *serviceGenContext {
+func newServiceGenContext(packageName string, uniqueRunID string, gen *protogen.Plugin, file *protogen.File, g *protogen.GeneratedFile, service *protogen.Service) *serviceGenContext {
 	ctx := &serviceGenContext{
 		packageName:     packageName,
-		uniqueRunID:     uniqueRunId,
+		uniqueRunID:     uniqueRunID,
 		gen:             gen,
 		file:            file,
 		g:               g,
@@ -78,9 +78,9 @@ func newServiceGenContext(packageName string, uniqueRunId string, gen *protogen.
 	}
 	return ctx
 }
-func newMethodGenContext(uniqueRunId string, protogenMethod *protogen.Method, gen *protogen.Plugin, file *protogen.File, g *protogen.GeneratedFile, service *protogen.Service) *methodGenContext {
+func newMethodGenContext(uniqueRunID string, protogenMethod *protogen.Method, gen *protogen.Plugin, file *protogen.File, g *protogen.GeneratedFile, service *protogen.Service) *methodGenContext {
 	ctx := &methodGenContext{
-		uniqueRunID:    uniqueRunId,
+		uniqueRunID:    uniqueRunID,
 		MethodInfo:     &MethodInfo{},
 		ProtogenMethod: protogenMethod,
 		gen:            gen,
