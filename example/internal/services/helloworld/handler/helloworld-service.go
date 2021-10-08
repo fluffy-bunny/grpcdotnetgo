@@ -16,7 +16,7 @@ import (
 type Service struct {
 	ContextAccessor contextaccessor.IContextAccessor
 	ClaimsPrincipal claimsprincipalContracts.IClaimsPrincipal
-	Logger          loggerContracts.ILogger
+	Logger          loggerContracts.ILogger `inject:""`
 	config          *internal.Config
 }
 
@@ -43,7 +43,7 @@ func (s *Service) SayHello(in *pb.HelloRequest) (*pb.HelloReply, error) {
 type Service2 struct {
 	ContextAccessor contextaccessor.IContextAccessor
 	ClaimsPrincipal claimsprincipalContracts.IClaimsPrincipal
-	Logger          loggerContracts.ILogger
+	Logger          loggerContracts.ILogger `inject:""`
 	config          *internal.Config
 }
 

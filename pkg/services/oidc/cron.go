@@ -75,7 +75,7 @@ func (j *oidcDiscoveryJob) Run() {
 // Job Provider
 //------------------------------------------
 type service struct {
-	Logger             loggerContracts.ILogger
+	Logger             loggerContracts.ILogger `inject:""`
 	OIDCConfigAccessor middleware_oidc.IOIDCConfigAccessor
 	Storage            IOidcBackgroundStorage
 }

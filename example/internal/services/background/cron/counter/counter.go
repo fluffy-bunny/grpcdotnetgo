@@ -35,7 +35,7 @@ func (j *counterJob) getLocalCounter() int32 {
 // Job Provider
 //------------------------------------------
 type service struct {
-	Logger loggerContracts.ILogger
+	Logger loggerContracts.ILogger `inject:""`
 }
 
 func (s *service) GetOneTimeJobs() backgroundtasksContracts.OneTimeJobs {

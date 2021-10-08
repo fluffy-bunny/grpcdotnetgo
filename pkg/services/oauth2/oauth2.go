@@ -9,5 +9,5 @@ type IOauth2 interface {
 }
 type service struct {
 	ContextAccessor contextaccessor.IContextAccessor
-	Logger          loggerContracts.ILogger
+	Logger          loggerContracts.ILogger `inject:""`
 }

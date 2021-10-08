@@ -3,12 +3,11 @@ package handler
 import (
 	"reflect"
 
-	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
-
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/config"
+	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
@@ -29,7 +28,7 @@ func AddGreeterService(builder *di.Builder) {
 				config:          servicesConfig.GetConfigFromContainer(ctn),
 				ContextAccessor: contextaccessor.GetContextAccessorFromContainer(ctn),
 				ClaimsPrincipal: claimsprincipalContracts.GetIClaimsPrincipalFromContainer(ctn),
-				Logger:          servicesLogger.GetScopedLoggerFromContainer(ctn),
+				Logger:          loggerContracts.GetILoggerFromContainer(ctn),
 			}, nil
 		},
 	})
@@ -51,7 +50,7 @@ func AddGreeter2Service(builder *di.Builder) {
 				config:          servicesConfig.GetConfigFromContainer(ctn),
 				ContextAccessor: contextaccessor.GetContextAccessorFromContainer(ctn),
 				ClaimsPrincipal: claimsprincipalContracts.GetIClaimsPrincipalFromContainer(ctn),
-				Logger:          servicesLogger.GetScopedLoggerFromContainer(ctn),
+				Logger:          loggerContracts.GetILoggerFromContainer(ctn),
 			}, nil
 		},
 	})

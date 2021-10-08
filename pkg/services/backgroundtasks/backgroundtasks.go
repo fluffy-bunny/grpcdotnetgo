@@ -37,5 +37,5 @@ var (
 )
 
 type serviceBackgroundTasks struct {
-	Logger loggerContracts.ILogger
+	Logger loggerContracts.ILogger `inject:""`
 }

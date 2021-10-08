@@ -3,11 +3,10 @@ package oauth2
 import (
 	"context"
 
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
-	services_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
-
 	"github.com/gogo/status"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
@@ -67,7 +66,7 @@ func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInt
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		requestContainer := middleware_dicontext.GetRequestContainer(ctx)
-		logger := services_logger.GetScopedLoggerFromContainer(requestContainer)
+		logger := loggerContracts.GetILoggerFromContainer(requestContainer)
 		loggerZ := logger.GetLogger()
 		subLogger := loggerZ.With().Str("FullMethod", info.FullMethod).Logger()
 
