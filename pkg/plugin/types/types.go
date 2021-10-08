@@ -1,10 +1,11 @@
 package types
 
 import (
-	grpcdotnetgo_core_types "github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
+	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 )
 
+// IGRPCDotNetGoPlugin ...
 type IGRPCDotNetGoPlugin interface {
 	GetName() string
-	GetStartup() grpcdotnetgo_core_types.IStartup
+	GetStartup() coreContracts.IStartup
 }

@@ -1,4 +1,4 @@
-package types
+package core
 
 type ConfigOptions struct {
 	Destination interface{}

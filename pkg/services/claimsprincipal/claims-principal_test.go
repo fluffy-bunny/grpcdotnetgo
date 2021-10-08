@@ -3,12 +3,13 @@ package claimsprincipal
 import (
 	"testing"
 
+	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_add_bad_claim(t *testing.T) {
 	cp := newIClaimsPrincipal()
-	cp.AddClaim(Claim{
+	cp.AddClaim(claimsprincipalContracts.Claim{
 		Type:  "",
 		Value: "",
 	})
@@ -16,7 +17,7 @@ func Test_add_bad_claim(t *testing.T) {
 }
 func Test_add_claim(t *testing.T) {
 	cp := newIClaimsPrincipal()
-	claim := Claim{
+	claim := claimsprincipalContracts.Claim{
 		Type:  "a",
 		Value: "b",
 	}
@@ -25,7 +26,7 @@ func Test_add_claim(t *testing.T) {
 	assert.NotEmpty(t, claims)
 	assert.Equal(t, 1, len(claims))
 	assert.True(t, cp.HasClaim(claim))
-	assert.False(t, cp.HasClaim(Claim{
+	assert.False(t, cp.HasClaim(claimsprincipalContracts.Claim{
 		Type:  "junk",
 		Value: "junk",
 	}))

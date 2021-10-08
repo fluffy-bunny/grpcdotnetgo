@@ -1,4 +1,4 @@
-package types
+package core
 
 import (
 	di "github.com/fluffy-bunny/sarulabsdi"

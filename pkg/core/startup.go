@@ -11,11 +11,11 @@ import (
 	"github.com/fatih/structs"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
-	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
 
+	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -37,7 +37,7 @@ func ValidateConfigPath(configPath string) error {
 	}
 	return nil
 }
-func loadConfig(configOptions *types.ConfigOptions) error {
+func loadConfig(configOptions *coreContracts.ConfigOptions) error {
 	v := viper.NewWithOptions(viper.KeyDelimiter("__"))
 	var err error
 	v.SetConfigType("json")

@@ -3,60 +3,37 @@ package backgroundtasks
 import (
 	"time"
 
+	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/robfig/cron/v3"
 )
 
-type IBackgroundTasks interface {
-}
-
-// ScheduledJob cron
-type ScheduledJob struct {
-	// Job must support Run() func
-	Job cron.Job
-	// Schedule "* */5 * * * *","@every 1h30m10s","@midnight"
-	Schedule string
-}
-type ScheduledJobs []*ScheduledJob
-
-func NewScheduledJob(job cron.Job, schedule string) *ScheduledJob {
-	return &ScheduledJob{
+func NewScheduledJob(job cron.Job, schedule string) *backgroundtasksContracts.ScheduledJob {
+	return &backgroundtasksContracts.ScheduledJob{
 		Job:      job,
 		Schedule: schedule,
 	}
 }
 
-func NewScheduledJobs(jobs ...*ScheduledJob) ScheduledJobs {
+func NewScheduledJobs(jobs ...*backgroundtasksContracts.ScheduledJob) backgroundtasksContracts.ScheduledJobs {
 	return jobs
 }
 
-type OneTimeJob struct {
-	// Job must support Run() func
-	Job   cron.Job
-	Delay time.Duration
-}
-type OneTimeJobs []*OneTimeJob
-
-func NewOneTimeJob(job cron.Job, delay time.Duration) *OneTimeJob {
-	return &OneTimeJob{
+func NewOneTimeJob(job cron.Job, delay time.Duration) *backgroundtasksContracts.OneTimeJob {
+	return &backgroundtasksContracts.OneTimeJob{
 		Job:   job,
 		Delay: delay,
 	}
 }
 
-func NewOneTimeJobs(jobs ...*OneTimeJob) OneTimeJobs {
+func NewOneTimeJobs(jobs ...*backgroundtasksContracts.OneTimeJob) backgroundtasksContracts.OneTimeJobs {
 	return jobs
 }
 
-type IJobsProvider interface {
-	GetScheduledJobs() ScheduledJobs
-	GetOneTimeJobs() OneTimeJobs
-}
-
 var (
-	TypeIBackgroundTasks = di.GetInterfaceReflectType((*IBackgroundTasks)(nil))
-	TypeIJobsProvider    = di.GetInterfaceReflectType((*IJobsProvider)(nil))
+	TypeIBackgroundTasks = di.GetInterfaceReflectType((*backgroundtasksContracts.IBackgroundTasks)(nil))
+	TypeIJobsProvider    = di.GetInterfaceReflectType((*backgroundtasksContracts.IJobsProvider)(nil))
 )
 
 type serviceBackgroundTasks struct {

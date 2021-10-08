@@ -3,18 +3,19 @@ package claimsprincipal
 import (
 	"reflect"
 
+	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
 
 var (
 	rtClaimsPrincipal           = reflect.TypeOf(&claimsPrincipal{}).Elem()
-	reflectTypeIClaimsPrincipal = di.GetInterfaceReflectType((*IClaimsPrincipal)(nil))
+	reflectTypeIClaimsPrincipal = di.GetInterfaceReflectType((*claimsprincipalContracts.IClaimsPrincipal)(nil))
 )
 
 // GetClaimsPrincipalFromContainer from the Container
-func GetClaimsPrincipalFromContainer(ctn di.Container) IClaimsPrincipal {
-	return ctn.GetByType(reflectTypeIClaimsPrincipal).(IClaimsPrincipal)
+func GetClaimsPrincipalFromContainer(ctn di.Container) claimsprincipalContracts.IClaimsPrincipal {
+	return ctn.GetByType(reflectTypeIClaimsPrincipal).(claimsprincipalContracts.IClaimsPrincipal)
 }
 
 // AddClaimsPrincipal adds service to the DI container

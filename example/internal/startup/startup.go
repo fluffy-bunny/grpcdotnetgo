@@ -13,7 +13,7 @@ import (
 	singletonService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/auth/oauth2"
-	grpcdotnetgo_core_types "github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
+	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext/middleware"
 	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
@@ -41,25 +41,25 @@ func getConfigPath() string {
 
 type Startup struct {
 	MockOIDCService interface{}
-	ConfigOptions   *grpcdotnetgo_core_types.ConfigOptions
+	ConfigOptions   *coreContracts.ConfigOptions
 	RootContainer   di.Container
 }
 
-func NewStartup() grpcdotnetgo_core_types.IStartup {
+func NewStartup() coreContracts.IStartup {
 	startup := &Startup{}
 	startup.ctor()
 	return startup
 }
 
 func (s *Startup) ctor() {
-	s.ConfigOptions = &grpcdotnetgo_core_types.ConfigOptions{
+	s.ConfigOptions = &coreContracts.ConfigOptions{
 		Destination: &internal.Config{},
 		RootConfig:  internal.ConfigDefaultYaml,
 		ConfigPath:  getConfigPath(),
 	}
 }
 
-func (s *Startup) GetConfigOptions() *grpcdotnetgo_core_types.ConfigOptions {
+func (s *Startup) GetConfigOptions() *coreContracts.ConfigOptions {
 	return s.ConfigOptions
 }
 
@@ -104,7 +104,7 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 	//	services_oidc.AddOIDCAuthHandler(builder)
 
 }
-func (s *Startup) Configure(unaryServerInterceptorBuilder grpcdotnetgo_core_types.IUnaryServerInterceptorBuilder) {
+func (s *Startup) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
 
 	// this is how  you get your config before you register your services
 	config := s.ConfigOptions.Destination.(*internal.Config)

@@ -4,13 +4,14 @@ import (
 	"reflect"
 
 	"github.com/bamzi/jobrunner"
+	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
 
-func GetBackgroundTasksFromContainer(ctn di.Container) IBackgroundTasks {
-	obj := ctn.GetByType(TypeIBackgroundTasks).(IBackgroundTasks)
+func GetBackgroundTasksFromContainer(ctn di.Container) backgroundtasksContracts.IBackgroundTasks {
+	obj := ctn.GetByType(TypeIBackgroundTasks).(backgroundtasksContracts.IBackgroundTasks)
 	return obj
 }
 
@@ -36,7 +37,7 @@ func AddBackgroundTasks(builder *di.Builder) {
 			jobsProviders, err := ctn.SafeGetManyByType(TypeIJobsProvider)
 			if err == nil && jobsProviders != nil && len(jobsProviders) > 0 {
 				for _, jp := range jobsProviders {
-					jpi := jp.(IJobsProvider)
+					jpi := jp.(backgroundtasksContracts.IJobsProvider)
 					sjs := jpi.GetScheduledJobs()
 					for _, sj := range sjs {
 						jobrunner.Schedule(sj.Schedule, sj.Job)

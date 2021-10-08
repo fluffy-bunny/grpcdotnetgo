@@ -1,4 +1,4 @@
-package types
+package core
 
 import (
 	health "google.golang.org/grpc/health/grpc_health_v1"

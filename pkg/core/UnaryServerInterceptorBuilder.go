@@ -1,11 +1,11 @@
 package core
 
 import (
-	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
+	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	"google.golang.org/grpc"
 )
 
-func NewUnaryServerInterceptorBuilder() types.IUnaryServerInterceptorBuilder {
+func NewUnaryServerInterceptorBuilder() coreContracts.IUnaryServerInterceptorBuilder {
 	return &UnaryServerInterceptorBuilder{}
 }
 
