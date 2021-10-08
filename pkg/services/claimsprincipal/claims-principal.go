@@ -21,6 +21,16 @@ type claimsPrincipal struct {
 	claims map[string][]string
 }
 
+func newIClaimsPrincipal() IClaimsPrincipal {
+	obj := &claimsPrincipal{}
+	obj.Ctor()
+	return obj
+}
+
+func (c *claimsPrincipal) Ctor() {
+	c.claims = make(map[string][]string)
+}
+
 func removeIndex(s []string, index int) []string {
 	if index >= len(s) {
 		panic(fmt.Errorf("len:%v, index:%v out of range", len(s), index))
