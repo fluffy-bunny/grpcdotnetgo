@@ -67,13 +67,13 @@ func (c *claimsPrincipal) HasClaim(claim Claim) bool {
 
 // AddClaim ...
 func (c *claimsPrincipal) AddClaim(claim Claim) {
+	if len(claim.Type) == 0 {
+		return
+	}
 	if c.HasClaim(claim) {
 		return
 	}
 
-	if len(claim.Type) == 0 || len(claim.Value) == 0 {
-		panic("invalid claim input")
-	}
 	claims, ok := c.claims[claim.Type]
 	if !ok {
 		c.claims[claim.Type] = []string{}
