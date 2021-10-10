@@ -159,14 +159,32 @@ func (s *Startup) Configure(unaryServerInterceptorBuilder grpcdotnetgo_core_type
 	unaryServerInterceptorBuilder.Use(middleware_grpc_recovery.UnaryServerInterceptor(recoveryOpts...))
 
 	s.MockOIDCService = mockoidcservice.GetMockOIDCServiceFromContainer(s.RootContainer)
-
 }
+
+// RegisterGRPCEndpoints registeres all our servers with the framework
 func (s *Startup) RegisterGRPCEndpoints(server *grpc.Server) []interface{} {
 	var endpoints []interface{}
 	endpoints = append(endpoints, pb.RegisterGreeterServerDI(server))
 	endpoints = append(endpoints, pb.RegisterGreeter2ServerDI(server))
 	return endpoints
 }
+
+// GetStartupManifest wrapper
+func (s *Startup) GetStartupManifest() grpcdotnetgo_core_types.StartupManifest {
+	return grpcdotnetgo_core_types.StartupManifest{
+		Name:    "hello",
+		Version: "test.1",
+	}
+}
+
+// OnPreServerStartup wrapper
+func (s *Startup) OnPreServerStartup() error {
+	return nil
+}
+
+// OnPostServerShutdown Wrapper
+func (s *Startup) OnPostServerShutdown() {}
+
 func recoveryUnaryFunc(fullMethodName string, p interface{}) (interface{}, error) {
 	fmt.Printf("p: %+v\n", p)
 

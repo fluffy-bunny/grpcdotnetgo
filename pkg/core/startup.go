@@ -96,6 +96,7 @@ func loadConfig(configOptions *types.ConfigOptions) error {
 
 // ServerInstance represents an instance of a plugin
 type ServerInstance struct {
+	StartupManifest types.StartupManifest
 	Server          *grpc.Server
 	Future          async.Future
 	DotNetGoBuilder *grpcdotnetgo.DotNetGoBuilder
@@ -125,6 +126,7 @@ func Start() {
 		si.DotNetGoBuilder.AddDefaultService()
 
 		startup := plugin.GetStartup()
+		si.StartupManifest = startup.GetStartupManifest()
 
 		configOptions := startup.GetConfigOptions()
 		err = loadConfig(configOptions)
@@ -148,13 +150,19 @@ func Start() {
 			)),
 		)
 		si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
+		// TODO: Make this a first class abstaction
+		// ILifeCycleHook but maybe IStartup can have those
 		servicesBackgroundTasks.GetBackgroundTasksFromContainer(rootContainer)
-
-		future := asyncServeGRPC(grpcServer, startup.GetPort())
-		si.Server = grpcServer
-		si.Future = future
-
-		serverInstances = append(serverInstances, si)
+		err := startup.OnPreServerStartup()
+		if err != nil {
+			log.Error().Err(err).
+				Interface("startupManifest", si.StartupManifest).Msgf("OnPreServerStartup failed")
+		} else {
+			future := asyncServeGRPC(grpcServer, startup.GetPort())
+			si.Server = grpcServer
+			si.Future = future
+			serverInstances = append(serverInstances, si)
+		}
 	}
 	sig := utils.WaitSignal()
 	log.Info().Str("sig", sig.String()).Msg("Interupt triggered")
@@ -165,7 +173,10 @@ func Start() {
 		// tear down the DI Container
 		v.DotNetGoBuilder.Container.DeleteWithSubContainers()
 	}
-
+	for _, plugin2 := range plugins {
+		startup := plugin2.GetStartup()
+		startup.OnPostServerShutdown()
+	}
 	// do a future wait
 	for _, v := range serverInstances {
 		v.Future.Get()

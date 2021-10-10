@@ -52,3 +52,19 @@ func (s *TestStartupWrapper) RegisterGRPCEndpoints(server *grpc.Server) []interf
 func (s *TestStartupWrapper) SetRootContainer(container di.Container) {
 	s.SetRootContainer(container)
 }
+
+// GetStartupManifest wrapper
+func (s *TestStartupWrapper) GetStartupManifest() types.StartupManifest {
+	return types.StartupManifest{
+		Name:    "test",
+		Version: "test.1",
+	}
+}
+
+// OnPreServerStartup wrapper
+func (s *TestStartupWrapper) OnPreServerStartup() error {
+	return nil
+}
+
+// OnPostServerShutdown Wrapper
+func (s *TestStartupWrapper) OnPostServerShutdown() {}

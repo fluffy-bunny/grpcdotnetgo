@@ -9,7 +9,14 @@ type ICoreConfig interface {
 	GetPort() int
 }
 
+type StartupManifest struct {
+	Name    string
+	Version string
+}
+
+// IStartup contract
 type IStartup interface {
+	GetStartupManifest() StartupManifest
 	GetConfigOptions() *ConfigOptions
 	ConfigureServices(builder *di.Builder)
 	Configure(unaryServerInterceptorBuilder IUnaryServerInterceptorBuilder)
@@ -17,6 +24,8 @@ type IStartup interface {
 
 	RegisterGRPCEndpoints(server *grpc.Server) []interface{}
 	SetRootContainer(container di.Container)
+	OnPreServerStartup() error
+	OnPostServerShutdown()
 }
 
 type IUnaryServerInterceptorBuilder interface {
