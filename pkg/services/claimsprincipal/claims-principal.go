@@ -10,6 +10,16 @@ type claimsPrincipal struct {
 	claims map[string][]string
 }
 
+func newIClaimsPrincipal() claimsprincipalContracts.IClaimsPrincipal {
+	obj := &claimsPrincipal{}
+	obj.Ctor()
+	return obj
+}
+
+func (c *claimsPrincipal) Ctor() {
+	c.claims = make(map[string][]string)
+}
+
 func removeIndex(s []string, index int) []string {
 	if index >= len(s) {
 		panic(fmt.Errorf("len:%v, index:%v out of range", len(s), index))
@@ -56,13 +66,13 @@ func (c *claimsPrincipal) HasClaim(claim claimsprincipalContracts.Claim) bool {
 
 // AddClaim ...
 func (c *claimsPrincipal) AddClaim(claim claimsprincipalContracts.Claim) {
+	if len(claim.Type) == 0 {
+		return
+	}
 	if c.HasClaim(claim) {
 		return
 	}
 
-	if len(claim.Type) == 0 || len(claim.Value) == 0 {
-		panic("invalid claim input")
-	}
 	claims, ok := c.claims[claim.Type]
 	if !ok {
 		c.claims[claim.Type] = []string{}
