@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	health "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
 )
 
@@ -174,6 +175,11 @@ func (s *Startup) RegisterGRPCEndpoints(server *grpc.Server) []interface{} {
 	var endpoints []interface{}
 	endpoints = append(endpoints, pb.RegisterGreeterServerDI(server))
 	endpoints = append(endpoints, pb.RegisterGreeter2ServerDI(server))
+	healthServer, _ := coreContracts.SafeGetIHealthServerFromContainer(s.RootContainer)
+	if healthServer != nil {
+		health.RegisterHealthServer(server, healthServer)
+		endpoints = append(endpoints, healthServer)
+	}
 	return endpoints
 }
 

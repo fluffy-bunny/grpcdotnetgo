@@ -66,8 +66,10 @@ func buildAuthFunction(oauth2Context *OAuth2Context) func(ctx context.Context, f
 	return func(ctx context.Context, fullMethodName string) (context.Context, error) {
 		token, err := grpc_auth.AuthFromMD(ctx, oauth2Context.Scheme)
 		if err != nil {
+			emptyPrincipal := oauth2Context.JWTValidator.NewEmptyClaimsPrincipal()
 			// not ours
-			return ctx, nil
+			newCtx := context.WithValue(ctx, CtxClaimsPrincipalKey, emptyPrincipal)
+			return newCtx, nil
 		}
 		validatedToken, err := oauth2Context.JWTValidator.ParseToken(ctx, token)
 		var newCtx context.Context

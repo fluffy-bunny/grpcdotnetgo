@@ -24,7 +24,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
-	health "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 // ValidateConfigPath just makes sure, that the path provided is a file,
@@ -186,10 +185,6 @@ func Start() {
 		// TODO: Make this a first class abstaction
 		// ILifeCycleHook but maybe IStartup can have those
 		servicesBackgroundTasks.GetBackgroundTasksFromContainer(rootContainer)
-		healthServer, err := coreContracts.SafeGetIHealthServerFromContainer(rootContainer)
-		if healthServer != nil {
-			health.RegisterHealthServer(grpcServer, healthServer)
-		}
 
 		err = startup.OnPreServerStartup()
 		if err != nil {
