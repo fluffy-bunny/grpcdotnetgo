@@ -1,4 +1,4 @@
-package types
+package plugin
 
 import (
 	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"

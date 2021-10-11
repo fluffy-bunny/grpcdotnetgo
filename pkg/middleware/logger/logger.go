@@ -28,10 +28,12 @@ func EnsureContextLoggingUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 func LoggingUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		requestContainer := middleware_dicontext.GetRequestContainer(ctx)
-		logger := loggerContracts.GetILoggerFromContainer(requestContainer)
-		logger.Debug().
-			Interface("request", req).
-			Msg("Handling request")
+		if requestContainer != nil {
+			logger := loggerContracts.GetILoggerFromContainer(requestContainer)
+			logger.Debug().
+				Interface("request", req).
+				Msg("Handling request")
+		}
 		return handler(ctx, req)
 	}
 }

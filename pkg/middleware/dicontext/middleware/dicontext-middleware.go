@@ -32,24 +32,24 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		d, ok := endpointToServerInstance[info.Server]
 		if ok {
 			rootContainer = d.DotNetGoBuilder.Container
+			// Create a request and delete it once it has been handled.
+			// Deleting the request will close the connection.
+			requestContainer, _ := rootContainer.SubContainer()
+			defer requestContainer.Delete()
+
+			ctx = dicontext.SetRequestContainer(ctx, requestContainer)
+
+			contextaccessor := contextaccessor.GetInternalGetContextAccessorFromContainer(requestContainer)
+			contextaccessor.SetContext(ctx)
+
+			// get a fresh ClaimsPrincipal from the request container and populate it with uuid data
+
+			claimsPrincipal := claimsprincipalContracts.GetIClaimsPrincipalFromContainer(requestContainer)
+			claimsPrincipal.AddClaim(claimsprincipalContracts.Claim{
+				Type:  "d",
+				Value: uuid.New().String(),
+			})
 		}
-		// Create a request and delete it once it has been handled.
-		// Deleting the request will close the connection.
-		requestContainer, _ := rootContainer.SubContainer()
-		defer requestContainer.Delete()
-
-		ctx = dicontext.SetRequestContainer(ctx, requestContainer)
-
-		contextaccessor := contextaccessor.GetInternalGetContextAccessorFromContainer(requestContainer)
-		contextaccessor.SetContext(ctx)
-
-		// get a fresh ClaimsPrincipal from the request container and populate it with uuid data
-
-		claimsPrincipal := claimsprincipalContracts.GetIClaimsPrincipalFromContainer(requestContainer)
-		claimsPrincipal.AddClaim(claimsprincipalContracts.Claim{
-			Type:  "d",
-			Value: uuid.New().String(),
-		})
 
 		return handler(ctx, req)
 	}

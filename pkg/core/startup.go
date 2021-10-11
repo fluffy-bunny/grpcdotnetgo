@@ -3,12 +3,11 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"net"
 	"os"
 	"path"
 	"strconv"
 	"strings"
-
-	"net"
 
 	"github.com/fatih/structs"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
@@ -17,7 +16,6 @@ import (
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
-
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -26,6 +24,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
+	health "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 // ValidateConfigPath just makes sure, that the path provided is a file,
@@ -187,7 +186,12 @@ func Start() {
 		// TODO: Make this a first class abstaction
 		// ILifeCycleHook but maybe IStartup can have those
 		servicesBackgroundTasks.GetBackgroundTasksFromContainer(rootContainer)
-		err := startup.OnPreServerStartup()
+		healthServer, err := coreContracts.SafeGetIHealthServerFromContainer(rootContainer)
+		if healthServer != nil {
+			health.RegisterHealthServer(grpcServer, healthServer)
+		}
+
+		err = startup.OnPreServerStartup()
 		if err != nil {
 			log.Error().Err(err).
 				Interface("startupManifest", si.StartupManifest).Msgf("OnPreServerStartup failed")

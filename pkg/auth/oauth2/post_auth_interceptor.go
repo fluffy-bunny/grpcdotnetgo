@@ -60,6 +60,7 @@ func validateOR(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal *Clai
 	return found
 }
 
+// FinalAuthVerificationMiddleware evaluates the claims principal
 func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInterceptor {
 	configAccessor := middleware_oidc.GetOIDCConfigAccessorFromContainer(container)
 	entryPointConfig := configAccessor.GetOIDCConfig().GetEntryPoints()
@@ -67,31 +68,32 @@ func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInt
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		requestContainer := middleware_dicontext.GetRequestContainer(ctx)
-		logger := loggerContracts.GetILoggerFromContainer(requestContainer)
-		loggerZ := logger.GetLogger()
-		subLogger := loggerZ.With().Str("FullMethod", info.FullMethod).Logger()
+		if requestContainer != nil {
+			logger := loggerContracts.GetILoggerFromContainer(requestContainer)
+			loggerZ := logger.GetLogger()
+			subLogger := loggerZ.With().Str("FullMethod", info.FullMethod).Logger()
 
-		permissionDeniedFunc := func() (interface{}, error) {
-			logger.DebugL(&subLogger).Msg("")
-			return nil, status.Errorf(codes.PermissionDenied, "permission denied")
-		}
-
-		switch claimsPrincipal := ctx.Value(CtxClaimsPrincipalKey).(type) {
-		default:
-			return permissionDeniedFunc()
-		case *ClaimsPrincipal:
-			elem, ok := entryPointConfig[info.FullMethod]
-			if !ok {
-				// we don't have an entry so it is valid
-				// TODO: Add in security option that must have an entry even if the AND and OR are empty.  That way
-				// We have proof someone purposefully wanted it with no validation
-				// return permissionDeniedFunc()
-				break
+			permissionDeniedFunc := func() (interface{}, error) {
+				logger.DebugL(&subLogger).Msg("")
+				return nil, status.Errorf(codes.PermissionDenied, "permission denied")
 			}
-			if !validate(elem.ClaimsConfig, claimsPrincipal) {
+
+			switch claimsPrincipal := ctx.Value(CtxClaimsPrincipalKey).(type) {
+			default:
 				return permissionDeniedFunc()
+			case *ClaimsPrincipal:
+				elem, ok := entryPointConfig[info.FullMethod]
+				if !ok {
+					// we don't have an entry so it is valid
+					// TODO: Add in security option that must have an entry even if the AND and OR are empty.  That way
+					// We have proof someone purposefully wanted it with no validation
+					// return permissionDeniedFunc()
+					break
+				}
+				if !validate(elem.ClaimsConfig, claimsPrincipal) {
+					return permissionDeniedFunc()
+				}
 			}
-
 		}
 		return handler(ctx, req)
 	}

@@ -9,6 +9,7 @@ import (
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
 	backgroundCounterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/background/cron/counter"
 	backgroundWelcomeService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/background/onetime/welcome"
+	healthService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/health"
 	handlerGreeterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/helloworld/handler"
 	singletonService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
@@ -46,6 +47,7 @@ type Startup struct {
 	RootContainer   di.Container
 }
 
+// NewStartup creates a new IStartup object
 func NewStartup() coreContracts.IStartup {
 	startup := &Startup{}
 	startup.ctor()
@@ -60,18 +62,23 @@ func (s *Startup) ctor() {
 	}
 }
 
+// GetConfigOptions is called by the runtime to determine where to write the configuration information to
 func (s *Startup) GetConfigOptions() *coreContracts.ConfigOptions {
 	return s.ConfigOptions
 }
 
+// SetRootContainer is called by the framework letting us now the root DI container
 func (s *Startup) SetRootContainer(container di.Container) {
 	s.RootContainer = container
 }
 
+// GetPort get the port number
 func (s *Startup) GetPort() int {
 	config := s.ConfigOptions.Destination.(*internal.Config)
 	return config.Example.GRPCPort
 }
+
+// ConfigureServices is where we register our services with the DI
 func (s *Startup) ConfigureServices(builder *di.Builder) {
 	// this is how  you get your config before you register your services
 	config := s.ConfigOptions.Destination.(*internal.Config)
@@ -104,9 +111,11 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 	//	backgroundOidcService.AddCronOidcJobProvider(builder)
 	//	services_oidc.AddOIDCAuthHandler(builder)
 
+	healthService.AddSingletonHealthService(builder)
 }
-func (s *Startup) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
 
+// Configure setups up our middleware
+func (s *Startup) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
 	// this is how  you get your config before you register your services
 	config := s.ConfigOptions.Destination.(*internal.Config)
 
