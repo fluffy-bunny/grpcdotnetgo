@@ -13,7 +13,7 @@ import (
 	"github.com/fatih/structs"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
-	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
+	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
@@ -40,7 +40,7 @@ func ValidateConfigPath(configPath string) error {
 	}
 	return nil
 }
-func loadConfig(configOptions *types.ConfigOptions) error {
+func loadConfig(configOptions *coreContracts.ConfigOptions) error {
 	v := viper.NewWithOptions(viper.KeyDelimiter("__"))
 	var err error
 	v.SetConfigType("json")
@@ -99,7 +99,7 @@ func loadConfig(configOptions *types.ConfigOptions) error {
 
 // ServerInstance represents an instance of a plugin
 type ServerInstance struct {
-	StartupManifest types.StartupManifest
+	StartupManifest coreContracts.StartupManifest
 	Server          *grpc.Server
 	Future          async.Future
 	DotNetGoBuilder *grpcdotnetgo.DotNetGoBuilder

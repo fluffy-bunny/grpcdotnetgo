@@ -1,14 +1,16 @@
-package types
+package core
 
 import (
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"google.golang.org/grpc"
 )
 
+// ICoreConfig ...
 type ICoreConfig interface {
 	GetPort() int
 }
 
+// StartupManifest informational
 type StartupManifest struct {
 	Name    string
 	Version string
@@ -28,6 +30,7 @@ type IStartup interface {
 	OnPostServerShutdown()
 }
 
+// IUnaryServerInterceptorBuilder ...
 type IUnaryServerInterceptorBuilder interface {
 	GetUnaryServerInterceptors() []grpc.UnaryServerInterceptor
 	Use(intercepter grpc.UnaryServerInterceptor)

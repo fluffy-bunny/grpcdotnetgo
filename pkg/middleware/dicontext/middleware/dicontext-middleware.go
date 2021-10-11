@@ -3,9 +3,9 @@ package dicontext
 import (
 	"context"
 
+	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	grpcdotnetgo_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/core"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
-	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/google/uuid"
@@ -45,8 +45,8 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 		// get a fresh ClaimsPrincipal from the request container and populate it with uuid data
 
-		claimsPrincipal := claimsprincipal.GetClaimsPrincipalFromContainer(requestContainer)
-		claimsPrincipal.AddClaim(claimsprincipal.Claim{
+		claimsPrincipal := claimsprincipalContracts.GetIClaimsPrincipalFromContainer(requestContainer)
+		claimsPrincipal.AddClaim(claimsprincipalContracts.Claim{
 			Type:  "d",
 			Value: uuid.New().String(),
 		})

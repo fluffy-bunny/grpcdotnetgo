@@ -1,19 +1,19 @@
 package tests
 
 import (
-	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
+	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"google.golang.org/grpc"
 )
 
 // TestStartupWrapper struct
 type TestStartupWrapper struct {
-	ChildStartup              types.IStartup
+	ChildStartup              coreContracts.IStartup
 	ConfigureServicesOverride func(builder *di.Builder)
 }
 
 // NewTestStartupWrapper creates a new TestStartupWrapper
-func NewTestStartupWrapper(childStartup types.IStartup, configureServicesOverride func(builder *di.Builder)) *TestStartupWrapper {
+func NewTestStartupWrapper(childStartup coreContracts.IStartup, configureServicesOverride func(builder *di.Builder)) *TestStartupWrapper {
 	return &TestStartupWrapper{
 		ChildStartup:              childStartup,
 		ConfigureServicesOverride: configureServicesOverride,
@@ -21,7 +21,7 @@ func NewTestStartupWrapper(childStartup types.IStartup, configureServicesOverrid
 }
 
 // GetConfigOptions wrapper
-func (s *TestStartupWrapper) GetConfigOptions() *types.ConfigOptions {
+func (s *TestStartupWrapper) GetConfigOptions() *coreContracts.ConfigOptions {
 	return s.ChildStartup.GetConfigOptions()
 }
 
@@ -34,7 +34,7 @@ func (s *TestStartupWrapper) ConfigureServices(builder *di.Builder) {
 }
 
 // Configure wrapper
-func (s *TestStartupWrapper) Configure(unaryServerInterceptorBuilder types.IUnaryServerInterceptorBuilder) {
+func (s *TestStartupWrapper) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
 	s.Configure(unaryServerInterceptorBuilder)
 }
 
@@ -54,8 +54,8 @@ func (s *TestStartupWrapper) SetRootContainer(container di.Container) {
 }
 
 // GetStartupManifest wrapper
-func (s *TestStartupWrapper) GetStartupManifest() types.StartupManifest {
-	return types.StartupManifest{
+func (s *TestStartupWrapper) GetStartupManifest() coreContracts.StartupManifest {
+	return coreContracts.StartupManifest{
 		Name:    "test",
 		Version: "test.1",
 	}

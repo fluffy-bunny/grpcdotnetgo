@@ -123,12 +123,10 @@ func init() {
 // i.e. /helloworld.Greeter/SayHello
 var helloworldFullMethodNameEmptyResponseMap = map[string]func() interface{}{
 	"/helloworld.Greeter/SayHello": func() interface{} {
-		// rabbit
 		ret := &HelloReply{}
 		return ret
 	},
 	"/helloworld.Greeter2/SayHello": func() interface{} {
-		// rabbit
 		ret := &HelloReply2{}
 		return ret
 	},

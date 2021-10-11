@@ -13,7 +13,7 @@ import (
 	singletonService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/auth/oauth2"
-	grpcdotnetgo_core_types "github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
+	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext/middleware"
 	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
@@ -22,7 +22,7 @@ import (
 	mockoidcservice "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/test/mockoidcservice"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	_ "github.com/jnewmano/grpc-json-proxy/codec"
+	_ "github.com/jnewmano/grpc-json-proxy/codec" // justified
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -39,27 +39,28 @@ func getConfigPath() string {
 	return configPath
 }
 
+// Startup type
 type Startup struct {
 	MockOIDCService interface{}
-	ConfigOptions   *grpcdotnetgo_core_types.ConfigOptions
+	ConfigOptions   *coreContracts.ConfigOptions
 	RootContainer   di.Container
 }
 
-func NewStartup() grpcdotnetgo_core_types.IStartup {
+func NewStartup() coreContracts.IStartup {
 	startup := &Startup{}
 	startup.ctor()
 	return startup
 }
 
 func (s *Startup) ctor() {
-	s.ConfigOptions = &grpcdotnetgo_core_types.ConfigOptions{
+	s.ConfigOptions = &coreContracts.ConfigOptions{
 		Destination: &internal.Config{},
 		RootConfig:  internal.ConfigDefaultYaml,
 		ConfigPath:  getConfigPath(),
 	}
 }
 
-func (s *Startup) GetConfigOptions() *grpcdotnetgo_core_types.ConfigOptions {
+func (s *Startup) GetConfigOptions() *coreContracts.ConfigOptions {
 	return s.ConfigOptions
 }
 
@@ -104,7 +105,7 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 	//	services_oidc.AddOIDCAuthHandler(builder)
 
 }
-func (s *Startup) Configure(unaryServerInterceptorBuilder grpcdotnetgo_core_types.IUnaryServerInterceptorBuilder) {
+func (s *Startup) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
 
 	// this is how  you get your config before you register your services
 	config := s.ConfigOptions.Destination.(*internal.Config)
@@ -112,7 +113,6 @@ func (s *Startup) Configure(unaryServerInterceptorBuilder grpcdotnetgo_core_type
 	grpcFuncAuthConfig := oauth2.NewGrpcFuncAuthConfig(config.Example.OIDCConfig.Authority,
 		"bearer", 5)
 	for _, v := range config.Example.OIDCConfig.EntryPoints {
-
 		methodClaims := oauth2.MethodClaims{
 			OR:  []oauth2.Claim{},
 			AND: []oauth2.Claim{},
@@ -123,7 +123,6 @@ func (s *Startup) Configure(unaryServerInterceptorBuilder grpcdotnetgo_core_type
 				Type:  vv.Type,
 				Value: vv.Value,
 			})
-
 		}
 
 		for _, vv := range v.ClaimsConfig.OR {
@@ -170,8 +169,8 @@ func (s *Startup) RegisterGRPCEndpoints(server *grpc.Server) []interface{} {
 }
 
 // GetStartupManifest wrapper
-func (s *Startup) GetStartupManifest() grpcdotnetgo_core_types.StartupManifest {
-	return grpcdotnetgo_core_types.StartupManifest{
+func (s *Startup) GetStartupManifest() coreContracts.StartupManifest {
+	return coreContracts.StartupManifest{
 		Name:    "hello",
 		Version: "test.1",
 	}
@@ -200,5 +199,4 @@ func recoveryUnaryFunc(fullMethodName string, p interface{}) (interface{}, error
 	}
 
 	return nil, status.Error(codes.Internal, "Unexpected error1")
-
 }
