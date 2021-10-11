@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strconv"
+	"strings"
 
 	"net"
 
@@ -20,6 +22,7 @@ import (
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/reugn/async"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -114,7 +117,38 @@ func GetServerInstances() []*ServerInstance {
 func Start() {
 	plugins := grpcdotnetgo_plugin.GetPlugins()
 	var err error
-
+	logLevel := os.Getenv("LOG_LEVEL")
+	if len(logLevel) == 0 {
+		logLevel = "info"
+	}
+	prettyLog := false
+	prettyLogValue := os.Getenv("PRETTY_LOG")
+	if len(prettyLogValue) != 0 {
+		b, err := strconv.ParseBool(prettyLogValue)
+		if err != nil {
+			prettyLog = b
+		}
+	}
+	if prettyLog {
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	}
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	switch strings.ToLower(logLevel) {
+	case "debug":
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	case "info":
+		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	case "warn":
+		zerolog.SetGlobalLevel(zerolog.WarnLevel)
+	case "error":
+		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
+	case "fatal":
+		zerolog.SetGlobalLevel(zerolog.FatalLevel)
+	case "panic":
+		zerolog.SetGlobalLevel(zerolog.PanicLevel)
+	case "trace":
+		zerolog.SetGlobalLevel(zerolog.TraceLevel)
+	}
 	for _, plugin := range plugins {
 		si := &ServerInstance{}
 
