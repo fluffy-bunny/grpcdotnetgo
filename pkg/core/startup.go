@@ -3,23 +3,24 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"net"
 	"os"
 	"path"
-
-	"net"
+	"strconv"
+	"strings"
 
 	"github.com/fatih/structs"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
-	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core/types"
+	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
-
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/reugn/async"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -37,7 +38,7 @@ func ValidateConfigPath(configPath string) error {
 	}
 	return nil
 }
-func loadConfig(configOptions *types.ConfigOptions) error {
+func loadConfig(configOptions *coreContracts.ConfigOptions) error {
 	v := viper.NewWithOptions(viper.KeyDelimiter("__"))
 	var err error
 	v.SetConfigType("json")
@@ -96,6 +97,7 @@ func loadConfig(configOptions *types.ConfigOptions) error {
 
 // ServerInstance represents an instance of a plugin
 type ServerInstance struct {
+	StartupManifest coreContracts.StartupManifest
 	Server          *grpc.Server
 	Future          async.Future
 	DotNetGoBuilder *grpcdotnetgo.DotNetGoBuilder
@@ -113,7 +115,38 @@ func GetServerInstances() []*ServerInstance {
 func Start() {
 	plugins := grpcdotnetgo_plugin.GetPlugins()
 	var err error
-
+	logLevel := os.Getenv("LOG_LEVEL")
+	if len(logLevel) == 0 {
+		logLevel = "info"
+	}
+	prettyLog := false
+	prettyLogValue := os.Getenv("PRETTY_LOG")
+	if len(prettyLogValue) != 0 {
+		b, err := strconv.ParseBool(prettyLogValue)
+		if err != nil {
+			prettyLog = b
+		}
+	}
+	if prettyLog {
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	}
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	switch strings.ToLower(logLevel) {
+	case "debug":
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	case "info":
+		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	case "warn":
+		zerolog.SetGlobalLevel(zerolog.WarnLevel)
+	case "error":
+		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
+	case "fatal":
+		zerolog.SetGlobalLevel(zerolog.FatalLevel)
+	case "panic":
+		zerolog.SetGlobalLevel(zerolog.PanicLevel)
+	case "trace":
+		zerolog.SetGlobalLevel(zerolog.TraceLevel)
+	}
 	for _, plugin := range plugins {
 		si := &ServerInstance{}
 
@@ -125,6 +158,7 @@ func Start() {
 		si.DotNetGoBuilder.AddDefaultService()
 
 		startup := plugin.GetStartup()
+		si.StartupManifest = startup.GetStartupManifest()
 
 		configOptions := startup.GetConfigOptions()
 		err = loadConfig(configOptions)
@@ -148,13 +182,20 @@ func Start() {
 			)),
 		)
 		si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
+		// TODO: Make this a first class abstaction
+		// ILifeCycleHook but maybe IStartup can have those
 		servicesBackgroundTasks.GetBackgroundTasksFromContainer(rootContainer)
 
-		future := asyncServeGRPC(grpcServer, startup.GetPort())
-		si.Server = grpcServer
-		si.Future = future
-
-		serverInstances = append(serverInstances, si)
+		err = startup.OnPreServerStartup()
+		if err != nil {
+			log.Error().Err(err).
+				Interface("startupManifest", si.StartupManifest).Msgf("OnPreServerStartup failed")
+		} else {
+			future := asyncServeGRPC(grpcServer, startup.GetPort())
+			si.Server = grpcServer
+			si.Future = future
+			serverInstances = append(serverInstances, si)
+		}
 	}
 	sig := utils.WaitSignal()
 	log.Info().Str("sig", sig.String()).Msg("Interupt triggered")
@@ -165,7 +206,10 @@ func Start() {
 		// tear down the DI Container
 		v.DotNetGoBuilder.Container.DeleteWithSubContainers()
 	}
-
+	for _, plugin2 := range plugins {
+		startup := plugin2.GetStartup()
+		startup.OnPostServerShutdown()
+	}
 	// do a future wait
 	for _, v := range serverInstances {
 		v.Future.Get()

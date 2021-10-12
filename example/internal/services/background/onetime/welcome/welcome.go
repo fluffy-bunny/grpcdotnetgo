@@ -3,8 +3,9 @@ package welcome
 import (
 	"time"
 
+	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	"github.com/rs/zerolog/log"
 )
 
@@ -27,10 +28,10 @@ func (j *welcomeJob) Run() {
 // Job Provider
 //------------------------------------------
 type service struct {
-	Logger servicesLogger.ILogger
+	Logger loggerContracts.ILogger
 }
 
-func (s *service) GetOneTimeJobs() servicesBackgroundtasks.OneTimeJobs {
+func (s *service) GetOneTimeJobs() backgroundtasksContracts.OneTimeJobs {
 	welcomeJob1 := newWelcomeJob("Hello From The Cron")
 	cronJob1 := servicesBackgroundtasks.NewOneTimeJob(welcomeJob1, time.Millisecond)
 
@@ -38,9 +39,7 @@ func (s *service) GetOneTimeJobs() servicesBackgroundtasks.OneTimeJobs {
 	cronJob2 := servicesBackgroundtasks.NewOneTimeJob(welcomeJob2, time.Minute)
 
 	return servicesBackgroundtasks.NewOneTimeJobs(cronJob1, cronJob2)
-
 }
-func (s *service) GetScheduledJobs() servicesBackgroundtasks.ScheduledJobs {
-
+func (s *service) GetScheduledJobs() backgroundtasksContracts.ScheduledJobs {
 	return nil
 }

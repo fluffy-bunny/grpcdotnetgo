@@ -2,23 +2,22 @@ package claimsprincipal
 
 import (
 	"fmt"
+
+	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 )
 
-// Claim type
-type Claim struct {
-	Type  string
-	Value string
-}
-
-// IClaimsPrincipal interface
-type IClaimsPrincipal interface {
-	GetClaims() []Claim
-	HasClaim(claim Claim) bool
-	AddClaim(claim Claim)
-	RemoveClaim(claim Claim)
-}
 type claimsPrincipal struct {
 	claims map[string][]string
+}
+
+func newIClaimsPrincipal() claimsprincipalContracts.IClaimsPrincipal {
+	obj := &claimsPrincipal{}
+	obj.Ctor()
+	return obj
+}
+
+func (c *claimsPrincipal) Ctor() {
+	c.claims = make(map[string][]string)
 }
 
 func removeIndex(s []string, index int) []string {
@@ -32,7 +31,7 @@ func removeIndex(s []string, index int) []string {
 }
 
 // RemoveClaim removes a claims
-func (c *claimsPrincipal) RemoveClaim(claim Claim) {
+func (c *claimsPrincipal) RemoveClaim(claim claimsprincipalContracts.Claim) {
 	claims, ok := c.claims[claim.Type]
 	if !ok {
 		return
@@ -51,7 +50,7 @@ func (c *claimsPrincipal) RemoveClaim(claim Claim) {
 }
 
 // HasClaim ...
-func (c *claimsPrincipal) HasClaim(claim Claim) bool {
+func (c *claimsPrincipal) HasClaim(claim claimsprincipalContracts.Claim) bool {
 	claims, ok := c.claims[claim.Type]
 	if !ok {
 		return false
@@ -66,14 +65,14 @@ func (c *claimsPrincipal) HasClaim(claim Claim) bool {
 }
 
 // AddClaim ...
-func (c *claimsPrincipal) AddClaim(claim Claim) {
+func (c *claimsPrincipal) AddClaim(claim claimsprincipalContracts.Claim) {
+	if len(claim.Type) == 0 {
+		return
+	}
 	if c.HasClaim(claim) {
 		return
 	}
 
-	if len(claim.Type) == 0 || len(claim.Value) == 0 {
-		panic("invalid claim input")
-	}
 	claims, ok := c.claims[claim.Type]
 	if !ok {
 		c.claims[claim.Type] = []string{}
@@ -84,11 +83,11 @@ func (c *claimsPrincipal) AddClaim(claim Claim) {
 }
 
 // GetClaims ...
-func (c *claimsPrincipal) GetClaims() []Claim {
-	var result []Claim
+func (c *claimsPrincipal) GetClaims() []claimsprincipalContracts.Claim {
+	var result []claimsprincipalContracts.Claim
 	for claimType, claimValues := range c.claims {
 		for _, claimValue := range claimValues {
-			result = append(result, Claim{
+			result = append(result, claimsprincipalContracts.Claim{
 				Type: claimType, Value: claimValue,
 			})
 		}
