@@ -8,13 +8,18 @@ import (
 	jwxt "github.com/lestrrat-go/jwx/jwt"
 )
 
-const (
-	CtxClaimsPrincipalKey = "ClaimsPrincipal"
-)
+// CtxClaimsPrincipalKeyStruct struct
+type CtxClaimsPrincipalKeyStruct struct{}
 
+// CtxClaimsPrincipalKey key
+var CtxClaimsPrincipalKey = &CtxClaimsPrincipalKeyStruct{}
+
+// OAuth2DiscoveryOptions ...
 type OAuth2DiscoveryOptions struct {
 	JWKSURL string
 }
+
+// DiscoveryDocumentOptions ...
 type DiscoveryDocumentOptions struct {
 	Authority              string
 	OAuth2DiscoveryOptions OAuth2DiscoveryOptions

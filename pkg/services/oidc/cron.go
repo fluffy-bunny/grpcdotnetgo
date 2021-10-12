@@ -6,9 +6,10 @@ import (
 	"sync/atomic"
 	"time"
 
+	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
@@ -73,21 +74,20 @@ func (j *oidcDiscoveryJob) Run() {
 // Job Provider
 //------------------------------------------
 type service struct {
-	Logger             servicesLogger.ILogger
+	Logger             loggerContracts.ILogger
 	OIDCConfigAccessor middleware_oidc.IOIDCConfigAccessor
 	Storage            IOidcBackgroundStorage
 }
 
-func (s *service) GetOneTimeJobs() servicesBackgroundtasks.OneTimeJobs {
+func (s *service) GetOneTimeJobs() backgroundtasksContracts.OneTimeJobs {
 	config := s.OIDCConfigAccessor.GetOIDCConfig()
 	oidcJob := newOidcDiscoveryJob(config.GetAuthority(), s.Storage)
 	onetimeJob := servicesBackgroundtasks.NewOneTimeJob(oidcJob, time.Millisecond)
 	return servicesBackgroundtasks.NewOneTimeJobs(onetimeJob)
 }
-func (s *service) GetScheduledJobs() servicesBackgroundtasks.ScheduledJobs {
+func (s *service) GetScheduledJobs() backgroundtasksContracts.ScheduledJobs {
 	config := s.OIDCConfigAccessor.GetOIDCConfig()
 	oidcJob := newOidcDiscoveryJob(config.GetAuthority(), s.Storage)
 	cronJob := servicesBackgroundtasks.NewScheduledJob(oidcJob, config.GetCronRefreshSchedule())
 	return servicesBackgroundtasks.NewScheduledJobs(cronJob)
-
 }

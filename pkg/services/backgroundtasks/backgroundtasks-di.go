@@ -4,13 +4,15 @@ import (
 	"reflect"
 
 	"github.com/bamzi/jobrunner"
+	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
 
-func GetBackgroundTasksFromContainer(ctn di.Container) IBackgroundTasks {
-	obj := ctn.GetByType(TypeIBackgroundTasks).(IBackgroundTasks)
+// GetBackgroundTasksFromContainer helper
+func GetBackgroundTasksFromContainer(ctn di.Container) backgroundtasksContracts.IBackgroundTasks {
+	obj := ctn.GetByType(backgroundtasksContracts.ReflectTypeIBackgroundTasks).(backgroundtasksContracts.IBackgroundTasks)
 	return obj
 }
 
@@ -18,9 +20,9 @@ func GetBackgroundTasksFromContainer(ctn di.Container) IBackgroundTasks {
 func AddBackgroundTasks(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddBackgroundTasks")
-	types := di.NewTypeSet()
 
-	types.Add(TypeIBackgroundTasks)
+	types := di.NewTypeSet()
+	types.Add(backgroundtasksContracts.ReflectTypeIBackgroundTasks)
 
 	builder.Add(di.Def{
 		Scope:            di.App,
@@ -33,10 +35,10 @@ func AddBackgroundTasks(builder *di.Builder) {
 			}
 			//jobrunner.Schedule("@every 5s", ReminderEmails{})
 
-			jobsProviders, err := ctn.SafeGetManyByType(TypeIJobsProvider)
+			jobsProviders, err := ctn.SafeGetManyByType(backgroundtasksContracts.ReflectTypeIJobsProvider)
 			if err == nil && jobsProviders != nil && len(jobsProviders) > 0 {
 				for _, jp := range jobsProviders {
-					jpi := jp.(IJobsProvider)
+					jpi := jp.(backgroundtasksContracts.IJobsProvider)
 					sjs := jpi.GetScheduledJobs()
 					for _, sj := range sjs {
 						jobrunner.Schedule(sj.Schedule, sj.Job)
@@ -47,7 +49,6 @@ func AddBackgroundTasks(builder *di.Builder) {
 						jobrunner.In(otj.Delay, otj.Job)
 					}
 				}
-
 			}
 
 			return obj, nil

@@ -3,8 +3,8 @@ package oidc
 import (
 	"reflect"
 
+	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
-	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
@@ -14,30 +14,21 @@ import (
 func AddCronOidcJobProvider(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddCronOidcJobProvider")
-	types := di.NewTypeSet()
-	types.Add(servicesBackgroundtasks.TypeIJobsProvider)
 
-	builder.Add(di.Def{
-		Scope:            di.App,
-		ImplementedTypes: types,
-		Type:             reflect.TypeOf(&service{}),
-		Build: func(ctn di.Container) (interface{}, error) {
+	backgroundtasksContracts.AddSingletonIJobsProviderByFunc(builder,
+		reflect.TypeOf(&service{}), func(ctn di.Container) (interface{}, error) {
 			obj := &service{
 				OIDCConfigAccessor: middleware_oidc.GetOIDCConfigAccessorFromContainer(ctn),
 				Storage:            GetOidcBackgroundStorageFromContainer(ctn),
 				Logger:             servicesLogger.GetSingletonLoggerFromContainer(ctn),
 			}
 			return obj, nil
-		},
-		Close: func(obj interface{}) error {
+		})
 
-			return nil
-		},
-	})
 	addOidcBackgroundStorage(builder)
-
 }
 
+// GetOidcBackgroundStorageFromContainer helper
 func GetOidcBackgroundStorageFromContainer(ctn di.Container) IOidcBackgroundStorage {
 	obj := ctn.GetByType(TypeIOidcBackgroundStorage).(IOidcBackgroundStorage)
 	return obj
@@ -62,5 +53,4 @@ func addOidcBackgroundStorage(builder *di.Builder) {
 			return nil
 		},
 	})
-
 }

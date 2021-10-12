@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"sync/atomic"
 
+	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	"github.com/rs/zerolog/log"
 )
 
@@ -34,15 +35,14 @@ func (j *counterJob) getLocalCounter() int32 {
 // Job Provider
 //------------------------------------------
 type service struct {
-	Logger servicesLogger.ILogger
+	Logger loggerContracts.ILogger
 }
 
-func (s *service) GetOneTimeJobs() servicesBackgroundtasks.OneTimeJobs {
+func (s *service) GetOneTimeJobs() backgroundtasksContracts.OneTimeJobs {
 	return nil
 }
-func (s *service) GetScheduledJobs() servicesBackgroundtasks.ScheduledJobs {
+func (s *service) GetScheduledJobs() backgroundtasksContracts.ScheduledJobs {
 	counterJob := newCounterJob()
 	cronJob := servicesBackgroundtasks.NewScheduledJob(counterJob, "@every 0h0m5s")
 	return servicesBackgroundtasks.NewScheduledJobs(cronJob)
-
 }
