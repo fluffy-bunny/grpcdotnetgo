@@ -112,7 +112,7 @@ func GetServerInstances() []*ServerInstance {
 }
 
 // Start starts up the server
-func Start() {
+func Start(lis net.Listener) {
 	plugins := grpcdotnetgo_plugin.GetPlugins()
 	var err error
 	logLevel := os.Getenv("LOG_LEVEL")
@@ -191,7 +191,14 @@ func Start() {
 			log.Error().Err(err).
 				Interface("startupManifest", si.StartupManifest).Msgf("OnPreServerStartup failed")
 		} else {
-			future := asyncServeGRPC(grpcServer, startup.GetPort())
+			if lis == nil {
+				lis, err = net.Listen("tcp", fmt.Sprintf(":%d", startup.GetPort()))
+				if err != nil {
+					panic(err)
+				}
+			}
+
+			future := asyncServeGRPC(grpcServer, lis)
 			si.Server = grpcServer
 			si.Future = future
 			serverInstances = append(serverInstances, si)
@@ -216,7 +223,7 @@ func Start() {
 	}
 }
 
-func asyncServeGRPC(grpcServer *grpc.Server, port int) async.Future {
+func asyncServeGRPC(grpcServer *grpc.Server, lis net.Listener) async.Future {
 	return grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise) {
 		var err error
 		log.Info().Msg("gRPC Server Starting up")
@@ -232,14 +239,11 @@ func asyncServeGRPC(grpcServer *grpc.Server, port int) async.Future {
 			}
 		}()
 
-		lis, err := net.Listen("tcp", fmt.Sprintf(":%v", port))
-		if err != nil {
-			return
-		}
-
 		if err = grpcServer.Serve(lis); err != nil {
 			return
 		}
 		log.Info().Msg("grpc Server has shut down....")
 	})
 }
+
+const bufSize = 1024 * 1024

@@ -19,3 +19,8 @@ func AddPlugin(plugin pluginContracts.IGRPCDotNetGoPlugin) {
 func GetPlugins() []pluginContracts.IGRPCDotNetGoPlugin {
 	return availablePlugins
 }
+
+// ClearPlugins usually used only for testing
+func ClearPlugins() {
+	availablePlugins = make([]pluginContracts.IGRPCDotNetGoPlugin, 0)
+}
