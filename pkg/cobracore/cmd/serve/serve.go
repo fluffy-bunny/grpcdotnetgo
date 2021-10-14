@@ -87,7 +87,6 @@ var command = &cobra.Command{
 	Long:  `run the grpc server`,
 
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-
 		var err error
 		envs, err = validateEnvs()
 		if err != nil {
@@ -101,7 +100,7 @@ var command = &cobra.Command{
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		grpcdotnetgocore.Start()
+		grpcdotnetgocore.Start(nil)
 	},
 }
 
@@ -119,6 +118,7 @@ func printEnvs() {
 	*/
 }
 
+// Init root command
 func Init(rootCmd *cobra.Command, additional ...EnvDefinition) {
 	setAdditionalEnvDefs(additional...)
 	command.Flags().StringArrayVarP(&envsets, "env", "e", []string{}, "override any env variable")
