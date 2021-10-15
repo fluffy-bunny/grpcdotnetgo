@@ -110,7 +110,7 @@ jobs:
 
     # Test pkg for intergration.  NO -race flag here
     - name: Test example
-      run: 
+      run: |
         cd example
         go test -v -short -p=1 -count=1 ./...
 
