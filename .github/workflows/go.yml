@@ -102,9 +102,17 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4.12.0
       with:
         commit_message: Apply genny and mockgen changes
-    
-    - name: Test
-      run: go test -v -short -p=1 -count=1 ./...
+    # Test pkg for -race
+    - name: Test pkg
+      run: |
+        cd pkg
+        go test -v -short -p=1 -race -count=1 ./...
+
+    # Test pkg for intergration.  NO -race flag here
+    - name: Test example
+      run: 
+        cd example
+        go test -v -short -p=1 -count=1 ./...
 
     - name: Build
       run: |
