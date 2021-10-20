@@ -1,11 +1,10 @@
 package oauth2
 
 import (
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
-
 	"github.com/rs/zerolog/log"
 )
 
@@ -18,7 +17,7 @@ func GetOauth2ServiceFromContainer(ctn di.Container) IOauth2 {
 	return service
 }
 
-// AddServiceProvider adds service to the DI container
+// AddOauth2Service adds service to the DI container
 func AddOauth2Service(builder *di.Builder) {
 	log.Info().
 		Str("serviceName", diServiceName).
@@ -27,10 +26,9 @@ func AddOauth2Service(builder *di.Builder) {
 		Name:  diServiceName,
 		Scope: di.Request,
 		Build: func(ctn di.Container) (interface{}, error) {
-
 			return &service{
 				ContextAccessor: contextaccessor.GetContextAccessorFromContainer(ctn),
-				Logger:          servicesLogger.GetScopedLoggerFromContainer(ctn),
+				Logger:          loggerContracts.GetILoggerFromContainer(ctn),
 			}, nil
 		},
 	})

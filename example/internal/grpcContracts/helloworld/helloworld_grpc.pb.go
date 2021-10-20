@@ -99,7 +99,7 @@ var Greeter_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "internal/grpcContracts/helloworld/helloworld.proto",
+	Metadata: "example/internal/grpcContracts/helloworld/helloworld.proto",
 }
 
 // Greeter2Client is the client API for Greeter2 service.
@@ -187,5 +187,5 @@ var Greeter2_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "internal/grpcContracts/helloworld/helloworld.proto",
+	Metadata: "example/internal/grpcContracts/helloworld/helloworld.proto",
 }
