@@ -139,7 +139,7 @@ func (s *genFileContext) generateFileContent() {
 		serviceGenCtxs = append(serviceGenCtxs, serviceGenCtx)
 	}
 
-	g.P("// New_", getFileName(file), "FullMethodNameSLice create a new map of fullMethodNames to []string")
+	g.P("// New_", getFileName(file), "FullMethodNameSlice create a new map of fullMethodNames to []string")
 	g.P("// i.e. /helloworld.Greeter/SayHello ")
 	g.P("func New_", getFileName(file), "FullMethodNameSlice() []string {")
 	g.P("    slice := []string {")
@@ -167,6 +167,7 @@ func (s *genFileContext) generateFileContent() {
 	}
 	g.P("}")
 
+	g.P("// Get_", getFileName(file), "FullEmptyResponseFromFullMethodName ...")
 	g.P("func Get_", getFileName(file), "FullEmptyResponseFromFullMethodName(fullMethodName string) func() interface{} {")
 	g.P("  v,ok := ", getFileName(file), "FullMethodNameEmptyResponseMap[fullMethodName]")
 	g.P("  if ok {")
@@ -185,6 +186,7 @@ func (s *genFileContext) generateFileContent() {
 	}
 	g.P("}")
 
+	g.P("// Get_", getFileName(file), "FullEmptyResponseWithErrorFromFullMethodName ...")
 	g.P("func Get_", getFileName(file), "FullEmptyResponseWithErrorFromFullMethodName(fullMethodName string) func() interface{} {")
 	g.P("  v,ok := ", getFileName(file), "FullMethodNameWithErrorResponseMap[fullMethodName]")
 	g.P("  if ok {")
@@ -235,15 +237,38 @@ func (s *serviceGenContext) genService() {
 	g.P("}")
 	g.P()
 
-	typeDownstreamServiceInterfaceName := fmt.Sprintf("Type%v", interfaceDownstreamServiceName)
+	typeDownstreamServiceInterfaceName := fmt.Sprintf("Type%s", interfaceDownstreamServiceName)
 	// user reflection once to record the type
-	g.P("// ", interfaceDownstreamServiceName, " reflect type")
+	g.P("// ", typeDownstreamServiceInterfaceName, " reflect type")
+	g.P("var ", typeDownstreamServiceInterfaceName, " = ", diPackage.Ident("GetInterfaceReflectType"), "((*", interfaceDownstreamServiceName, ")(nil))")
+
+	// making type look like sarulabsdi genny types
+	typeDownstreamServiceInterfaceName = fmt.Sprintf("ReflectType%v", interfaceDownstreamServiceName)
+	g.P("// ", typeDownstreamServiceInterfaceName, " reflect type")
 	g.P("var ", typeDownstreamServiceInterfaceName, " = ", diPackage.Ident("GetInterfaceReflectType"), "((*", interfaceDownstreamServiceName, ")(nil))")
 
 	// DI Getter
 	g.P("// Get", service.GoName, "ServiceFromContainer fetches the downstream di.Request scoped service")
 	g.P("func Get", service.GoName, "ServiceFromContainer(ctn ", diPackage.Ident("Container"), ") ", interfaceDownstreamServiceName, " {")
 	g.P("return ctn.GetByType(", typeDownstreamServiceInterfaceName, ").(", interfaceDownstreamServiceName, ")")
+	g.P("}")
+	g.P()
+
+	// making type look like sarulabsdi genny types
+	g.P("// Get", interfaceDownstreamServiceName, "FromContainer fetches the downstream di.Request scoped service")
+	g.P("func Get", interfaceDownstreamServiceName, "FromContainer(ctn ", diPackage.Ident("Container"), ") ", interfaceDownstreamServiceName, " {")
+	g.P("return ctn.GetByType(", typeDownstreamServiceInterfaceName, ").(", interfaceDownstreamServiceName, ")")
+	g.P("}")
+	g.P()
+
+	// making type look like sarulabsdi genny types
+	g.P("// SafeGet", interfaceDownstreamServiceName, "FromContainer fetches the downstream di.Request scoped service")
+	g.P("func SafeGet", interfaceDownstreamServiceName, "FromContainer(ctn ", diPackage.Ident("Container"), ") (", interfaceDownstreamServiceName, ",error) {")
+	g.P("obj, err := ctn.SafeGetByType(", typeDownstreamServiceInterfaceName, ")")
+	g.P("if err != nil {")
+	g.P("    return nil, err")
+	g.P("}")
+	g.P("return obj.(", interfaceDownstreamServiceName, "),nil")
 	g.P("}")
 	g.P()
 
@@ -254,6 +279,7 @@ func (s *serviceGenContext) genService() {
 	g.P("}")
 
 	// Server Registration
+	g.P("// Register", service.GoName, "ServerDI ...")
 	g.P("func Register", service.GoName, "ServerDI(s ", grpcPackage.Ident("ServiceRegistrar"), ") interface{} {")
 	g.P("// Register the server")
 	g.P("var server = &", strings.ToLower(service.GoName), "Server{ }")
@@ -274,6 +300,7 @@ func (s *serviceGenContext) genService() {
 	for _, method := range service.Methods {
 		serverType := method.Parent.GoName
 		key := "/" + s.packageName + "." + serverType + "/" + method.GoName
+		g.P("// FMN_", s.packageName, "_", serverType, "_", method.GoName)
 		g.P("FMN_", s.packageName, "_", serverType, "_", method.GoName, " = \"", key, "\"")
 	}
 	g.P(")")
@@ -335,6 +362,7 @@ func (s *methodGenContext) genServerMethodShim() {
 	   }
 	*/
 
+	g.P("// ", s.ProtogenMethod.GoName, "...")
 	g.P("func (s *", strings.ToLower(serverType), "Server) ", s.serverSignature(), "{")
 	g.P("requestContainer := ", diContextPackage.Ident("GetRequestContainer(ctx)"))
 	g.P("downstreamService := Get", service.GoName, "ServiceFromContainer(requestContainer)")

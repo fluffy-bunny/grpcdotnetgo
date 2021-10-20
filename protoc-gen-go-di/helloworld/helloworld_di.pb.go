@@ -33,12 +33,29 @@ type IGreeterService interface {
 	SayHello(request *HelloRequest) (*HelloReply, error)
 }
 
-// IGreeterService reflect type
+// TypeIGreeterService reflect type
 var TypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(nil))
+
+// ReflectTypeIGreeterService reflect type
+var ReflectTypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(nil))
 
 // GetGreeterServiceFromContainer fetches the downstream di.Request scoped service
 func GetGreeterServiceFromContainer(ctn sarulabsdi.Container) IGreeterService {
-	return ctn.GetByType(TypeIGreeterService).(IGreeterService)
+	return ctn.GetByType(ReflectTypeIGreeterService).(IGreeterService)
+}
+
+// GetIGreeterServiceFromContainer fetches the downstream di.Request scoped service
+func GetIGreeterServiceFromContainer(ctn sarulabsdi.Container) IGreeterService {
+	return ctn.GetByType(ReflectTypeIGreeterService).(IGreeterService)
+}
+
+// SafeGetIGreeterServiceFromContainer fetches the downstream di.Request scoped service
+func SafeGetIGreeterServiceFromContainer(ctn sarulabsdi.Container) (IGreeterService, error) {
+	obj, err := ctn.SafeGetByType(ReflectTypeIGreeterService)
+	if err != nil {
+		return nil, err
+	}
+	return obj.(IGreeterService), nil
 }
 
 // Impl for Greeter server instances
@@ -46,6 +63,7 @@ type greeterServer struct {
 	UnimplementedGreeterServer
 }
 
+// RegisterGreeterServerDI ...
 func RegisterGreeterServerDI(s grpc.ServiceRegistrar) interface{} {
 	// Register the server
 	var server = &greeterServer{}
@@ -53,6 +71,7 @@ func RegisterGreeterServerDI(s grpc.ServiceRegistrar) interface{} {
 	return server
 }
 
+// SayHello...
 func (s *greeterServer) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error) {
 	requestContainer := dicontext.GetRequestContainer(ctx)
 	downstreamService := GetGreeterServiceFromContainer(requestContainer)
@@ -61,6 +80,7 @@ func (s *greeterServer) SayHello(ctx context.Context, request *HelloRequest) (*H
 
 // FullMethodNames for Greeter
 const (
+	// FMN_helloworld_Greeter_SayHello
 	FMN_helloworld_Greeter_SayHello = "/helloworld.Greeter/SayHello"
 )
 
@@ -74,12 +94,29 @@ type IGreeter2Service interface {
 	SayHello(request *HelloRequest) (*HelloReply2, error)
 }
 
-// IGreeter2Service reflect type
+// TypeIGreeter2Service reflect type
 var TypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
+
+// ReflectTypeIGreeter2Service reflect type
+var ReflectTypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
 
 // GetGreeter2ServiceFromContainer fetches the downstream di.Request scoped service
 func GetGreeter2ServiceFromContainer(ctn sarulabsdi.Container) IGreeter2Service {
-	return ctn.GetByType(TypeIGreeter2Service).(IGreeter2Service)
+	return ctn.GetByType(ReflectTypeIGreeter2Service).(IGreeter2Service)
+}
+
+// GetIGreeter2ServiceFromContainer fetches the downstream di.Request scoped service
+func GetIGreeter2ServiceFromContainer(ctn sarulabsdi.Container) IGreeter2Service {
+	return ctn.GetByType(ReflectTypeIGreeter2Service).(IGreeter2Service)
+}
+
+// SafeGetIGreeter2ServiceFromContainer fetches the downstream di.Request scoped service
+func SafeGetIGreeter2ServiceFromContainer(ctn sarulabsdi.Container) (IGreeter2Service, error) {
+	obj, err := ctn.SafeGetByType(ReflectTypeIGreeter2Service)
+	if err != nil {
+		return nil, err
+	}
+	return obj.(IGreeter2Service), nil
 }
 
 // Impl for Greeter2 server instances
@@ -87,6 +124,7 @@ type greeter2Server struct {
 	UnimplementedGreeter2Server
 }
 
+// RegisterGreeter2ServerDI ...
 func RegisterGreeter2ServerDI(s grpc.ServiceRegistrar) interface{} {
 	// Register the server
 	var server = &greeter2Server{}
@@ -94,6 +132,7 @@ func RegisterGreeter2ServerDI(s grpc.ServiceRegistrar) interface{} {
 	return server
 }
 
+// SayHello...
 func (s *greeter2Server) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply2, error) {
 	requestContainer := dicontext.GetRequestContainer(ctx)
 	downstreamService := GetGreeter2ServiceFromContainer(requestContainer)
@@ -102,10 +141,11 @@ func (s *greeter2Server) SayHello(ctx context.Context, request *HelloRequest) (*
 
 // FullMethodNames for Greeter2
 const (
+	// FMN_helloworld_Greeter2_SayHello
 	FMN_helloworld_Greeter2_SayHello = "/helloworld.Greeter2/SayHello"
 )
 
-// New_helloworldFullMethodNameSLice create a new map of fullMethodNames to []string
+// New_helloworldFullMethodNameSlice create a new map of fullMethodNames to []string
 // i.e. /helloworld.Greeter/SayHello
 func New_helloworldFullMethodNameSlice() []string {
 	slice := []string{
@@ -123,17 +163,16 @@ func init() {
 // i.e. /helloworld.Greeter/SayHello
 var helloworldFullMethodNameEmptyResponseMap = map[string]func() interface{}{
 	"/helloworld.Greeter/SayHello": func() interface{} {
-		// rabbit
 		ret := &HelloReply{}
 		return ret
 	},
 	"/helloworld.Greeter2/SayHello": func() interface{} {
-		// rabbit
 		ret := &HelloReply2{}
 		return ret
 	},
 }
 
+// Get_helloworldFullEmptyResponseFromFullMethodName ...
 func Get_helloworldFullEmptyResponseFromFullMethodName(fullMethodName string) func() interface{} {
 	v, ok := helloworldFullMethodNameEmptyResponseMap[fullMethodName]
 	if ok {
@@ -157,6 +196,7 @@ var helloworldFullMethodNameWithErrorResponseMap = map[string]func() interface{}
 	},
 }
 
+// Get_helloworldFullEmptyResponseWithErrorFromFullMethodName ...
 func Get_helloworldFullEmptyResponseWithErrorFromFullMethodName(fullMethodName string) func() interface{} {
 	v, ok := helloworldFullMethodNameWithErrorResponseMap[fullMethodName]
 	if ok {
