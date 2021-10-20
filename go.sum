@@ -55,6 +55,8 @@ github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kB
 github.com/bketelsen/crypt v0.0.4/go.mod h1:aI6NrJ0pMGgvZKL1iVgXLnfIFJtfV+bKCoqOes/6LfM=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
+github.com/cheekybits/genny v1.0.0 h1:uGGa4nei+j20rOSeDeP5Of12XVm7TGUd4dJA9RDitfE=
+github.com/cheekybits/genny v1.0.0/go.mod h1:+tQajlRqAUrPI7DOSpB0XAqZYtQakVtB7wXkRAgjxjQ=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
@@ -98,8 +100,8 @@ github.com/fluffy-bunny/protoc-gen-go-di v0.0.33 h1:kmHVKJmAUvUfyKji2Mys4pqaOtPv
 github.com/fluffy-bunny/protoc-gen-go-di v0.0.33/go.mod h1:qsDxOBOTWrh7iBmNG4VVtpXyL0oN0maFdIH7/0bf5+c=
 github.com/fluffy-bunny/sarulabsdi v0.1.13/go.mod h1:Fv7Ce67PYl9D7UR5OUX1ccwDfX/8VUP3SaTu0IpT4W8=
 github.com/fluffy-bunny/sarulabsdi v0.1.14/go.mod h1:HHShRGIqmm7CvHllHG6H9B7N7vuffIbWCo6r0y/IgVE=
-github.com/fluffy-bunny/sarulabsdi v0.1.23 h1:n+iZ/bj/IJ6NfaLZl6vgnJCYBG2pIjJiLKKrqGlW9+o=
-github.com/fluffy-bunny/sarulabsdi v0.1.23/go.mod h1:fyTRBUDOGqOoCO9S0c/dpOhrbVu/NZsso2ZO3DirjWg=
+github.com/fluffy-bunny/sarulabsdi v0.1.32 h1:k8EmLYsecpcCaffvzRCIGWCba1/UVAwMgx/ZkBdR9yo=
+github.com/fluffy-bunny/sarulabsdi v0.1.32/go.mod h1:hGYv8o1zJq0XzLiBG0QSgZ8npFnt3pCZESn3YZhJkFo=
 github.com/fluffy-bunny/viperEx v0.0.20/go.mod h1:btk0DbT7X+7zT2jJN06US7mzJ/AxQ+Z2q952hEfBRek=
 github.com/fluffy-bunny/viperEx v0.0.23 h1:ghL8qnIlWX1WfR7gmNyIt5YoZGoE1mFuAXwbZF8uSpE=
 github.com/fluffy-bunny/viperEx v0.0.23/go.mod h1:btk0DbT7X+7zT2jJN06US7mzJ/AxQ+Z2q952hEfBRek=

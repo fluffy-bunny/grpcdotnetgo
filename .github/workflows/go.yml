@@ -63,13 +63,28 @@ jobs:
         go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
         go get -u github.com/fluffy-bunny/protoc-gen-go-di/cmd/protoc-gen-go-di
 
-    - name: GO MOD VENDOR
-      run: go mod vendor
+    - name: go mod vendor
+      run: |
+        go mod tidy
+        go mod download
+        go mod vendor
 
     - name: make proto go
       run: |
         protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative ./protoc-gen-go-di/helloworld/helloworld.proto
         protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative ./example/internal/grpcContracts/helloworld/helloworld.proto
+
+    - name: cherry pick genny generics
+      run: |
+        mv ./vendor/github.com/fluffy-bunny/sarulabsdi/genny/ ./genny/sarulabsdi/
+
+    - name: remove vendor
+      run: |
+        rm -rf ./vendor/
+    
+    - name: Genny
+      run: |
+        echo "do genny here"
 
     - name: Test
       run: go test -v -short -p=1 -count=1 -race ./...
