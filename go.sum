@@ -103,8 +103,8 @@ github.com/fluffy-bunny/protoc-gen-go-di v0.0.33 h1:kmHVKJmAUvUfyKji2Mys4pqaOtPv
 github.com/fluffy-bunny/protoc-gen-go-di v0.0.33/go.mod h1:qsDxOBOTWrh7iBmNG4VVtpXyL0oN0maFdIH7/0bf5+c=
 github.com/fluffy-bunny/sarulabsdi v0.1.13/go.mod h1:Fv7Ce67PYl9D7UR5OUX1ccwDfX/8VUP3SaTu0IpT4W8=
 github.com/fluffy-bunny/sarulabsdi v0.1.14/go.mod h1:HHShRGIqmm7CvHllHG6H9B7N7vuffIbWCo6r0y/IgVE=
-github.com/fluffy-bunny/sarulabsdi v0.1.31 h1:4az0Fs1r+dylsAeBBTVKgU6MuuYrKptFL3fprkd4P0o=
-github.com/fluffy-bunny/sarulabsdi v0.1.31/go.mod h1:hGYv8o1zJq0XzLiBG0QSgZ8npFnt3pCZESn3YZhJkFo=
+github.com/fluffy-bunny/sarulabsdi v0.1.32 h1:k8EmLYsecpcCaffvzRCIGWCba1/UVAwMgx/ZkBdR9yo=
+github.com/fluffy-bunny/sarulabsdi v0.1.32/go.mod h1:hGYv8o1zJq0XzLiBG0QSgZ8npFnt3pCZESn3YZhJkFo=
 github.com/fluffy-bunny/viperEx v0.0.20/go.mod h1:btk0DbT7X+7zT2jJN06US7mzJ/AxQ+Z2q952hEfBRek=
 github.com/fluffy-bunny/viperEx v0.0.23 h1:ghL8qnIlWX1WfR7gmNyIt5YoZGoE1mFuAXwbZF8uSpE=
 github.com/fluffy-bunny/viperEx v0.0.23/go.mod h1:btk0DbT7X+7zT2jJN06US7mzJ/AxQ+Z2q952hEfBRek=
