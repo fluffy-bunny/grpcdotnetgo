@@ -13,7 +13,6 @@ import (
 	//	_ "github.com/fluffy-bunny/grpcdotnetgo/example/internal/plugin"
 	grpcdotnetgocore "github.com/fluffy-bunny/grpcdotnetgo/pkg/core"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
-	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"google.golang.org/grpc"
 	bufconn "google.golang.org/grpc/test/bufconn"
 )
@@ -24,6 +23,7 @@ func TestSayHello(t *testing.T) {
 	grpcdotnetgo_plugin.AddPlugin(NewPlugin())
 	defer grpcdotnetgo_plugin.ClearPlugins()
 	lis := bufconn.Listen(bufSize)
+	myRuntime := grpcdotnetgocore.NewRuntime()
 	future := grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise) {
 		var err error
 
@@ -34,7 +34,7 @@ func TestSayHello(t *testing.T) {
 			})
 		}()
 
-		grpcdotnetgocore.Start(lis)
+		myRuntime.Start(lis)
 	})
 
 	ctx := context.Background()
@@ -57,6 +57,6 @@ func TestSayHello(t *testing.T) {
 	}
 	log.Printf("Response: %+v", resp)
 	// Test for output here.
-	utils.SignalQuit()
+	myRuntime.Stop()
 	future.Get()
 }

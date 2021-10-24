@@ -152,7 +152,7 @@ func (s *Startup) Configure(unaryServerInterceptorBuilder coreContracts.IUnarySe
 	unaryServerInterceptorBuilder.Use(grpc_ctxtags.UnaryServerInterceptor())
 	unaryServerInterceptorBuilder.Use(middleware_logger.EnsureContextLoggingUnaryServerInterceptor())
 	unaryServerInterceptorBuilder.Use(middleware_logger.EnsureCorrelationIDUnaryServerInterceptor())
-	unaryServerInterceptorBuilder.Use(middleware_dicontext.UnaryServerInterceptor())
+	unaryServerInterceptorBuilder.Use(middleware_dicontext.UnaryServerInterceptor(s.RootContainer))
 	unaryServerInterceptorBuilder.Use(middleware_logger.LoggingUnaryServerInterceptor())
 
 	unaryServerInterceptorBuilder.Use(middleware_grpc_recovery.UnaryServerInterceptor(recoveryOpts...))
