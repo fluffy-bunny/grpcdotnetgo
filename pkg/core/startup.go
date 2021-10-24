@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
 	"path"
 	"strconv"
 	"strings"
+	"syscall"
 
 	"github.com/fatih/structs"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
@@ -16,7 +18,6 @@ import (
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
-	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/reugn/async"
@@ -104,15 +105,43 @@ type ServerInstance struct {
 	Endpoints       []interface{}
 }
 
-var serverInstances []*ServerInstance
+// Runtime type
+type Runtime struct {
+	ServerInstances []*ServerInstance
+	waitChannel     chan os.Signal
+}
+
+// NewRuntime returns an instance of a new Runtime
+func NewRuntime() *Runtime {
+	return &Runtime{
+		waitChannel: make(chan os.Signal),
+	}
+}
+
+// Stop ...
+func (s *Runtime) Stop() {
+	s.waitChannel <- os.Interrupt
+}
+
+// Wait for someone to call stop
+func (s *Runtime) Wait() {
+	signal.Notify(
+		s.waitChannel,
+		os.Interrupt,
+		syscall.SIGINT,
+		syscall.SIGQUIT,
+		syscall.SIGTERM,
+	)
+	<-s.waitChannel
+}
 
 // GetServerInstances gets the array or service instances
-func GetServerInstances() []*ServerInstance {
-	return serverInstances
+func (s *Runtime) GetServerInstances() []*ServerInstance {
+	return s.ServerInstances
 }
 
 // Start starts up the server
-func Start(lis net.Listener) {
+func (s *Runtime) Start(lis net.Listener) {
 	plugins := grpcdotnetgo_plugin.GetPlugins()
 	var err error
 	logLevel := os.Getenv("LOG_LEVEL")
@@ -201,13 +230,13 @@ func Start(lis net.Listener) {
 			future := asyncServeGRPC(grpcServer, lis)
 			si.Server = grpcServer
 			si.Future = future
-			serverInstances = append(serverInstances, si)
+			s.ServerInstances = append(s.ServerInstances, si)
 		}
 	}
-	sig := utils.WaitSignal()
-	log.Info().Str("sig", sig.String()).Msg("Interupt triggered")
+	s.Wait()
+	log.Info().Msg("Interupt triggered")
 
-	for _, v := range serverInstances {
+	for _, v := range s.ServerInstances {
 		// tell all grpc servers to stop
 		v.Server.Stop()
 		// tear down the DI Container
@@ -218,7 +247,7 @@ func Start(lis net.Listener) {
 		startup.OnPostServerShutdown()
 	}
 	// do a future wait
-	for _, v := range serverInstances {
+	for _, v := range s.ServerInstances {
 		v.Future.Get()
 	}
 }
