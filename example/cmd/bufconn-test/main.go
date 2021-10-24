@@ -18,7 +18,8 @@ const bufSize = 1024 * 1024
 func main() {
 	lis := bufconn.Listen(bufSize)
 	go func() {
-		grpcdotnetgocore.Start(lis)
+		myRuntime := grpcdotnetgocore.NewRuntime()
+		myRuntime.Start(lis)
 	}()
 
 	ctx := context.Background()
