@@ -4,20 +4,15 @@ import (
 	"io"
 	"net/url"
 
+	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/sirupsen/logrus"
-
 	"github.com/golang-jwt/jwt"
+	"github.com/sirupsen/logrus"
 )
 
-type Claim struct {
-	Type  string `mapstructure:"TYPE"`
-	Value string `mapstructure:"VALUE"`
-}
-
 type ClaimsConfig struct {
-	OR  []Claim `mapstructure:"OR"`
-	AND []Claim `mapstructure:"AND"`
+	OR  []claimsprincipalContracts.Claim `mapstructure:"OR"`
+	AND []claimsprincipalContracts.Claim `mapstructure:"AND"`
 }
 type EntryPointConfig struct {
 	FullMethodName string       `mapstructure:"FULL_METHOD_NAME"`

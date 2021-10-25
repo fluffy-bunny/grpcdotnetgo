@@ -19,7 +19,7 @@ func main() {
 	lis := bufconn.Listen(bufSize)
 	go func() {
 		myRuntime := grpcdotnetgocore.NewRuntime()
-		myRuntime.Start(lis, nil)
+		myRuntime.StartWithListenterAndPlugins(lis, nil)
 	}()
 
 	ctx := context.Background()
@@ -38,6 +38,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	log.Printf("Response: %+v", resp)
+	// call it again
+
+	resp, err = client.SayHello(ctx, &pb.HelloRequest{
+		Name:      "zep2",
+		Directive: pb.HelloDirectives_HELLO_DIRECTIVES_UNKNOWN,
+	})
+	if err != nil {
+		panic(err)
+	}
+
 	log.Printf("Response: %+v", resp)
 	// Test for output here.
 }

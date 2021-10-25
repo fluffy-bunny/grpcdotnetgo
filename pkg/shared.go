@@ -31,7 +31,7 @@ func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 
 func (dngbuilder *DotNetGoBuilder) AddDefaultService() {
 	builder := dngbuilder.Builder
-	claimsprincipal.AddClaimsPrincipal(builder)
+	claimsprincipal.AddScopedIClaimsPrincipal(builder)
 	contextaccessor.AddContextAccessor(builder)
 	servicesLogger.AddScopedLogger(builder)
 	servicesLogger.AddSingletonLogger(builder)

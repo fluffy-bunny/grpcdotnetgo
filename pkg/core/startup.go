@@ -141,8 +141,13 @@ func (s *Runtime) GetServerInstances() []*ServerInstance {
 	return s.ServerInstances
 }
 
-// Start starts up the server
-func (s *Runtime) Start(lis net.Listener, plugins []pluginContracts.IGRPCDotNetGoPlugin) {
+// Start to be used in production
+func (s *Runtime) Start() {
+	s.StartWithListenterAndPlugins(nil, nil)
+}
+
+// StartWithListenterAndPlugins starts up the server
+func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []pluginContracts.IGRPCDotNetGoPlugin) {
 	if plugins == nil || len(plugins) == 0 {
 		plugins = grpcdotnetgo_plugin.GetPlugins() // pull it from the global one
 	}

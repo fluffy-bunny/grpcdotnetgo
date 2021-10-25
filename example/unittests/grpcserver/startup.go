@@ -14,6 +14,7 @@ import (
 	singletonService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
 	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/auth/oauth2"
+	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext/middleware"
 	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/logger"
@@ -124,19 +125,19 @@ func (s *Startup) Configure(unaryServerInterceptorBuilder coreContracts.IUnarySe
 		"bearer", 5)
 	for _, v := range config.Example.OIDCConfig.EntryPoints {
 		methodClaims := oauth2.MethodClaims{
-			OR:  []oauth2.Claim{},
-			AND: []oauth2.Claim{},
+			OR:  []claimsprincipalContracts.Claim{},
+			AND: []claimsprincipalContracts.Claim{},
 		}
 
 		for _, vv := range v.ClaimsConfig.AND {
-			methodClaims.AND = append(methodClaims.AND, oauth2.Claim{
+			methodClaims.AND = append(methodClaims.AND, claimsprincipalContracts.Claim{
 				Type:  vv.Type,
 				Value: vv.Value,
 			})
 		}
 
 		for _, vv := range v.ClaimsConfig.OR {
-			methodClaims.OR = append(methodClaims.OR, oauth2.Claim{
+			methodClaims.OR = append(methodClaims.OR, claimsprincipalContracts.Claim{
 				Type:  vv.Type,
 				Value: vv.Value,
 			})
