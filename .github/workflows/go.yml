@@ -103,17 +103,11 @@ jobs:
       with:
         commit_message: Apply genny and mockgen changes
     # Test pkg for -race
-    - name: Test pkg
+    - name: Test 
       run: |
-        cd pkg
-        go test -v -short -p=1 -race   ./...
+        go test -v  ./... -race 
 
-    # Test pkg for intergration.  NO -race flag here
-    - name: Test example
-      run: |
-        cd example
-        go test -v -short -p=1 -race   ./...
-
+ 
     - name: Build
       run: |
         go build -mod=mod -v -a -tags netgo -ldflags "-X 'main.version=${{ steps.tag_version.outputs.new_tag }}' -extldflags '-static'" ./example/cmd/server
