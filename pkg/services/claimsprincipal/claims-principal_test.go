@@ -8,7 +8,7 @@ import (
 )
 
 func Test_add_bad_claim(t *testing.T) {
-	cp := newIClaimsPrincipal()
+	cp := NewIClaimsPrincipal()
 	cp.AddClaim(claimsprincipalContracts.Claim{
 		Type:  "",
 		Value: "",
@@ -16,7 +16,7 @@ func Test_add_bad_claim(t *testing.T) {
 	assert.Empty(t, cp.GetClaims())
 }
 func Test_add_claim(t *testing.T) {
-	cp := newIClaimsPrincipal()
+	cp := NewIClaimsPrincipal()
 	claim := claimsprincipalContracts.Claim{
 		Type:  "a",
 		Value: "b",

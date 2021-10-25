@@ -74,25 +74,17 @@ func buildAuthFunction(oauth2Context *OAuth2Context) func(ctx context.Context, f
 
 		token, err := grpc_auth.AuthFromMD(ctx, oauth2Context.Scheme)
 		if err != nil {
-			emptyPrincipal := oauth2Context.JWTValidator.NewEmptyClaimsPrincipal()
-			// not ours
-			newCtx := context.WithValue(ctx, CtxClaimsPrincipalKey, emptyPrincipal)
-			return newCtx, nil
+			return ctx, nil
 		}
 		validatedToken, err := oauth2Context.JWTValidator.ParseToken(ctx, token)
 		var newCtx context.Context
 		if err != nil {
 			log.Debug().Str("token", token).Msg("could not validate, returning empty claims principal")
-			// make an empty one
-			validatedToken = oauth2Context.JWTValidator.NewEmptyClaimsPrincipal()
-		} else {
-			log.Debug().Str("subject", validatedToken.Token.Subject()).Msg("Validated user")
+			return ctx, nil
 		}
-		for _, c := range validatedToken.Claims {
+		for _, c := range validatedToken.GetClaims() {
 			claimsPrincipal.AddClaim(c)
 		}
-
-		newCtx = context.WithValue(ctx, CtxClaimsPrincipalKey, validatedToken)
 
 		return newCtx, nil
 	}

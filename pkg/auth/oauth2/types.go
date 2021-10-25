@@ -5,15 +5,10 @@ import (
 	"net/url"
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	claimsprincipalServices "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
+
 	jwxk "github.com/lestrrat-go/jwx/jwk"
-	jwxt "github.com/lestrrat-go/jwx/jwt"
 )
-
-// CtxClaimsPrincipalKeyStruct struct
-type CtxClaimsPrincipalKeyStruct struct{}
-
-// CtxClaimsPrincipalKey key
-var CtxClaimsPrincipalKey = &CtxClaimsPrincipalKeyStruct{}
 
 // OAuth2DiscoveryOptions ...
 type OAuth2DiscoveryOptions struct {
@@ -25,6 +20,8 @@ type DiscoveryDocumentOptions struct {
 	Authority              string
 	OAuth2DiscoveryOptions OAuth2DiscoveryOptions
 }
+
+// OAuth2Document ...
 type OAuth2Document struct {
 	Options      *OAuth2DiscoveryOptions
 	Issuer       string `json:"issuer"`
@@ -32,6 +29,8 @@ type OAuth2Document struct {
 	jwksAR       *jwxk.AutoRefresh
 	jwksCancelAR context.CancelFunc
 }
+
+// DiscoveryDocument ...
 type DiscoveryDocument struct {
 	OAuth2Document        *OAuth2Document
 	Options               *DiscoveryDocumentOptions
@@ -42,21 +41,21 @@ type DiscoveryDocument struct {
 	JWKSURL               string `json:"jwks_uri"`
 }
 
-type ClaimsPrincipal struct {
-	Token   jwxt.Token
-	Claims  []claimsprincipalContracts.Claim
-	FastMap map[string]map[string]bool
-}
+// OAuth2Context ...
 type OAuth2Context struct {
 	OAuth2Document *OAuth2Document
 	JWTValidator   *JWTValidator
 	Scheme         string
 	Config         *GrpcFuncAuthConfig
 }
+
+// MethodClaims ...
 type MethodClaims struct {
 	OR  []claimsprincipalContracts.Claim
 	AND []claimsprincipalContracts.Claim
 }
+
+// GrpcFuncAuthConfig ...
 type GrpcFuncAuthConfig struct {
 	Authority        string
 	ExpectedScheme   string
@@ -74,6 +73,7 @@ type GrpcFuncAuthConfig struct {
 	FullMethodNameToClaims map[string]MethodClaims
 }
 
+// NewGrpcFuncAuthConfig ...
 func NewGrpcFuncAuthConfig(authority string, expectedScheme string, clockSkewMinutes int) *GrpcFuncAuthConfig {
 	return &GrpcFuncAuthConfig{
 		Authority:              authority,
@@ -82,41 +82,37 @@ func NewGrpcFuncAuthConfig(authority string, expectedScheme string, clockSkewMin
 		FullMethodNameToClaims: make(map[string]MethodClaims),
 	}
 }
-func ClaimsPrincipalFromClaimsMap(claimsMap map[string]interface{}) *ClaimsPrincipal {
-	result := ClaimsPrincipal{
-		Claims:  []claimsprincipalContracts.Claim{},
-		FastMap: make(map[string]map[string]bool),
-	}
-	var addFastMapClaim = func(key string, value string) {
-		claimParent, ok := result.FastMap[key]
-		if !ok {
-			claimParent = make(map[string]bool)
-			result.FastMap[key] = claimParent
-		}
-		claimParent[value] = true
-	}
 
+// ClaimsPrincipalFromClaimsMap ...
+func ClaimsPrincipalFromClaimsMap(claimsMap map[string]interface{}) claimsprincipalContracts.IClaimsPrincipal {
+	principal := claimsprincipalServices.NewIClaimsPrincipal()
 	for key, element := range claimsMap {
 		switch value := element.(type) {
 		case string:
-			addFastMapClaim(key, value)
-			result.Claims = append(result.Claims, claimsprincipalContracts.Claim{Type: key, Value: value})
+			principal.AddClaim(claimsprincipalContracts.Claim{
+				Type:  key,
+				Value: value,
+			})
 
 		case []interface{}:
 			for _, value := range value {
 				switch claimValue := value.(type) {
 				case string:
-					addFastMapClaim(key, claimValue)
-					result.Claims = append(result.Claims, claimsprincipalContracts.Claim{Type: key, Value: claimValue})
+					principal.AddClaim(claimsprincipalContracts.Claim{
+						Type:  key,
+						Value: claimValue,
+					})
 				}
 			}
 		case []string:
 			for _, value := range value {
-				addFastMapClaim(key, value)
-				result.Claims = append(result.Claims, claimsprincipalContracts.Claim{Type: key, Value: value})
+				principal.AddClaim(claimsprincipalContracts.Claim{
+					Type:  key,
+					Value: value,
+				})
 			}
 		}
 
 	}
-	return &result
+	return principal
 }

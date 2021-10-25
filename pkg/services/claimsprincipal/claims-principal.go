@@ -7,10 +7,12 @@ import (
 )
 
 type claimsPrincipal struct {
-	claims map[string][]string
+	claims  map[string][]string
+	fastMap map[string]map[string]bool
 }
 
-func newIClaimsPrincipal() claimsprincipalContracts.IClaimsPrincipal {
+// NewIClaimsPrincipal for outside of the DI
+func NewIClaimsPrincipal() claimsprincipalContracts.IClaimsPrincipal {
 	obj := &claimsPrincipal{}
 	obj.Ctor()
 	return obj
@@ -18,6 +20,7 @@ func newIClaimsPrincipal() claimsprincipalContracts.IClaimsPrincipal {
 
 func (c *claimsPrincipal) Ctor() {
 	c.claims = make(map[string][]string)
+	c.fastMap = make(map[string]map[string]bool)
 }
 
 func removeIndex(s []string, index int) []string {
@@ -51,17 +54,21 @@ func (c *claimsPrincipal) RemoveClaim(claim claimsprincipalContracts.Claim) {
 
 // HasClaim ...
 func (c *claimsPrincipal) HasClaim(claim claimsprincipalContracts.Claim) bool {
-	claims, ok := c.claims[claim.Type]
+	claimParent, ok := c.fastMap[claim.Type]
 	if !ok {
 		return false
 	}
+	_, ok = claimParent[claim.Value]
+	return ok
+}
 
-	for _, value := range claims {
-		if value == claim.Value {
-			return true
-		}
+func (c *claimsPrincipal) addFastMapClaim(claim claimsprincipalContracts.Claim) {
+	claimParent, ok := c.fastMap[claim.Type]
+	if !ok {
+		claimParent = make(map[string]bool)
+		c.fastMap[claim.Type] = claimParent
 	}
-	return false
+	claimParent[claim.Value] = true
 }
 
 // AddClaim ...
@@ -80,6 +87,7 @@ func (c *claimsPrincipal) AddClaim(claim claimsprincipalContracts.Claim) {
 	}
 	claims = append(claims, claim.Value)
 	c.claims[claim.Type] = claims
+	c.addFastMapClaim(claim)
 }
 
 // GetClaims ...
