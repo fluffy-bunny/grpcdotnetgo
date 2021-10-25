@@ -19,7 +19,7 @@ func main() {
 	lis := bufconn.Listen(bufSize)
 	go func() {
 		myRuntime := grpcdotnetgocore.NewRuntime()
-		myRuntime.Start(lis)
+		myRuntime.Start(lis, nil)
 	}()
 
 	ctx := context.Background()

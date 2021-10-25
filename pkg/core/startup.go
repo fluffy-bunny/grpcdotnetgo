@@ -15,6 +15,7 @@ import (
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
 	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
+	pluginContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
@@ -141,8 +142,11 @@ func (s *Runtime) GetServerInstances() []*ServerInstance {
 }
 
 // Start starts up the server
-func (s *Runtime) Start(lis net.Listener) {
-	plugins := grpcdotnetgo_plugin.GetPlugins()
+func (s *Runtime) Start(lis net.Listener, plugins []pluginContracts.IGRPCDotNetGoPlugin) {
+	if plugins == nil || len(plugins) == 0 {
+		plugins = grpcdotnetgo_plugin.GetPlugins() // pull it from the global one
+	}
+
 	var err error
 	logLevel := os.Getenv("LOG_LEVEL")
 	if len(logLevel) == 0 {
@@ -242,10 +246,10 @@ func (s *Runtime) Start(lis net.Listener) {
 		// tear down the DI Container
 		v.DotNetGoBuilder.Container.DeleteWithSubContainers()
 	}
-	for _, plugin2 := range plugins {
-		startup := plugin2.GetStartup()
-		startup.OnPostServerShutdown()
+	for i := 0; i < len(plugins); i++ {
+		plugins[i].GetStartup().OnPostServerShutdown()
 	}
+
 	// do a future wait
 	for _, v := range s.ServerInstances {
 		v.Future.Get()

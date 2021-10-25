@@ -101,7 +101,7 @@ var command = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		myRuntime := grpcdotnetgocore.NewRuntime()
-		myRuntime.Start(nil)
+		myRuntime.Start(nil, nil)
 	},
 }
 
