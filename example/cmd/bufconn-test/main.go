@@ -39,5 +39,16 @@ func main() {
 		panic(err)
 	}
 	log.Printf("Response: %+v", resp)
+	// call it again
+
+	resp, err = client.SayHello(ctx, &pb.HelloRequest{
+		Name:      "zep2",
+		Directive: pb.HelloDirectives_HELLO_DIRECTIVES_UNKNOWN,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	log.Printf("Response: %+v", resp)
 	// Test for output here.
 }
