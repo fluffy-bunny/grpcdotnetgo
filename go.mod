@@ -8,14 +8,13 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
 	github.com/fluffy-bunny/protoc-gen-go-di v0.0.33
-	github.com/fluffy-bunny/sarulabsdi v0.1.31
+	github.com/fluffy-bunny/sarulabsdi v0.1.32
 	github.com/fluffy-bunny/viperEx v0.0.23
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
 	github.com/gogo/status v1.1.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/jnewmano/grpc-json-proxy v0.0.3
 	github.com/lestrrat-go/jwx v1.2.6

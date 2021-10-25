@@ -12,6 +12,7 @@ func init() {
 }
 
 type pluginService struct {
+	Startup coreContracts.IStartup
 }
 
 // NewPlugin creates a new plugin
@@ -26,5 +27,8 @@ func (p *pluginService) GetName() string {
 
 // GetStartup gets the plugin's IStartup
 func (p *pluginService) GetStartup() coreContracts.IStartup {
-	return startup.NewStartup()
+	if p.Startup == nil {
+		p.Startup = startup.NewStartup()
+	}
+	return p.Startup
 }

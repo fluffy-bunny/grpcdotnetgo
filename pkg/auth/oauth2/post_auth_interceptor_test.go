@@ -3,13 +3,14 @@ package oauth2
 import (
 	"testing"
 
+	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
-	"github.com/stretchr/testify/suite"
+	suiteTestify "github.com/stretchr/testify/suite"
 )
 
 var (
 	configAndOr = middleware_oidc.ClaimsConfig{
-		AND: []middleware_oidc.Claim{
+		AND: []claimsprincipalContracts.Claim{
 			{
 				Type:  "claimAnd1",
 				Value: "claimAnd1_1",
@@ -19,7 +20,7 @@ var (
 				Value: "claimAnd1_2",
 			},
 		},
-		OR: []middleware_oidc.Claim{
+		OR: []claimsprincipalContracts.Claim{
 			{
 				Type:  "claimOr1",
 				Value: "claimOr1_1",
@@ -32,7 +33,7 @@ var (
 	}
 
 	configAndOnly = middleware_oidc.ClaimsConfig{
-		AND: []middleware_oidc.Claim{
+		AND: []claimsprincipalContracts.Claim{
 			{
 				Type:  "claimAnd1",
 				Value: "claimAnd1_1",
@@ -44,7 +45,7 @@ var (
 		},
 	}
 	configOrOnly = middleware_oidc.ClaimsConfig{
-		OR: []middleware_oidc.Claim{
+		OR: []claimsprincipalContracts.Claim{
 			{
 				Type:  "claimOr1",
 				Value: "claimOr1_1",
@@ -58,11 +59,11 @@ var (
 )
 
 type testSuite struct {
-	suite.Suite
+	suiteTestify.Suite
 	testCases []struct {
 		Desc            string
 		Config          *middleware_oidc.ClaimsConfig
-		ClaimsPrincipal *ClaimsPrincipal
+		ClaimsPrincipal claimsprincipalContracts.IClaimsPrincipal
 		expected        bool
 	}
 }
@@ -73,7 +74,7 @@ func (suite *testSuite) SetupTest() {
 	suite.testCases = []struct {
 		Desc            string
 		Config          *middleware_oidc.ClaimsConfig
-		ClaimsPrincipal *ClaimsPrincipal
+		ClaimsPrincipal claimsprincipalContracts.IClaimsPrincipal
 		expected        bool
 	}{
 
@@ -145,6 +146,7 @@ func (suite *testSuite) SetupTest() {
 	}
 }
 
+// TestValidation ...
 // All methods that begin with "Test" are run as tests within a
 // suite.
 func (suite *testSuite) TestValidation() {
@@ -157,5 +159,5 @@ func (suite *testSuite) TestValidation() {
 // In order for 'go test' to run this suite, we need to create
 // a normal test function and pass our suite to suite.Run
 func TestValidationTestSuite(t *testing.T) {
-	suite.Run(t, new(testSuite))
+	suiteTestify.Run(t, new(testSuite))
 }
