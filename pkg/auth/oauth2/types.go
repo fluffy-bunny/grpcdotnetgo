@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/url"
 
+	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	jwxk "github.com/lestrrat-go/jwx/jwk"
 	jwxt "github.com/lestrrat-go/jwx/jwt"
 )
@@ -40,13 +41,10 @@ type DiscoveryDocument struct {
 	Issuer                string `json:"issuer"`
 	JWKSURL               string `json:"jwks_uri"`
 }
-type Claim struct {
-	Type  string
-	Value string
-}
+
 type ClaimsPrincipal struct {
 	Token   jwxt.Token
-	Claims  []Claim
+	Claims  []claimsprincipalContracts.Claim
 	FastMap map[string]map[string]bool
 }
 type OAuth2Context struct {
@@ -56,8 +54,8 @@ type OAuth2Context struct {
 	Config         *GrpcFuncAuthConfig
 }
 type MethodClaims struct {
-	OR  []Claim
-	AND []Claim
+	OR  []claimsprincipalContracts.Claim
+	AND []claimsprincipalContracts.Claim
 }
 type GrpcFuncAuthConfig struct {
 	Authority        string
@@ -86,7 +84,7 @@ func NewGrpcFuncAuthConfig(authority string, expectedScheme string, clockSkewMin
 }
 func ClaimsPrincipalFromClaimsMap(claimsMap map[string]interface{}) *ClaimsPrincipal {
 	result := ClaimsPrincipal{
-		Claims:  []Claim{},
+		Claims:  []claimsprincipalContracts.Claim{},
 		FastMap: make(map[string]map[string]bool),
 	}
 	var addFastMapClaim = func(key string, value string) {
@@ -102,20 +100,20 @@ func ClaimsPrincipalFromClaimsMap(claimsMap map[string]interface{}) *ClaimsPrinc
 		switch value := element.(type) {
 		case string:
 			addFastMapClaim(key, value)
-			result.Claims = append(result.Claims, Claim{Type: key, Value: value})
+			result.Claims = append(result.Claims, claimsprincipalContracts.Claim{Type: key, Value: value})
 
 		case []interface{}:
 			for _, value := range value {
 				switch claimValue := value.(type) {
 				case string:
 					addFastMapClaim(key, claimValue)
-					result.Claims = append(result.Claims, Claim{Type: key, Value: claimValue})
+					result.Claims = append(result.Claims, claimsprincipalContracts.Claim{Type: key, Value: claimValue})
 				}
 			}
 		case []string:
 			for _, value := range value {
 				addFastMapClaim(key, value)
-				result.Claims = append(result.Claims, Claim{Type: key, Value: value})
+				result.Claims = append(result.Claims, claimsprincipalContracts.Claim{Type: key, Value: value})
 			}
 		}
 
