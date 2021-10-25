@@ -21,7 +21,7 @@ import (
 const bufSize = 1024 * 1024
 
 // TODO: fix this
-func excludeForNowTestSayHello(t *testing.T) {
+func TestSayHello(t *testing.T) {
 	var plugins []pluginContracts.IGRPCDotNetGoPlugin
 	plugins = append(plugins, plugin.NewPlugin())
 	lis := bufconn.Listen(bufSize)
@@ -36,7 +36,7 @@ func excludeForNowTestSayHello(t *testing.T) {
 			})
 		}()
 
-		myRuntime.Start(lis, plugins)
+		myRuntime.StartWithListenterAndPlugins(lis, plugins)
 	})
 
 	ctx := context.Background()
