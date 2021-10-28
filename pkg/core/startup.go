@@ -24,6 +24,7 @@ import (
 	"github.com/reugn/async"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )
@@ -168,6 +169,9 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 	if prettyLog {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	switch strings.ToLower(logLevel) {
 	case "debug":
