@@ -79,12 +79,16 @@ jobs:
       run: |
         mv ./vendor/github.com/fluffy-bunny/sarulabsdi/genny/ ./genny/sarulabsdi/
         rm -rf ./vendor/
+    
+    - name: Install Mockgen
+      run: |
+        go install github.com/golang/mock/mockgen@latest
 
     - name: Install genny
       run: |
         go version
         go install github.com/cheekybits/genny@latest
-        
+
     - name: GO GENERATE
       run: |
         go generate -x ./...
