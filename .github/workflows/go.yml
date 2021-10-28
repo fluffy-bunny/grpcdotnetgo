@@ -78,25 +78,18 @@ jobs:
     - name: move vendor sub folders
       run: |
         mv ./vendor/github.com/fluffy-bunny/sarulabsdi/genny/ ./genny/sarulabsdi/
-    - name: delete vendor folder
-      run: |
         rm -rf ./vendor/
+
     - name: Install genny
       run: |
         go version
         go install github.com/cheekybits/genny@latest
         
-    - name: generate generics
+    - name: GO GENERATE
       run: |
-        # NOTE: go mod tidy and go mod download brings everything down so that genny has everthing it needs
-        go mod tidy
-        go mod download
-        genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/contracts/backgroundtasks/interface-types.go -pkg backgroundtasks gen "InterfaceType=IBackgroundTasks,IJobsProvider"
-        genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/contracts/core/interface-types.go            -pkg core            gen "InterfaceType=IHealthServer,IStartup,ICoreConfig,IUnaryServerInterceptorBuilder"
-        genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/contracts/claimsprincipal/interface-types.go -pkg claimsprincipal gen "InterfaceType=IClaimsPrincipal"
-        genny -in ./genny/sarulabsdi/interface-types.go -out ./pkg/contracts/logger/interface-types.go          -pkg logger          gen "InterfaceType=ILogger"
+        go generate -x ./...
         rm -rf ./genny/sarulabsdi/
-
+          
     # NOTE: This will NOT trigger another run of CI.yml
     - name: AutoCommit
       uses: stefanzweifel/git-auto-commit-action@v4.12.0

@@ -14,10 +14,10 @@ import (
 	"github.com/fatih/structs"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
+	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	pluginContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
-	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -222,7 +222,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 		si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
 		// TODO: Make this a first class abstaction
 		// ILifeCycleHook but maybe IStartup can have those
-		servicesBackgroundTasks.GetBackgroundTasksFromContainer(rootContainer)
+		backgroundtasksContracts.GetIBackgroundTasksFromContainer(rootContainer)
 
 		err = startup.OnPreServerStartup()
 		if err != nil {
