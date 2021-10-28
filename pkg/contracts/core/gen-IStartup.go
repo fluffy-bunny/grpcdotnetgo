@@ -10,56 +10,56 @@ import (
 	di "github.com/fluffy-bunny/sarulabsdi"
 )
 
-// ReflectTypeIHealthServer used when your service claims to implement IHealthServer
-var ReflectTypeIHealthServer = di.GetInterfaceReflectType((*IHealthServer)(nil))
+// ReflectTypeICoreConfig used when your service claims to implement ICoreConfig
+var ReflectTypeICoreConfig = di.GetInterfaceReflectType((*ICoreConfig)(nil))
 
-// AddSingletonIHealthServerByObj adds a prebuilt obj
-func AddSingletonIHealthServerByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIHealthServer)
+// AddSingletonICoreConfigByObj adds a prebuilt obj
+func AddSingletonICoreConfigByObj(builder *di.Builder, obj interface{}) {
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeICoreConfig)
 }
 
-// AddSingletonIHealthServer adds a type that implements IHealthServer
-func AddSingletonIHealthServer(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIHealthServer)
+// AddSingletonICoreConfig adds a type that implements ICoreConfig
+func AddSingletonICoreConfig(builder *di.Builder, implType reflect.Type) {
+	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeICoreConfig)
 }
 
-// AddSingletonIHealthServerByFunc adds a type by a custom func
-func AddSingletonIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIHealthServer)
+// AddSingletonICoreConfigByFunc adds a type by a custom func
+func AddSingletonICoreConfigByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeICoreConfig)
 }
 
-// AddTransientIHealthServer adds a type that implements IHealthServer
-func AddTransientIHealthServer(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIHealthServer)
+// AddTransientICoreConfig adds a type that implements ICoreConfig
+func AddTransientICoreConfig(builder *di.Builder, implType reflect.Type) {
+	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeICoreConfig)
 }
 
-// AddTransientIHealthServerByFunc adds a type by a custom func
-func AddTransientIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIHealthServer)
+// AddTransientICoreConfigByFunc adds a type by a custom func
+func AddTransientICoreConfigByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeICoreConfig)
 }
 
-// AddScopedIHealthServer adds a type that implements IHealthServer
-func AddScopedIHealthServer(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIHealthServer)
+// AddScopedICoreConfig adds a type that implements ICoreConfig
+func AddScopedICoreConfig(builder *di.Builder, implType reflect.Type) {
+	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeICoreConfig)
 }
 
-// AddScopedIHealthServerByFunc adds a type by a custom func
-func AddScopedIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIHealthServer)
+// AddScopedICoreConfigByFunc adds a type by a custom func
+func AddScopedICoreConfigByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeICoreConfig)
 }
 
-// GetIHealthServerFromContainer alternative to SafeGetIHealthServerFromContainer but panics of object is not present
-func GetIHealthServerFromContainer(ctn di.Container) IHealthServer {
-	return ctn.GetByType(ReflectTypeIHealthServer).(IHealthServer)
+// GetICoreConfigFromContainer alternative to SafeGetICoreConfigFromContainer but panics of object is not present
+func GetICoreConfigFromContainer(ctn di.Container) ICoreConfig {
+	return ctn.GetByType(ReflectTypeICoreConfig).(ICoreConfig)
 }
 
-// SafeGetIHealthServerFromContainer trys to get the object by type, will not panic, returns nil and error
-func SafeGetIHealthServerFromContainer(ctn di.Container) (IHealthServer, error) {
-	obj, err := ctn.SafeGetByType(ReflectTypeIHealthServer)
+// SafeGetICoreConfigFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetICoreConfigFromContainer(ctn di.Container) (ICoreConfig, error) {
+	obj, err := ctn.SafeGetByType(ReflectTypeICoreConfig)
 	if err != nil {
 		return nil, err
 	}
-	return obj.(IHealthServer), nil
+	return obj.(ICoreConfig), nil
 }
 
 // ReflectTypeIStartup used when your service claims to implement IStartup
@@ -112,58 +112,6 @@ func SafeGetIStartupFromContainer(ctn di.Container) (IStartup, error) {
 		return nil, err
 	}
 	return obj.(IStartup), nil
-}
-
-// ReflectTypeICoreConfig used when your service claims to implement ICoreConfig
-var ReflectTypeICoreConfig = di.GetInterfaceReflectType((*ICoreConfig)(nil))
-
-// AddSingletonICoreConfigByObj adds a prebuilt obj
-func AddSingletonICoreConfigByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeICoreConfig)
-}
-
-// AddSingletonICoreConfig adds a type that implements ICoreConfig
-func AddSingletonICoreConfig(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeICoreConfig)
-}
-
-// AddSingletonICoreConfigByFunc adds a type by a custom func
-func AddSingletonICoreConfigByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeICoreConfig)
-}
-
-// AddTransientICoreConfig adds a type that implements ICoreConfig
-func AddTransientICoreConfig(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeICoreConfig)
-}
-
-// AddTransientICoreConfigByFunc adds a type by a custom func
-func AddTransientICoreConfigByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeICoreConfig)
-}
-
-// AddScopedICoreConfig adds a type that implements ICoreConfig
-func AddScopedICoreConfig(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeICoreConfig)
-}
-
-// AddScopedICoreConfigByFunc adds a type by a custom func
-func AddScopedICoreConfigByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeICoreConfig)
-}
-
-// GetICoreConfigFromContainer alternative to SafeGetICoreConfigFromContainer but panics of object is not present
-func GetICoreConfigFromContainer(ctn di.Container) ICoreConfig {
-	return ctn.GetByType(ReflectTypeICoreConfig).(ICoreConfig)
-}
-
-// SafeGetICoreConfigFromContainer trys to get the object by type, will not panic, returns nil and error
-func SafeGetICoreConfigFromContainer(ctn di.Container) (ICoreConfig, error) {
-	obj, err := ctn.SafeGetByType(ReflectTypeICoreConfig)
-	if err != nil {
-		return nil, err
-	}
-	return obj.(ICoreConfig), nil
 }
 
 // ReflectTypeIUnaryServerInterceptorBuilder used when your service claims to implement IUnaryServerInterceptorBuilder

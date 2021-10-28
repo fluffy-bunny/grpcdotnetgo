@@ -32,10 +32,10 @@ func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 func (dngbuilder *DotNetGoBuilder) AddDefaultService() {
 	builder := dngbuilder.Builder
 	claimsprincipal.AddScopedIClaimsPrincipal(builder)
-	contextaccessor.AddContextAccessor(builder)
-	servicesLogger.AddScopedLogger(builder)
-	servicesLogger.AddSingletonLogger(builder)
-	servicesBackgroundTasks.AddBackgroundTasks(builder)
+	contextaccessor.AddScopedContextAccessor(builder)
+	servicesLogger.AddScopedILogger(builder)
+	servicesLogger.AddSingletonILogger(builder)
+	servicesBackgroundTasks.AddSingletonBackgroundTasks(builder)
 }
 
 func (b *DotNetGoBuilder) Build() di.Container {

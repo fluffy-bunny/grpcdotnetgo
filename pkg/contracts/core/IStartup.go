@@ -1,5 +1,9 @@
 package core
 
+//go:generate genny   -pkg $GOPACKAGE        -in=../../../genny/sarulabsdi/interface-types.go -out=gen-$GOFILE gen "InterfaceType=ICoreConfig,IStartup,IUnaryServerInterceptorBuilder"
+
+//go:generate mockgen -package=$GOPACKAGE -destination=../../mocks/$GOPACKAGE/mock_$GOFILE   github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/$GOPACKAGE ICoreConfig,IStartup,IUnaryServerInterceptorBuilder
+
 import (
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"google.golang.org/grpc"

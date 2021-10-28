@@ -5,8 +5,8 @@ import (
 	"time"
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	contractsContextAccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/contextaccessor"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
-	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"google.golang.org/grpc"
 )
@@ -21,7 +21,7 @@ func UnaryServerInterceptor(rootContainer di.Container) grpc.UnaryServerIntercep
 
 		ctx = dicontext.SetRequestContainer(ctx, requestContainer)
 
-		contextaccessor := contextaccessor.GetInternalGetContextAccessorFromContainer(requestContainer)
+		contextaccessor := contractsContextAccessor.GetIInternalContextAccessorFromContainer(requestContainer)
 		contextaccessor.SetContext(ctx)
 
 		// get a fresh ClaimsPrincipal from the request container and populate it with uuid data

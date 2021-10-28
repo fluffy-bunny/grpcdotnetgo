@@ -3,25 +3,21 @@ package logger
 import (
 	"reflect"
 
+	contractsContextAccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/contextaccessor"
 	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
-	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
-// Define an object in the App scope.
-var diServiceNameILoggerScoped = grpcdotnetgoutils.GenerateUnqueServiceName("ILogger-Scoped")
-
-// AddScopedLogger adds service to the DI container
-func AddScopedLogger(builder *di.Builder) {
+// AddScopedILogger adds service to the DI container
+func AddScopedILogger(builder *di.Builder) {
 	log.Info().
-		Str("serviceName", diServiceNameILoggerScoped).
 		Msg("IoC: AddScopedLogger")
 	loggerContracts.AddScopedILoggerByFunc(builder, reflect.TypeOf(&loggerService{}),
 		func(ctn di.Container) (interface{}, error) {
-			contextAccessor := contextaccessor.GetContextAccessorFromContainer(ctn)
+			contextAccessor := contractsContextAccessor.GetIContextAccessorFromContainer(ctn)
 			logger := zerolog.Ctx(contextAccessor.GetContext())
 			return &loggerService{
 				Logger: logger,
@@ -37,8 +33,8 @@ func GetSingletonLoggerFromContainer(ctn di.Container) loggerContracts.ILogger {
 	return service
 }
 
-// AddSingletonLogger adds service to the DI container
-func AddSingletonLogger(builder *di.Builder) {
+// AddSingletonILogger adds service to the DI container
+func AddSingletonILogger(builder *di.Builder) {
 	log.Info().
 		Str("serviceName", diServiceNameILoggerSingleton).
 		Msg("IoC: AddSingletonLogger")
