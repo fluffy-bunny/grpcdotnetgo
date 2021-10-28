@@ -1,14 +1,11 @@
 package oauth2
 
 import (
+	contractsContextAccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/contextaccessor"
 	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
-	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
 )
 
-// IOauth2 contract
-type IOauth2 interface {
-}
 type service struct {
-	ContextAccessor contextaccessor.IContextAccessor
-	Logger          loggerContracts.ILogger
+	ContextAccessor contractsContextAccessor.IContextAccessor `inject:""`
+	Logger          loggerContracts.ILogger                   `inject:""`
 }

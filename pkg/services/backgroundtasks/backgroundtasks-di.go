@@ -10,14 +10,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// GetBackgroundTasksFromContainer helper
-func GetBackgroundTasksFromContainer(ctn di.Container) backgroundtasksContracts.IBackgroundTasks {
-	obj := ctn.GetByType(backgroundtasksContracts.ReflectTypeIBackgroundTasks).(backgroundtasksContracts.IBackgroundTasks)
-	return obj
-}
-
-// AddBackgroundTasks adds service to the DI container
-func AddBackgroundTasks(builder *di.Builder) {
+// AddSingletonBackgroundTasks adds service to the DI container
+func AddSingletonBackgroundTasks(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddBackgroundTasks")
 

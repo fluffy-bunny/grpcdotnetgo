@@ -15,6 +15,7 @@ require (
 	github.com/gogo/protobuf v1.3.2
 	github.com/gogo/status v1.1.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/golang/mock v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/jnewmano/grpc-json-proxy v0.0.3
 	github.com/lestrrat-go/jwx v1.2.6
