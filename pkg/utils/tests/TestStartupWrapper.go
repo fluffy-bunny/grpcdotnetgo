@@ -8,49 +8,49 @@ import (
 
 // TestStartupWrapper struct
 type TestStartupWrapper struct {
-	ChildStartup              coreContracts.IStartup
-	ConfigureServicesOverride func(builder *di.Builder)
+	innerStartup              coreContracts.IStartup
+	configureServicesOverride func(builder *di.Builder)
 }
 
 // NewTestStartupWrapper creates a new TestStartupWrapper
 func NewTestStartupWrapper(childStartup coreContracts.IStartup, configureServicesOverride func(builder *di.Builder)) *TestStartupWrapper {
 	return &TestStartupWrapper{
-		ChildStartup:              childStartup,
-		ConfigureServicesOverride: configureServicesOverride,
+		innerStartup:              childStartup,
+		configureServicesOverride: configureServicesOverride,
 	}
 }
 
 // GetConfigOptions wrapper
 func (s *TestStartupWrapper) GetConfigOptions() *coreContracts.ConfigOptions {
-	return s.ChildStartup.GetConfigOptions()
+	return s.innerStartup.GetConfigOptions()
 }
 
 // ConfigureServices wrapper
 func (s *TestStartupWrapper) ConfigureServices(builder *di.Builder) {
-	s.ChildStartup.ConfigureServices(builder)
-	if s.ConfigureServicesOverride != nil {
-		s.ConfigureServicesOverride(builder)
+	s.innerStartup.ConfigureServices(builder)
+	if s.configureServicesOverride != nil {
+		s.configureServicesOverride(builder)
 	}
 }
 
 // Configure wrapper
 func (s *TestStartupWrapper) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
-	s.Configure(unaryServerInterceptorBuilder)
+	s.innerStartup.Configure(unaryServerInterceptorBuilder)
 }
 
 // GetPort wrapper
 func (s *TestStartupWrapper) GetPort() int {
-	return s.ChildStartup.GetPort()
+	return s.innerStartup.GetPort()
 }
 
 // RegisterGRPCEndpoints wrapper
 func (s *TestStartupWrapper) RegisterGRPCEndpoints(server *grpc.Server) []interface{} {
-	return s.ChildStartup.RegisterGRPCEndpoints(server)
+	return s.innerStartup.RegisterGRPCEndpoints(server)
 }
 
 // SetRootContainer wrapper
 func (s *TestStartupWrapper) SetRootContainer(container di.Container) {
-	s.SetRootContainer(container)
+	s.innerStartup.SetRootContainer(container)
 }
 
 // GetStartupManifest wrapper
@@ -63,8 +63,10 @@ func (s *TestStartupWrapper) GetStartupManifest() coreContracts.StartupManifest 
 
 // OnPreServerStartup wrapper
 func (s *TestStartupWrapper) OnPreServerStartup() error {
-	return nil
+	return s.innerStartup.OnPreServerStartup()
 }
 
 // OnPostServerShutdown Wrapper
-func (s *TestStartupWrapper) OnPostServerShutdown() {}
+func (s *TestStartupWrapper) OnPostServerShutdown() {
+	s.innerStartup.OnPostServerShutdown()
+}
