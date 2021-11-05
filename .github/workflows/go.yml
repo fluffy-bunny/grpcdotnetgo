@@ -93,6 +93,7 @@ jobs:
       run: |
         go generate -x ./...
         rm -rf ./genny/sarulabsdi/
+        go mod tidy  
           
     # NOTE: This will NOT trigger another run of CI.yml
     - name: AutoCommit
