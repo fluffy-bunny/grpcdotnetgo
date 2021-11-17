@@ -1,5 +1,11 @@
 # gRPC-dot-net-go
 
+## Installation
+
+When used with Go modules, use the following import path:
+
+    go get github.com/fluffy-bunny/grpcdotnetgo
+
 ## Stand-Alone Samples
 
 [samples](https://github.com/fluffy-bunny/grpcdotnetgo-samples)  
