@@ -102,3 +102,35 @@ func (c *claimsPrincipal) GetClaims() []claimsprincipalContracts.Claim {
 	}
 	return result
 }
+
+// ClaimsPrincipalFromClaimsMap ...
+func ClaimsPrincipalFromClaimsMap(claimsMap map[string]interface{}) claimsprincipalContracts.IClaimsPrincipal {
+	principal := NewIClaimsPrincipal()
+	for key, element := range claimsMap {
+		switch value := element.(type) {
+		case string:
+			principal.AddClaim(claimsprincipalContracts.Claim{
+				Type:  key,
+				Value: value,
+			})
+		case []interface{}:
+			for _, value := range value {
+				switch claimValue := value.(type) {
+				case string:
+					principal.AddClaim(claimsprincipalContracts.Claim{
+						Type:  key,
+						Value: claimValue,
+					})
+				}
+			}
+		case []string:
+			for _, value := range value {
+				principal.AddClaim(claimsprincipalContracts.Claim{
+					Type:  key,
+					Value: value,
+				})
+			}
+		}
+	}
+	return principal
+}
