@@ -84,8 +84,8 @@ github.com/fatih/structtag v1.2.0 h1:/OdNE99OxoI/PqaW/SuSK9uxxT3f/tcSZgon/ssNSx4
 github.com/fatih/structtag v1.2.0/go.mod h1:mBJUNpUnHmRKrKlQQlmCrh5PuhftFbNv8Ys4/aAZl94=
 github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422 h1:YX0YIKuY6YVqBNGZsp9ucKPOuDSPFjurYhtu4jyGyio=
 github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422/go.mod h1:kQoL+ILrIYTARa/bTroJeI+AHfQgvJSBE7huNBoRwms=
-github.com/fluffy-bunny/sarulabsdi v0.1.32 h1:k8EmLYsecpcCaffvzRCIGWCba1/UVAwMgx/ZkBdR9yo=
-github.com/fluffy-bunny/sarulabsdi v0.1.32/go.mod h1:hGYv8o1zJq0XzLiBG0QSgZ8npFnt3pCZESn3YZhJkFo=
+github.com/fluffy-bunny/sarulabsdi v0.1.33 h1:GV/HIvzqswFjeFI9wE2riKP3HkQGrWrMwmS1N5NDBQs=
+github.com/fluffy-bunny/sarulabsdi v0.1.33/go.mod h1:hGYv8o1zJq0XzLiBG0QSgZ8npFnt3pCZESn3YZhJkFo=
 github.com/fluffy-bunny/viperEx v0.0.23 h1:ghL8qnIlWX1WfR7gmNyIt5YoZGoE1mFuAXwbZF8uSpE=
 github.com/fluffy-bunny/viperEx v0.0.23/go.mod h1:btk0DbT7X+7zT2jJN06US7mzJ/AxQ+Z2q952hEfBRek=
 github.com/form3tech-oss/jwt-go v3.2.5+incompatible h1:/l4kBbb4/vGSsdtB5nUe8L7B9mImVMaBPw9L/0TBHU8=
