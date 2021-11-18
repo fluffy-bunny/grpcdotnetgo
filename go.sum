@@ -86,8 +86,8 @@ github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422 h1:YX0YIKuY6
 github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422/go.mod h1:kQoL+ILrIYTARa/bTroJeI+AHfQgvJSBE7huNBoRwms=
 github.com/fluffy-bunny/sarulabsdi v0.1.32 h1:k8EmLYsecpcCaffvzRCIGWCba1/UVAwMgx/ZkBdR9yo=
 github.com/fluffy-bunny/sarulabsdi v0.1.32/go.mod h1:hGYv8o1zJq0XzLiBG0QSgZ8npFnt3pCZESn3YZhJkFo=
-github.com/fluffy-bunny/viperEx v0.0.23 h1:ghL8qnIlWX1WfR7gmNyIt5YoZGoE1mFuAXwbZF8uSpE=
-github.com/fluffy-bunny/viperEx v0.0.23/go.mod h1:btk0DbT7X+7zT2jJN06US7mzJ/AxQ+Z2q952hEfBRek=
+github.com/fluffy-bunny/viperEx v0.0.24 h1:1RAatTSsf31Zsab/Pu0R2NloqkX+7/63wOwqcMSC+u8=
+github.com/fluffy-bunny/viperEx v0.0.24/go.mod h1:zLhxsFp41kTpgxkGxExTpG7vOqCgb5ouL6AljITO4os=
 github.com/form3tech-oss/jwt-go v3.2.5+incompatible h1:/l4kBbb4/vGSsdtB5nUe8L7B9mImVMaBPw9L/0TBHU8=
 github.com/form3tech-oss/jwt-go v3.2.5+incompatible/go.mod h1:pbq4aXjuKjdthFRnoDwaVPLA+WlJuPGy+QneDUgJi2k=
 github.com/fsnotify/fsnotify v1.4.9 h1:hsms1Qyu0jgnwNXIxa+/V/PDsU6CfLf6CNO8H7IWoS4=
@@ -253,8 +253,9 @@ github.com/mitchellh/gox v0.4.0/go.mod h1:Sd9lOJ0+aimLBi73mGofS1ycjY8lL3uZM3JPS4
 github.com/mitchellh/iochan v1.0.0/go.mod h1:JwYml1nuB7xOzsp52dPpHFffvOCDupsG0QubkSMEySY=
 github.com/mitchellh/mapstructure v0.0.0-20160808181253-ca63d7c062ee/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
 github.com/mitchellh/mapstructure v1.1.2/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
-github.com/mitchellh/mapstructure v1.4.1 h1:CpVNEelQCZBooIPDn+AR3NpivK/TIKU8bDxdASFVQag=
 github.com/mitchellh/mapstructure v1.4.1/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
+github.com/mitchellh/mapstructure v1.4.2 h1:6h7AQ0yhTcIsmFmnAwQls75jp2Gzs4iB8W7pjMO+rqo=
+github.com/mitchellh/mapstructure v1.4.2/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
 github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3RllmbCylyMrvgv0=
 github.com/modern-go/reflect2 v1.0.1/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3RllmbCylyMrvgv0=

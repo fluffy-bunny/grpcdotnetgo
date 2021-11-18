@@ -8,7 +8,7 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
 	github.com/fluffy-bunny/sarulabsdi v0.1.32
-	github.com/fluffy-bunny/viperEx v0.0.23
+	github.com/fluffy-bunny/viperEx v0.0.24
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
@@ -49,7 +49,7 @@ require (
 	github.com/lestrrat-go/iter v1.0.1 // indirect
 	github.com/lestrrat-go/option v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
-	github.com/mitchellh/mapstructure v1.4.1 // indirect
+	github.com/mitchellh/mapstructure v1.4.2 // indirect
 	github.com/pelletier/go-toml v1.9.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
