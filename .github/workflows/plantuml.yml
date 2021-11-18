@@ -1,0 +1,52 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Plant UML
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    paths:
+      - '**.puml'
+ 
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+ plantuml:
+    runs-on: ubuntu-latest
+    env:
+        UML_FILES: ".puml"
+    steps:
+      - name: Checkout Source 
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Get specific changed files
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v11.5
+        with:
+          files: |
+            **.puml
+            
+      - name: List all modified files
+        run: |
+          for file in ${{ steps.changed-files-specific.outputs.all_modified_files }}; do
+            echo "$file was modified"
+          done
+ 
+      - name: Generate SVG Diagrams
+        uses: cloudbees/plantuml-github-action@master
+        with:
+            args: -v -tsvg ${{ steps.changed-files-specific.outputs.all_modified_files }}
+      - name: Generate PNG Diagrams
+        uses: cloudbees/plantuml-github-action@master
+        with:
+            args: -v -tpng ${{ steps.changed-files-specific.outputs.all_modified_files }}
+      - name: Push Local Changes
+        uses:  stefanzweifel/git-auto-commit-action@v4.1.2 
+        with: 
+          commit_message: "Generate SVG and PNG images for PlantUML diagrams" 
+          branch: ${{ github.head_ref }}
