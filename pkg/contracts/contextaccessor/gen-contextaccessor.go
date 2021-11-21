@@ -48,6 +48,11 @@ func AddScopedIContextAccessorByFunc(builder *di.Builder, implType reflect.Type,
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIContextAccessor)
 }
 
+// RemoveAllIContextAccessor removes all IContextAccessor from the DI
+func RemoveAllIContextAccessor(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeIContextAccessor)
+}
+
 // GetIContextAccessorFromContainer alternative to SafeGetIContextAccessorFromContainer but panics of object is not present
 func GetIContextAccessorFromContainer(ctn di.Container) IContextAccessor {
 	return ctn.GetByType(ReflectTypeIContextAccessor).(IContextAccessor)
@@ -98,6 +103,11 @@ func AddScopedIInternalContextAccessor(builder *di.Builder, implType reflect.Typ
 // AddScopedIInternalContextAccessorByFunc adds a type by a custom func
 func AddScopedIInternalContextAccessorByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIInternalContextAccessor)
+}
+
+// RemoveAllIInternalContextAccessor removes all IInternalContextAccessor from the DI
+func RemoveAllIInternalContextAccessor(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeIInternalContextAccessor)
 }
 
 // GetIInternalContextAccessorFromContainer alternative to SafeGetIInternalContextAccessorFromContainer but panics of object is not present

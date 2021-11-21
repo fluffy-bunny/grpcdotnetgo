@@ -48,6 +48,11 @@ func AddScopedICoreConfigByFunc(builder *di.Builder, implType reflect.Type, buil
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeICoreConfig)
 }
 
+// RemoveAllICoreConfig removes all ICoreConfig from the DI
+func RemoveAllICoreConfig(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeICoreConfig)
+}
+
 // GetICoreConfigFromContainer alternative to SafeGetICoreConfigFromContainer but panics of object is not present
 func GetICoreConfigFromContainer(ctn di.Container) ICoreConfig {
 	return ctn.GetByType(ReflectTypeICoreConfig).(ICoreConfig)
@@ -100,6 +105,11 @@ func AddScopedIStartupByFunc(builder *di.Builder, implType reflect.Type, build f
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIStartup)
 }
 
+// RemoveAllIStartup removes all IStartup from the DI
+func RemoveAllIStartup(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeIStartup)
+}
+
 // GetIStartupFromContainer alternative to SafeGetIStartupFromContainer but panics of object is not present
 func GetIStartupFromContainer(ctn di.Container) IStartup {
 	return ctn.GetByType(ReflectTypeIStartup).(IStartup)
@@ -150,6 +160,11 @@ func AddScopedIUnaryServerInterceptorBuilder(builder *di.Builder, implType refle
 // AddScopedIUnaryServerInterceptorBuilderByFunc adds a type by a custom func
 func AddScopedIUnaryServerInterceptorBuilderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIUnaryServerInterceptorBuilder)
+}
+
+// RemoveAllIUnaryServerInterceptorBuilder removes all IUnaryServerInterceptorBuilder from the DI
+func RemoveAllIUnaryServerInterceptorBuilder(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeIUnaryServerInterceptorBuilder)
 }
 
 // GetIUnaryServerInterceptorBuilderFromContainer alternative to SafeGetIUnaryServerInterceptorBuilderFromContainer but panics of object is not present

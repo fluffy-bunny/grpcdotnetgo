@@ -48,6 +48,11 @@ func AddScopedILoggerByFunc(builder *di.Builder, implType reflect.Type, build fu
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeILogger)
 }
 
+// RemoveAllILogger removes all ILogger from the DI
+func RemoveAllILogger(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeILogger)
+}
+
 // GetILoggerFromContainer alternative to SafeGetILoggerFromContainer but panics of object is not present
 func GetILoggerFromContainer(ctn di.Container) ILogger {
 	return ctn.GetByType(ReflectTypeILogger).(ILogger)

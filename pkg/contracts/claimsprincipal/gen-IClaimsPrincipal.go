@@ -48,6 +48,11 @@ func AddScopedIClaimsPrincipalByFunc(builder *di.Builder, implType reflect.Type,
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIClaimsPrincipal)
 }
 
+// RemoveAllIClaimsPrincipal removes all IClaimsPrincipal from the DI
+func RemoveAllIClaimsPrincipal(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeIClaimsPrincipal)
+}
+
 // GetIClaimsPrincipalFromContainer alternative to SafeGetIClaimsPrincipalFromContainer but panics of object is not present
 func GetIClaimsPrincipalFromContainer(ctn di.Container) IClaimsPrincipal {
 	return ctn.GetByType(ReflectTypeIClaimsPrincipal).(IClaimsPrincipal)

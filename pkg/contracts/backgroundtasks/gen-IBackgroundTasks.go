@@ -48,6 +48,11 @@ func AddScopedIBackgroundTasksByFunc(builder *di.Builder, implType reflect.Type,
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIBackgroundTasks)
 }
 
+// RemoveAllIBackgroundTasks removes all IBackgroundTasks from the DI
+func RemoveAllIBackgroundTasks(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeIBackgroundTasks)
+}
+
 // GetIBackgroundTasksFromContainer alternative to SafeGetIBackgroundTasksFromContainer but panics of object is not present
 func GetIBackgroundTasksFromContainer(ctn di.Container) IBackgroundTasks {
 	return ctn.GetByType(ReflectTypeIBackgroundTasks).(IBackgroundTasks)

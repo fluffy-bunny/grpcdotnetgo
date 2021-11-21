@@ -48,6 +48,11 @@ func AddScopedIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, bu
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIJobsProvider)
 }
 
+// RemoveAllIJobsProvider removes all IJobsProvider from the DI
+func RemoveAllIJobsProvider(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeIJobsProvider)
+}
+
 // GetIJobsProviderFromContainer alternative to SafeGetIJobsProviderFromContainer but panics of object is not present
 func GetIJobsProviderFromContainer(ctn di.Container) IJobsProvider {
 	return ctn.GetByType(ReflectTypeIJobsProvider).(IJobsProvider)

@@ -48,6 +48,11 @@ func AddScopedIOauth2ByFunc(builder *di.Builder, implType reflect.Type, build fu
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIOauth2)
 }
 
+// RemoveAllIOauth2 removes all IOauth2 from the DI
+func RemoveAllIOauth2(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeIOauth2)
+}
+
 // GetIOauth2FromContainer alternative to SafeGetIOauth2FromContainer but panics of object is not present
 func GetIOauth2FromContainer(ctn di.Container) IOauth2 {
 	return ctn.GetByType(ReflectTypeIOauth2).(IOauth2)

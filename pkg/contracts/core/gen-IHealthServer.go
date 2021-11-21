@@ -48,6 +48,11 @@ func AddScopedIHealthServerByFunc(builder *di.Builder, implType reflect.Type, bu
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIHealthServer)
 }
 
+// RemoveAllIHealthServer removes all IHealthServer from the DI
+func RemoveAllIHealthServer(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeIHealthServer)
+}
+
 // GetIHealthServerFromContainer alternative to SafeGetIHealthServerFromContainer but panics of object is not present
 func GetIHealthServerFromContainer(ctn di.Container) IHealthServer {
 	return ctn.GetByType(ReflectTypeIHealthServer).(IHealthServer)
