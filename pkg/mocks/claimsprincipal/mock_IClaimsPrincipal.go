@@ -60,6 +60,20 @@ func (mr *MockIClaimsPrincipalMockRecorder) GetClaims() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClaims", reflect.TypeOf((*MockIClaimsPrincipal)(nil).GetClaims))
 }
 
+// GetClaimsByType mocks base method.
+func (m *MockIClaimsPrincipal) GetClaimsByType(arg0 string) []claimsprincipal.Claim {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetClaimsByType", arg0)
+	ret0, _ := ret[0].([]claimsprincipal.Claim)
+	return ret0
+}
+
+// GetClaimsByType indicates an expected call of GetClaimsByType.
+func (mr *MockIClaimsPrincipalMockRecorder) GetClaimsByType(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClaimsByType", reflect.TypeOf((*MockIClaimsPrincipal)(nil).GetClaimsByType), arg0)
+}
+
 // HasClaim mocks base method.
 func (m *MockIClaimsPrincipal) HasClaim(arg0 claimsprincipal.Claim) bool {
 	m.ctrl.T.Helper()
