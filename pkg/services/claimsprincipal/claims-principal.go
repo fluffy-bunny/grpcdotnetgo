@@ -52,6 +52,21 @@ func (c *claimsPrincipal) RemoveClaim(claim claimsprincipalContracts.Claim) {
 	}
 }
 
+func (c *claimsPrincipal) GetClaimsByType(claimType string) []claimsprincipalContracts.Claim {
+	claimParent, ok := c.claims[claimType]
+	if !ok {
+		return []claimsprincipalContracts.Claim{}
+	}
+	var result []claimsprincipalContracts.Claim
+	for _, claimValue := range claimParent {
+		result = append(result, claimsprincipalContracts.Claim{
+			Type:  claimType,
+			Value: claimValue,
+		})
+	}
+	return result
+}
+
 // HasClaim ...
 func (c *claimsPrincipal) HasClaim(claim claimsprincipalContracts.Claim) bool {
 	claimParent, ok := c.fastMap[claim.Type]

@@ -12,6 +12,6 @@ import (
 func AddScopedIClaimsPrincipal(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddClaimsPrincipal")
-	claimsprincipalContracts.AddSingletonIClaimsPrincipal(builder,
+	claimsprincipalContracts.AddScopedIClaimsPrincipal(builder,
 		reflect.TypeOf(&claimsPrincipal{}))
 }
