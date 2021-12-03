@@ -39,6 +39,11 @@ var TypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(
 // ReflectTypeIGreeterService reflect type
 var ReflectTypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(nil))
 
+// AddSingletonIGreeterServiceByObj fetches the downstream di.Request scoped service
+func AddSingletonIGreeterServiceByObj(builder *sarulabsdi.Builder, obj interface{}) {
+	sarulabsdi.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIGreeterService)
+}
+
 // GetGreeterServiceFromContainer fetches the downstream di.Request scoped service
 func GetGreeterServiceFromContainer(ctn sarulabsdi.Container) IGreeterService {
 	return ctn.GetByType(ReflectTypeIGreeterService).(IGreeterService)
@@ -99,6 +104,11 @@ var TypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service
 
 // ReflectTypeIGreeter2Service reflect type
 var ReflectTypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
+
+// AddSingletonIGreeter2ServiceByObj fetches the downstream di.Request scoped service
+func AddSingletonIGreeter2ServiceByObj(builder *sarulabsdi.Builder, obj interface{}) {
+	sarulabsdi.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIGreeter2Service)
+}
 
 // GetGreeter2ServiceFromContainer fetches the downstream di.Request scoped service
 func GetGreeter2ServiceFromContainer(ctn sarulabsdi.Container) IGreeter2Service {
