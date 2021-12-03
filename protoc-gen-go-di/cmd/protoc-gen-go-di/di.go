@@ -250,9 +250,51 @@ func (s *serviceGenContext) genService() {
 	// DI Helpers
 
 	// making type look like sarulabsdi genny types
-	g.P("// AddSingleton", interfaceDownstreamServiceName, "ByObj fetches the downstream di.Request scoped service")
-	g.P("func AddSingleton", interfaceDownstreamServiceName, "ByObj(builder *", diPackage.Ident("Builder"), ", obj interface{}) ", " {")
+	g.P("// AddSingleton", interfaceDownstreamServiceName, "ByObj adds a prebuilt obj")
+	g.P("func AddSingleton", interfaceDownstreamServiceName, "ByObj(builder *", diPackage.Ident("Builder"), ", obj interface{})", " {")
 	g.P(diPackage.Ident("AddSingletonWithImplementedTypesByObj"), "(builder,obj,", typeDownstreamServiceInterfaceName, ",)")
+	g.P("}")
+	g.P()
+
+	g.P("// AddSingleton", interfaceDownstreamServiceName, " adds a type that implements ", interfaceDownstreamServiceName)
+	g.P("func AddSingleton", interfaceDownstreamServiceName, "(builder *", diPackage.Ident("Builder"), ",implType ", reflectPackage.Ident("Type"), ")", " {")
+	g.P(diPackage.Ident("AddSingletonWithImplementedTypes"), "(builder,implType,", typeDownstreamServiceInterfaceName, ")")
+	g.P("}")
+	g.P()
+
+	g.P("// AddSingleton", interfaceDownstreamServiceName, "ByFunc adds a type by a custom func")
+	g.P("func AddSingleton", interfaceDownstreamServiceName, "ByFunc(builder *", diPackage.Ident("Builder"), ", implType ", reflectPackage.Ident("Type"), ", build func(ctn ", diPackage.Ident("Container"), ") (interface{}, error)) {")
+	g.P(diPackage.Ident("AddSingletonWithImplementedTypesByFunc"), "(builder, implType, build,", typeDownstreamServiceInterfaceName, ")")
+	g.P("}")
+	g.P()
+
+	g.P("// AddTransient", interfaceDownstreamServiceName, " adds a type that implements ", interfaceDownstreamServiceName)
+	g.P("func AddTransient", interfaceDownstreamServiceName, "(builder *", diPackage.Ident("Builder"), ",implType ", reflectPackage.Ident("Type"), ")", " {")
+	g.P(diPackage.Ident("AddTransientWithImplementedTypes"), "(builder,implType,", typeDownstreamServiceInterfaceName, ")")
+	g.P("}")
+	g.P()
+
+	g.P("// AddTransient", interfaceDownstreamServiceName, "ByFunc adds a type by a custom func")
+	g.P("func AddTransient", interfaceDownstreamServiceName, "ByFunc(builder *", diPackage.Ident("Builder"), ", implType ", reflectPackage.Ident("Type"), ", build func(ctn ", diPackage.Ident("Container"), ") (interface{}, error)) {")
+	g.P(diPackage.Ident("AddTransientWithImplementedTypesByFunc"), "(builder, implType, build,", typeDownstreamServiceInterfaceName, ")")
+	g.P("}")
+	g.P()
+
+	g.P("// AddScoped", interfaceDownstreamServiceName, " adds a type that implements ", interfaceDownstreamServiceName)
+	g.P("func AddScoped", interfaceDownstreamServiceName, "(builder *", diPackage.Ident("Builder"), ",implType ", reflectPackage.Ident("Type"), ")", " {")
+	g.P(diPackage.Ident("AddScopedWithImplementedTypes"), "(builder,implType,", typeDownstreamServiceInterfaceName, ")")
+	g.P("}")
+	g.P()
+
+	g.P("// AddScoped", interfaceDownstreamServiceName, "ByFunc adds a type by a custom func")
+	g.P("func AddScoped", interfaceDownstreamServiceName, "ByFunc(builder *", diPackage.Ident("Builder"), ", implType ", reflectPackage.Ident("Type"), ", build func(ctn ", diPackage.Ident("Container"), ") (interface{}, error)) {")
+	g.P(diPackage.Ident("AddScopedWithImplementedTypesByFunc"), "(builder, implType, build,", typeDownstreamServiceInterfaceName, ")")
+	g.P("}")
+	g.P()
+
+	g.P("// RemoveAll", interfaceDownstreamServiceName, " removes all IBillingService from the DI")
+	g.P("func RemoveAll", interfaceDownstreamServiceName, "(builder *", diPackage.Ident("Builder"), ")  {")
+	g.P("builder.RemoveAllByType(", typeDownstreamServiceInterfaceName, ")")
 	g.P("}")
 	g.P()
 
