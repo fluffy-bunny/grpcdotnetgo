@@ -39,6 +39,46 @@ var TypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(
 // ReflectTypeIGreeterService reflect type
 var ReflectTypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(nil))
 
+// AddSingletonIGreeterServiceByObj adds a prebuilt obj
+func AddSingletonIGreeterServiceByObj(builder *sarulabsdi.Builder, obj interface{}) {
+	sarulabsdi.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIGreeterService)
+}
+
+// AddSingletonIGreeterService adds a type that implements IGreeterService
+func AddSingletonIGreeterService(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIGreeterService)
+}
+
+// AddSingletonIGreeterServiceByFunc adds a type by a custom func
+func AddSingletonIGreeterServiceByFunc(builder *sarulabsdi.Builder, implType reflect.Type, build func(ctn sarulabsdi.Container) (interface{}, error)) {
+	sarulabsdi.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIGreeterService)
+}
+
+// AddTransientIGreeterService adds a type that implements IGreeterService
+func AddTransientIGreeterService(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIGreeterService)
+}
+
+// AddTransientIGreeterServiceByFunc adds a type by a custom func
+func AddTransientIGreeterServiceByFunc(builder *sarulabsdi.Builder, implType reflect.Type, build func(ctn sarulabsdi.Container) (interface{}, error)) {
+	sarulabsdi.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIGreeterService)
+}
+
+// AddScopedIGreeterService adds a type that implements IGreeterService
+func AddScopedIGreeterService(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIGreeterService)
+}
+
+// AddScopedIGreeterServiceByFunc adds a type by a custom func
+func AddScopedIGreeterServiceByFunc(builder *sarulabsdi.Builder, implType reflect.Type, build func(ctn sarulabsdi.Container) (interface{}, error)) {
+	sarulabsdi.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIGreeterService)
+}
+
+// RemoveAllIGreeterService removes all IBillingService from the DI
+func RemoveAllIGreeterService(builder *sarulabsdi.Builder) {
+	builder.RemoveAllByType(ReflectTypeIGreeterService)
+}
+
 // GetGreeterServiceFromContainer fetches the downstream di.Request scoped service
 func GetGreeterServiceFromContainer(ctn sarulabsdi.Container) IGreeterService {
 	return ctn.GetByType(ReflectTypeIGreeterService).(IGreeterService)
@@ -99,6 +139,46 @@ var TypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service
 
 // ReflectTypeIGreeter2Service reflect type
 var ReflectTypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
+
+// AddSingletonIGreeter2ServiceByObj adds a prebuilt obj
+func AddSingletonIGreeter2ServiceByObj(builder *sarulabsdi.Builder, obj interface{}) {
+	sarulabsdi.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIGreeter2Service)
+}
+
+// AddSingletonIGreeter2Service adds a type that implements IGreeter2Service
+func AddSingletonIGreeter2Service(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIGreeter2Service)
+}
+
+// AddSingletonIGreeter2ServiceByFunc adds a type by a custom func
+func AddSingletonIGreeter2ServiceByFunc(builder *sarulabsdi.Builder, implType reflect.Type, build func(ctn sarulabsdi.Container) (interface{}, error)) {
+	sarulabsdi.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIGreeter2Service)
+}
+
+// AddTransientIGreeter2Service adds a type that implements IGreeter2Service
+func AddTransientIGreeter2Service(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIGreeter2Service)
+}
+
+// AddTransientIGreeter2ServiceByFunc adds a type by a custom func
+func AddTransientIGreeter2ServiceByFunc(builder *sarulabsdi.Builder, implType reflect.Type, build func(ctn sarulabsdi.Container) (interface{}, error)) {
+	sarulabsdi.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIGreeter2Service)
+}
+
+// AddScopedIGreeter2Service adds a type that implements IGreeter2Service
+func AddScopedIGreeter2Service(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIGreeter2Service)
+}
+
+// AddScopedIGreeter2ServiceByFunc adds a type by a custom func
+func AddScopedIGreeter2ServiceByFunc(builder *sarulabsdi.Builder, implType reflect.Type, build func(ctn sarulabsdi.Container) (interface{}, error)) {
+	sarulabsdi.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIGreeter2Service)
+}
+
+// RemoveAllIGreeter2Service removes all IBillingService from the DI
+func RemoveAllIGreeter2Service(builder *sarulabsdi.Builder) {
+	builder.RemoveAllByType(ReflectTypeIGreeter2Service)
+}
 
 // GetGreeter2ServiceFromContainer fetches the downstream di.Request scoped service
 func GetGreeter2ServiceFromContainer(ctn sarulabsdi.Container) IGreeter2Service {
