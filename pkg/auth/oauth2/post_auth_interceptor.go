@@ -50,7 +50,13 @@ func validateOR(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claim
 func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInterceptor {
 	configAccessor := middleware_oidc.GetOIDCConfigAccessorFromContainer(container)
 	entryPointConfig := configAccessor.GetOIDCConfig().GetEntryPoints()
-	log.Info().Interface("entryPointConfig", entryPointConfig).Send()
+	return FinalAuthVerificationMiddlewareUsingClaimsMap(entryPointConfig)
+}
+
+// FinalAuthVerificationMiddlewareUsingClaimsMap evaluates the claims principal
+func FinalAuthVerificationMiddlewareUsingClaimsMap(grpcEntrypointClaimsMap map[string]middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
+
+	log.Info().Interface("entryPointConfig", grpcEntrypointClaimsMap).Send()
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		requestContainer := middleware_dicontext.GetRequestContainer(ctx)
@@ -64,7 +70,7 @@ func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInt
 				logger.DebugL(&subLogger).Msg("")
 				return nil, status.Errorf(codes.PermissionDenied, "permission denied")
 			}
-			elem, ok := entryPointConfig[info.FullMethod]
+			elem, ok := grpcEntrypointClaimsMap[info.FullMethod]
 			if !ok {
 				// we don't have an entry so it is valid
 				// TODO: Add in security option that must have an entry even if the AND and OR are empty.  That way
