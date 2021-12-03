@@ -247,7 +247,15 @@ func (s *serviceGenContext) genService() {
 	g.P("// ", typeDownstreamServiceInterfaceName, " reflect type")
 	g.P("var ", typeDownstreamServiceInterfaceName, " = ", diPackage.Ident("GetInterfaceReflectType"), "((*", interfaceDownstreamServiceName, ")(nil))")
 
-	// DI Getter
+	// DI Helpers
+
+	// making type look like sarulabsdi genny types
+	g.P("// AddSingleton", interfaceDownstreamServiceName, "ByObj fetches the downstream di.Request scoped service")
+	g.P("func AddSingleton", interfaceDownstreamServiceName, "ByObj(builder *", diPackage.Ident("Builder"), ", obj interface{}) ", " {")
+	g.P(diPackage.Ident("AddSingletonWithImplementedTypesByObj"), "(builder,obj,", typeDownstreamServiceInterfaceName, ",)")
+	g.P("}")
+	g.P()
+
 	g.P("// Get", service.GoName, "ServiceFromContainer fetches the downstream di.Request scoped service")
 	g.P("func Get", service.GoName, "ServiceFromContainer(ctn ", diPackage.Ident("Container"), ") ", interfaceDownstreamServiceName, " {")
 	g.P("return ctn.GetByType(", typeDownstreamServiceInterfaceName, ").(", interfaceDownstreamServiceName, ")")
