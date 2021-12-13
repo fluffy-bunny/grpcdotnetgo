@@ -14,7 +14,10 @@ func GetRequestContainer(ctx context.Context) di.Container {
 	if val == nil {
 		return nil
 	}
-	requestContainer := val.(di.Container)
+	requestContainer, ok := val.(di.Container)
+	if !ok {
+		return nil
+	}
 	return requestContainer
 }
 
