@@ -54,7 +54,7 @@ func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInt
 }
 
 // FinalAuthVerificationMiddlewareUsingClaimsMap evaluates the claims principal
-func FinalAuthVerificationMiddlewareUsingClaimsMap(grpcEntrypointClaimsMap map[string]middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
+func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap map[string]middleware_oidc.EntryPointConfig, enableZeroTrust bool) grpc.UnaryServerInterceptor {
 
 	log.Info().Interface("entryPointConfig", grpcEntrypointClaimsMap).Send()
 
@@ -71,11 +71,8 @@ func FinalAuthVerificationMiddlewareUsingClaimsMap(grpcEntrypointClaimsMap map[s
 				return nil, status.Errorf(codes.PermissionDenied, "permission denied")
 			}
 			elem, ok := grpcEntrypointClaimsMap[info.FullMethod]
-			if !ok {
-				// we don't have an entry so it is valid
-				// TODO: Add in security option that must have an entry even if the AND and OR are empty.  That way
-				// We have proof someone purposefully wanted it with no validation
-				// return permissionDeniedFunc()
+			if !ok && enableZeroTrust {
+				return permissionDeniedFunc()
 			} else {
 				if !validate(elem.ClaimsConfig, claimsPrincipal) {
 					return permissionDeniedFunc()
@@ -84,4 +81,14 @@ func FinalAuthVerificationMiddlewareUsingClaimsMap(grpcEntrypointClaimsMap map[s
 		}
 		return handler(ctx, req)
 	}
+}
+
+// FinalAuthVerificationMiddlewareUsingClaimsMap evaluates the claims principal
+func FinalAuthVerificationMiddlewareUsingClaimsMap(grpcEntrypointClaimsMap map[string]middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
+	return FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap, false)
+}
+
+// FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrust evaluates the claims principal
+func FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrust(grpcEntrypointClaimsMap map[string]middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
+	return FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap, true)
 }
