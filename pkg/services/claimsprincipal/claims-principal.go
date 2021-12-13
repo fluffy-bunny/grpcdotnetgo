@@ -123,6 +123,11 @@ func ClaimsPrincipalFromClaimsMap(claimsMap map[string]interface{}) claimsprinci
 	principal := NewIClaimsPrincipal()
 	for key, element := range claimsMap {
 		switch value := element.(type) {
+		case bool:
+			principal.AddClaim(claimsprincipalContracts.Claim{
+				Type:  key,
+				Value: fmt.Sprintf("%v", value),
+			})
 		case string:
 			principal.AddClaim(claimsprincipalContracts.Claim{
 				Type:  key,
