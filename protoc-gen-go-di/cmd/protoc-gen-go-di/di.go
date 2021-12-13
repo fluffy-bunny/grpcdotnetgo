@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -117,8 +118,11 @@ func getFileName(file *protogen.File) string {
 func (s *genFileContext) generateFileContent() {
 	gen := s.gen
 	file := s.file
+	proto := file.Proto
 	g := s.g
-
+	g.P("/*  file.Proto")
+	g.P(prettyJSON(proto))
+	g.P("*/")
 	g.P("// This is a compile-time assertion to ensure that this generated file")
 	g.P("// is compatible with the grpc package it is being compiled against.")
 	g.P("const _ = ", grpcDIInternalPackage.Ident("SupportPackageIsVersion7"))
@@ -210,6 +214,7 @@ func (s *genFileContext) generateFileContent() {
 func (s *serviceGenContext) genService() {
 	gen := s.gen
 	file := s.file
+	proto := file.Proto
 	g := s.g
 	service := s.service
 
@@ -228,21 +233,28 @@ func (s *serviceGenContext) genService() {
 	g.P("type ", interfaceDownstreamServiceName, " interface {")
 	for _, method := range service.Methods {
 		serverType := method.Parent.GoName
-		key := "/" + s.packageName + "." + serverType + "/" + method.GoName
+		key := "/" + *proto.Package + "." + serverType + "/" + method.GoName
 		methodGenCtx := newMethodGenContext(s.uniqueRunID, method, gen, file, g, service)
-
 		methodGenCtx.genDownstreamMethodSignature()
 		s.MethodMapGenCtx[key] = methodGenCtx
 	}
 	g.P("}")
 	g.P()
 
+	typeServerInterfaceName := fmt.Sprintf("Type%s", interfaceServerName)
 	typeDownstreamServiceInterfaceName := fmt.Sprintf("Type%s", interfaceDownstreamServiceName)
 	// user reflection once to record the type
+	g.P("// ", typeServerInterfaceName, " reflect type")
+	g.P("var ", typeServerInterfaceName, " = ", diPackage.Ident("GetInterfaceReflectType"), "((*", interfaceDownstreamServiceName, ")(nil))")
+
 	g.P("// ", typeDownstreamServiceInterfaceName, " reflect type")
 	g.P("var ", typeDownstreamServiceInterfaceName, " = ", diPackage.Ident("GetInterfaceReflectType"), "((*", interfaceDownstreamServiceName, ")(nil))")
 
 	// making type look like sarulabsdi genny types
+	typeServerInterfaceName = fmt.Sprintf("ReflectType%v", interfaceServerName)
+	g.P("// ", typeServerInterfaceName, " reflect type")
+	g.P("var ", typeServerInterfaceName, " = ", diPackage.Ident("GetInterfaceReflectType"), "((*", interfaceServerName, ")(nil))")
+
 	typeDownstreamServiceInterfaceName = fmt.Sprintf("ReflectType%v", interfaceDownstreamServiceName)
 	g.P("// ", typeDownstreamServiceInterfaceName, " reflect type")
 	g.P("var ", typeDownstreamServiceInterfaceName, " = ", diPackage.Ident("GetInterfaceReflectType"), "((*", interfaceDownstreamServiceName, ")(nil))")
@@ -250,6 +262,25 @@ func (s *serviceGenContext) genService() {
 	// DI Helpers
 
 	// making type look like sarulabsdi genny types
+
+	g.P("// AddSingleton", interfaceServerName, "ByObj adds a prebuilt obj")
+	g.P("func AddSingleton", interfaceServerName, "ByObj(builder *", diPackage.Ident("Builder"), ", obj interface{})", " {")
+	g.P(diPackage.Ident("AddSingletonWithImplementedTypesByObj"), "(builder,obj,", typeServerInterfaceName, ",)")
+	g.P("}")
+	g.P()
+
+	g.P("// AddSingleton", interfaceServerName, " adds a type that implements ", interfaceServerName)
+	g.P("func AddSingleton", interfaceServerName, "(builder *", diPackage.Ident("Builder"), ",implType ", reflectPackage.Ident("Type"), ")", " {")
+	g.P(diPackage.Ident("AddSingletonWithImplementedTypes"), "(builder,implType,", typeServerInterfaceName, ")")
+	g.P("}")
+	g.P()
+
+	g.P("// AddSingleton", interfaceServerName, "ByFunc adds a type by a custom func")
+	g.P("func AddSingleton", interfaceServerName, "ByFunc(builder *", diPackage.Ident("Builder"), ", implType ", reflectPackage.Ident("Type"), ", build func(ctn ", diPackage.Ident("Container"), ") (interface{}, error)) {")
+	g.P(diPackage.Ident("AddSingletonWithImplementedTypesByFunc"), "(builder, implType, build,", typeServerInterfaceName, ")")
+	g.P("}")
+	g.P()
+
 	g.P("// AddSingleton", interfaceDownstreamServiceName, "ByObj adds a prebuilt obj")
 	g.P("func AddSingleton", interfaceDownstreamServiceName, "ByObj(builder *", diPackage.Ident("Builder"), ", obj interface{})", " {")
 	g.P(diPackage.Ident("AddSingletonWithImplementedTypesByObj"), "(builder,obj,", typeDownstreamServiceInterfaceName, ",)")
@@ -341,7 +372,7 @@ func (s *serviceGenContext) genService() {
 	// Client method implementations.
 	for _, method := range service.Methods {
 		serverType := method.Parent.GoName
-		key := "/" + s.packageName + "." + serverType + "/" + method.GoName
+		key := "/" + *proto.Package + "." + serverType + "/" + method.GoName
 		methodGenCtx := s.MethodMapGenCtx[key]
 		methodGenCtx.genServerMethodShim()
 	}
@@ -349,9 +380,9 @@ func (s *serviceGenContext) genService() {
 	g.P("const (")
 	for _, method := range service.Methods {
 		serverType := method.Parent.GoName
-		key := "/" + s.packageName + "." + serverType + "/" + method.GoName
-		g.P("// FMN_", s.packageName, "_", serverType, "_", method.GoName)
-		g.P("FMN_", s.packageName, "_", serverType, "_", method.GoName, " = \"", key, "\"")
+		key := "/" + *proto.Package + "." + serverType + "/" + method.GoName
+		g.P("// FMN_", serverType, "_", method.GoName)
+		g.P("FMN_", serverType, "_", method.GoName, " = \"", key, "\"")
 	}
 	g.P(")")
 }
@@ -453,4 +484,11 @@ func (s *methodGenContext) serverSignature() string {
 		reqArgs = append(reqArgs, method.Parent.GoName+"_"+method.GoName+"Server")
 	}
 	return method.GoName + "(" + strings.Join(reqArgs, ", ") + ") " + ret
+}
+func prettyJSON(obj interface{}) string {
+	jsonBytes, err := json.MarshalIndent(obj, "", "    ")
+	if err != nil {
+		panic(err)
+	}
+	return string(jsonBytes)
 }

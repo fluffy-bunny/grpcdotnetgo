@@ -22,7 +22,7 @@ option java_package = "io.grpc.examples.helloworld";
 option java_outer_classname = "HelloWorldProto";
 
 
-package helloworld;
+package example.internal.grpcContracts.helloworld;
 
 enum HelloDirectives {
   HELLO_DIRECTIVES_UNKNOWN = 0;

@@ -69,7 +69,7 @@ jobs:
 
     - name: go mod vendor
       run: |
-        go mod tidy
+        go mod tidy -compat="1.17" 
         go mod download
         go mod vendor
 
@@ -96,7 +96,7 @@ jobs:
       run: |
         go generate -x ./...
         rm -rf ./genny/sarulabsdi/
-        go mod tidy  
+        go mod tidy -compat="1.17" 
           
     # NOTE: This will NOT trigger another run of CI.yml
     - name: AutoCommit
