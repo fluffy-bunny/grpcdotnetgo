@@ -10,13 +10,17 @@ import (
 type TestStartupWrapper struct {
 	innerStartup              coreContracts.IStartup
 	configureServicesOverride func(builder *di.Builder)
+	configureOverride         func(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder)
 }
 
 // NewTestStartupWrapper creates a new TestStartupWrapper
-func NewTestStartupWrapper(childStartup coreContracts.IStartup, configureServicesOverride func(builder *di.Builder)) *TestStartupWrapper {
+func NewTestStartupWrapper(childStartup coreContracts.IStartup,
+	configureServicesOverride func(builder *di.Builder),
+	configureOverride func(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder)) coreContracts.IStartup {
 	return &TestStartupWrapper{
 		innerStartup:              childStartup,
 		configureServicesOverride: configureServicesOverride,
+		configureOverride:         configureOverride,
 	}
 }
 
@@ -35,7 +39,11 @@ func (s *TestStartupWrapper) ConfigureServices(builder *di.Builder) {
 
 // Configure wrapper
 func (s *TestStartupWrapper) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
-	s.innerStartup.Configure(unaryServerInterceptorBuilder)
+	if s.configureOverride != nil {
+		s.configureOverride(unaryServerInterceptorBuilder)
+	} else {
+		s.innerStartup.Configure(unaryServerInterceptorBuilder)
+	}
 }
 
 // GetPort wrapper
