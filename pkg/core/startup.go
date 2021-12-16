@@ -200,13 +200,14 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 		si.DotNetGoBuilder.AddDefaultService()
 
 		startup := plugin.GetStartup()
-		si.StartupManifest = startup.GetStartupManifest()
 
 		configOptions := startup.GetConfigOptions()
 		err = loadConfig(configOptions)
 		if err != nil {
 			panic(err)
 		}
+		si.StartupManifest = startup.GetStartupManifest()
+
 		// add the main config into the DI directly
 		servicesConfig.AddConfig(si.DotNetGoBuilder.Builder, configOptions.Destination)
 
