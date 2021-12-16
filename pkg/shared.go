@@ -4,6 +4,8 @@ import (
 	servicesBackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/contextaccessor"
+	servicesMetadatafilter "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/metadatafilter"
+
 	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	_ "github.com/gogo/protobuf/gogoproto" // ensures that go mod vendor brings it down
@@ -26,9 +28,9 @@ func NewDotNetGoBuilder() (*DotNetGoBuilder, error) {
 	return &DotNetGoBuilder{
 		Builder: builder,
 	}, nil
-
 }
 
+// AddDefaultService ...
 func (dngbuilder *DotNetGoBuilder) AddDefaultService() {
 	builder := dngbuilder.Builder
 	claimsprincipal.AddScopedIClaimsPrincipal(builder)
@@ -36,6 +38,7 @@ func (dngbuilder *DotNetGoBuilder) AddDefaultService() {
 	servicesLogger.AddScopedILogger(builder)
 	servicesLogger.AddSingletonILogger(builder)
 	servicesBackgroundTasks.AddSingletonBackgroundTasks(builder)
+	servicesMetadatafilter.AddSingletonIMetadataFilterMiddlewareNil(builder)
 }
 
 func (b *DotNetGoBuilder) Build() di.Container {
