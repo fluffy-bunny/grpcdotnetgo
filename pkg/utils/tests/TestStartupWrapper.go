@@ -6,60 +6,55 @@ import (
 	"google.golang.org/grpc"
 )
 
+type TestStartupWrapperConfig struct {
+	InnerStartup          coreContracts.IStartup
+	ConfigureServicesHook func(builder *di.Builder)
+}
+
 // TestStartupWrapper struct
 type TestStartupWrapper struct {
-	InnerStartup              coreContracts.IStartup
-	configureServicesOverride func(builder *di.Builder)
-	configureOverride         func(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder)
-	RootContainer             di.Container
+	Config        *TestStartupWrapperConfig
+	RootContainer di.Container
 }
 
 // NewTestStartupWrapper creates a new TestStartupWrapper
-func NewTestStartupWrapper(childStartup coreContracts.IStartup,
-	configureServicesOverride func(builder *di.Builder),
-	configureOverride func(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder)) *TestStartupWrapper {
+func NewTestStartupWrapper(config *TestStartupWrapperConfig) *TestStartupWrapper {
 	return &TestStartupWrapper{
-		InnerStartup:              childStartup,
-		configureServicesOverride: configureServicesOverride,
-		configureOverride:         configureOverride,
+		Config: config,
 	}
 }
 
 // GetConfigOptions wrapper
 func (s *TestStartupWrapper) GetConfigOptions() *coreContracts.ConfigOptions {
-	return s.InnerStartup.GetConfigOptions()
+	return s.Config.InnerStartup.GetConfigOptions()
 }
 
 // ConfigureServices wrapper
 func (s *TestStartupWrapper) ConfigureServices(builder *di.Builder) {
-	s.InnerStartup.ConfigureServices(builder)
-	if s.configureServicesOverride != nil {
-		s.configureServicesOverride(builder)
+	s.Config.InnerStartup.ConfigureServices(builder)
+	if s.Config.ConfigureServicesHook != nil {
+		s.Config.ConfigureServicesHook(builder)
 	}
 }
 
 // Configure wrapper
 func (s *TestStartupWrapper) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
-	if s.configureOverride != nil {
-		s.configureOverride(unaryServerInterceptorBuilder)
-	} else {
-		s.InnerStartup.Configure(unaryServerInterceptorBuilder)
-	}
+	s.Config.InnerStartup.Configure(unaryServerInterceptorBuilder)
 }
 
 // GetPort wrapper
 func (s *TestStartupWrapper) GetPort() int {
-	return s.InnerStartup.GetPort()
+	return s.Config.InnerStartup.GetPort()
 }
 
 // RegisterGRPCEndpoints wrapper
 func (s *TestStartupWrapper) RegisterGRPCEndpoints(server *grpc.Server) []interface{} {
-	return s.InnerStartup.RegisterGRPCEndpoints(server)
+	return s.Config.InnerStartup.RegisterGRPCEndpoints(server)
 }
 
 // SetRootContainer wrapper
 func (s *TestStartupWrapper) SetRootContainer(container di.Container) {
-	s.InnerStartup.SetRootContainer(container)
+	s.Config.InnerStartup.SetRootContainer(container)
 	s.RootContainer = container
 }
 
@@ -73,10 +68,10 @@ func (s *TestStartupWrapper) GetStartupManifest() coreContracts.StartupManifest 
 
 // OnPreServerStartup wrapper
 func (s *TestStartupWrapper) OnPreServerStartup() error {
-	return s.InnerStartup.OnPreServerStartup()
+	return s.Config.InnerStartup.OnPreServerStartup()
 }
 
 // OnPostServerShutdown Wrapper
 func (s *TestStartupWrapper) OnPostServerShutdown() {
-	s.InnerStartup.OnPostServerShutdown()
+	s.Config.InnerStartup.OnPostServerShutdown()
 }
