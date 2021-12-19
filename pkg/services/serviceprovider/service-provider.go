@@ -22,17 +22,17 @@ func AddScopedIServiceProvider(builder *di.Builder) {
 	contracts_serviceprovider.AddScopedIServiceProvider(builder, reflect.TypeOf(&serviceScoped{}))
 }
 
-// AddSingletonIServiceProvider adds service to the DI container
-func AddSingletonIServiceProvider(builder *di.Builder) {
+// AddSingletonISingletonServiceProvider adds service to the DI container
+func AddSingletonISingletonServiceProvider(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddSingletonIServiceProvider")
-	contracts_serviceprovider.AddSingletonIServiceProvider(builder, reflect.TypeOf(&serviceSingleton{}))
+	contracts_serviceprovider.AddSingletonISingletonServiceProvider(builder, reflect.TypeOf(&serviceSingleton{}))
 }
 
 // AddServiceProviders adds service to the DI container
 func AddServiceProviders(builder *di.Builder) {
 	AddScopedIServiceProvider(builder)
-	AddSingletonIServiceProvider(builder)
+	AddSingletonISingletonServiceProvider(builder)
 }
 
 func (s *serviceScoped) GetContainer() di.Container {

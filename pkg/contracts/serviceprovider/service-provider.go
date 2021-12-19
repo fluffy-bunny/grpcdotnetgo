@@ -18,7 +18,7 @@ type (
 	}
 	// ISingletonServiceProvider interface
 	ISingletonServiceProvider interface {
-		IServiceProvider
+		GetContainer() di.Container
 	}
 	// ISingletonServiceProviderInternal interface
 	ISingletonServiceProviderInternal interface {
