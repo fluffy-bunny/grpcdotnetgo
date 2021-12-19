@@ -5,7 +5,7 @@ import (
 
 	"github.com/bamzi/jobrunner"
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
-	servicesLogger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
+	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
 )
@@ -25,7 +25,7 @@ func AddSingletonBackgroundTasks(builder *di.Builder) {
 		Build: func(ctn di.Container) (interface{}, error) {
 			jobrunner.Start()
 			obj := &serviceBackgroundTasks{
-				Logger: servicesLogger.GetSingletonLoggerFromContainer(ctn),
+				Logger: contracts_logger.GetISingletonLoggerFromContainer(ctn),
 			}
 			//jobrunner.Schedule("@every 5s", ReminderEmails{})
 

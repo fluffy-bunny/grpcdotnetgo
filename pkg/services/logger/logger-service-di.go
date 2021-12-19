@@ -28,25 +28,17 @@ func AddScopedILogger(builder *di.Builder) {
 
 var diServiceNameILoggerSingleton = grpcdotnetgoutils.GenerateUnqueServiceName("ILogger-Singleton")
 
-//GetSingletonLoggerFromContainer ...
-func GetSingletonLoggerFromContainer(ctn di.Container) contracts_logger.ILogger {
-	service := ctn.Get(diServiceNameILoggerSingleton).(contracts_logger.ILogger)
-	return service
-}
-
 // AddSingletonILogger adds service to the DI container
 func AddSingletonILogger(builder *di.Builder) {
 	log.Info().
 		Str("serviceName", diServiceNameILoggerSingleton).
-		Msg("IoC: AddSingletonLogger")
-	builder.Add(di.Def{
-		Name:  diServiceNameILoggerSingleton,
-		Scope: di.App,
-		Build: func(ctn di.Container) (interface{}, error) {
+		Msg("IoC: AddSingletonILoggerByFunc")
+
+	contracts_logger.AddSingletonISingletonLoggerByFunc(builder, reflect.TypeOf(&loggerService{}),
+		func(ctn di.Container) (interface{}, error) {
 			logger := log.With().Logger()
 			return &loggerService{
 				Logger: &logger,
 			}, nil
-		},
-	})
+		})
 }
