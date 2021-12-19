@@ -5,11 +5,15 @@
 package request
 
 import (
+	context "context"
 	reflect "reflect"
 
+	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
+	di "github.com/fluffy-bunny/sarulabsdi"
 	gomock "github.com/golang/mock/gomock"
 	metautils "github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
+	grpc "google.golang.org/grpc"
 )
 
 // MockIRequest is a mock of IRequest interface.
@@ -35,18 +39,46 @@ func (m *MockIRequest) EXPECT() *MockIRequestMockRecorder {
 	return m.recorder
 }
 
-// GetFullMethodName mocks base method.
-func (m *MockIRequest) GetFullMethodName() string {
+// GetClaimsPrincipal mocks base method.
+func (m *MockIRequest) GetClaimsPrincipal() claimsprincipal.IClaimsPrincipal {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetFullMethodName")
-	ret0, _ := ret[0].(string)
+	ret := m.ctrl.Call(m, "GetClaimsPrincipal")
+	ret0, _ := ret[0].(claimsprincipal.IClaimsPrincipal)
 	return ret0
 }
 
-// GetFullMethodName indicates an expected call of GetFullMethodName.
-func (mr *MockIRequestMockRecorder) GetFullMethodName() *gomock.Call {
+// GetClaimsPrincipal indicates an expected call of GetClaimsPrincipal.
+func (mr *MockIRequestMockRecorder) GetClaimsPrincipal() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFullMethodName", reflect.TypeOf((*MockIRequest)(nil).GetFullMethodName))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClaimsPrincipal", reflect.TypeOf((*MockIRequest)(nil).GetClaimsPrincipal))
+}
+
+// GetContainer mocks base method.
+func (m *MockIRequest) GetContainer() di.Container {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetContainer")
+	ret0, _ := ret[0].(di.Container)
+	return ret0
+}
+
+// GetContainer indicates an expected call of GetContainer.
+func (mr *MockIRequestMockRecorder) GetContainer() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContainer", reflect.TypeOf((*MockIRequest)(nil).GetContainer))
+}
+
+// GetContext mocks base method.
+func (m *MockIRequest) GetContext() context.Context {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetContext")
+	ret0, _ := ret[0].(context.Context)
+	return ret0
+}
+
+// GetContext indicates an expected call of GetContext.
+func (mr *MockIRequestMockRecorder) GetContext() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContext", reflect.TypeOf((*MockIRequest)(nil).GetContext))
 }
 
 // GetItems mocks base method.
@@ -75,6 +107,20 @@ func (m *MockIRequest) GetMetadata() metautils.NiceMD {
 func (mr *MockIRequestMockRecorder) GetMetadata() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetadata", reflect.TypeOf((*MockIRequest)(nil).GetMetadata))
+}
+
+// GetUnaryServerInfo mocks base method.
+func (m *MockIRequest) GetUnaryServerInfo() *grpc.UnaryServerInfo {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUnaryServerInfo")
+	ret0, _ := ret[0].(*grpc.UnaryServerInfo)
+	return ret0
+}
+
+// GetUnaryServerInfo indicates an expected call of GetUnaryServerInfo.
+func (mr *MockIRequestMockRecorder) GetUnaryServerInfo() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnaryServerInfo", reflect.TypeOf((*MockIRequest)(nil).GetUnaryServerInfo))
 }
 
 // MockIItems is a mock of IItems interface.
