@@ -5,9 +5,10 @@ import (
 	"time"
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
-	contractsContextAccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/contextaccessor"
+	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"google.golang.org/grpc"
 )
 
@@ -21,8 +22,12 @@ func UnaryServerInterceptor(rootContainer di.Container) grpc.UnaryServerIntercep
 
 		ctx = dicontext.SetRequestContainer(ctx, requestContainer)
 
-		contextaccessor := contractsContextAccessor.GetIInternalContextAccessorFromContainer(requestContainer)
-		contextaccessor.SetContext(ctx)
+		request := contracts_request.GetIRequestFromContainer(requestContainer)
+		innerRequest := request.(contracts_request.IInnerRequest)
+
+		innerRequest.SetUnaryServerInfo(info)
+		innerRequest.SetMetadata(metautils.ExtractIncoming(ctx))
+		innerRequest.SetContext(ctx)
 
 		// get a fresh ClaimsPrincipal from the request container and populate it with uuid data
 		// this ensures that this claims principal object lives for the lifetime of the request

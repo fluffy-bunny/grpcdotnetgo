@@ -3,8 +3,8 @@ package logger
 import (
 	"reflect"
 
-	contractsContextAccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/contextaccessor"
-	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
+	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
+	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
 	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog"
@@ -15,10 +15,11 @@ import (
 func AddScopedILogger(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddScopedLogger")
-	loggerContracts.AddScopedILoggerByFunc(builder, reflect.TypeOf(&loggerService{}),
+	contracts_logger.AddScopedILoggerByFunc(builder, reflect.TypeOf(&loggerService{}),
 		func(ctn di.Container) (interface{}, error) {
-			contextAccessor := contractsContextAccessor.GetIContextAccessorFromContainer(ctn)
-			logger := zerolog.Ctx(contextAccessor.GetContext())
+			request := contracts_request.GetIRequestFromContainer(ctn)
+			ctx := request.GetContext()
+			logger := zerolog.Ctx(ctx)
 			return &loggerService{
 				Logger: logger,
 			}, nil
@@ -28,8 +29,8 @@ func AddScopedILogger(builder *di.Builder) {
 var diServiceNameILoggerSingleton = grpcdotnetgoutils.GenerateUnqueServiceName("ILogger-Singleton")
 
 //GetSingletonLoggerFromContainer ...
-func GetSingletonLoggerFromContainer(ctn di.Container) loggerContracts.ILogger {
-	service := ctn.Get(diServiceNameILoggerSingleton).(loggerContracts.ILogger)
+func GetSingletonLoggerFromContainer(ctn di.Container) contracts_logger.ILogger {
+	service := ctn.Get(diServiceNameILoggerSingleton).(contracts_logger.ILogger)
 	return service
 }
 
