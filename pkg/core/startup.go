@@ -233,6 +233,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 		if err != nil {
 			log.Error().Err(err).
 				Interface("startupManifest", si.StartupManifest).Msgf("OnPreServerStartup failed")
+			panic(err)
 		} else {
 			if lis == nil {
 				lis, err = net.Listen("tcp", fmt.Sprintf(":%d", startup.GetPort()))
