@@ -7,7 +7,7 @@ import (
 	"time"
 
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
-	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
+	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	di "github.com/fluffy-bunny/sarulabsdi"
@@ -74,7 +74,7 @@ func (j *oidcDiscoveryJob) Run() {
 // Job Provider
 //------------------------------------------
 type service struct {
-	Logger             loggerContracts.ILogger
+	Logger             contracts_logger.ISingletonLogger `inject:""`
 	OIDCConfigAccessor middleware_oidc.IOIDCConfigAccessor
 	Storage            IOidcBackgroundStorage
 }

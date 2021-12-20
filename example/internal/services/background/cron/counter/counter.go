@@ -5,7 +5,7 @@ import (
 	"sync/atomic"
 
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
-	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
+	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	"github.com/rs/zerolog/log"
 )
@@ -35,7 +35,7 @@ func (j *counterJob) getLocalCounter() int32 {
 // Job Provider
 //------------------------------------------
 type service struct {
-	Logger loggerContracts.ILogger
+	Logger contracts_logger.ISingletonLogger `inject:""`
 }
 
 func (s *service) GetOneTimeJobs() backgroundtasksContracts.OneTimeJobs {
