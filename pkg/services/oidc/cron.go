@@ -8,19 +8,10 @@ import (
 
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
+	contracts_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/oidc"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
-	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog/log"
-)
-
-type IOidcBackgroundStorage interface {
-	AtomicStore(disco *middleware_oidc.DiscoveryDocument)
-	AtomicGet() *middleware_oidc.DiscoveryDocument
-}
-
-var (
-	TypeIOidcBackgroundStorage = di.GetInterfaceReflectType((*IOidcBackgroundStorage)(nil))
 )
 
 type oidcBackgroundStorage struct {
@@ -39,11 +30,11 @@ func (s *oidcBackgroundStorage) AtomicGet() *middleware_oidc.DiscoveryDocument {
 //------------------------------------------
 type oidcDiscoveryJob struct {
 	Authority    string
-	DiscoveryUrl *url.URL
-	Storage      IOidcBackgroundStorage
+	DiscoveryURL *url.URL
+	Storage      contracts_oidc.IOidcBackgroundStorage
 }
 
-func newOidcDiscoveryJob(authority string, storage IOidcBackgroundStorage) *oidcDiscoveryJob {
+func newOidcDiscoveryJob(authority string, storage contracts_oidc.IOidcBackgroundStorage) *oidcDiscoveryJob {
 	discoveryURL, err := url.Parse(authority)
 	if err != nil {
 		panic(err)
@@ -56,15 +47,15 @@ func newOidcDiscoveryJob(authority string, storage IOidcBackgroundStorage) *oidc
 
 	return &oidcDiscoveryJob{
 		Authority:    authority,
-		DiscoveryUrl: discoveryURL,
+		DiscoveryURL: discoveryURL,
 		Storage:      storage,
 	}
 }
 func (j *oidcDiscoveryJob) Run() {
-	dicoDocument := middleware_oidc.NewDiscoveryDocument(*j.DiscoveryUrl)
+	dicoDocument := middleware_oidc.NewDiscoveryDocument(*j.DiscoveryURL)
 	err := dicoDocument.Initialize()
 	if err != nil {
-		log.Error().Err(err).Msgf("error fetching disco: %v", j.DiscoveryUrl.String())
+		log.Error().Err(err).Msgf("error fetching disco: %v", j.DiscoveryURL.String())
 	} else {
 		j.Storage.AtomicStore(dicoDocument)
 		log.Info().Interface("disco", dicoDocument).Send()
@@ -76,7 +67,7 @@ func (j *oidcDiscoveryJob) Run() {
 type service struct {
 	Logger             contracts_logger.ISingletonLogger `inject:""`
 	OIDCConfigAccessor middleware_oidc.IOIDCConfigAccessor
-	Storage            IOidcBackgroundStorage
+	Storage            contracts_oidc.IOidcBackgroundStorage
 }
 
 func (s *service) GetOneTimeJobs() backgroundtasksContracts.OneTimeJobs {
