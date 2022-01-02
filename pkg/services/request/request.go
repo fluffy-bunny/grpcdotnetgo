@@ -6,7 +6,6 @@ import (
 
 	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
-	contracts_serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/serviceprovider"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
@@ -17,7 +16,6 @@ import (
 type serviceRequest struct {
 	Items           contracts_request.IItems                   `inject:""`
 	ClaimsPrincipal contracts_claimsprincipal.IClaimsPrincipal `inject:""`
-	ServiceProvider contracts_serviceprovider.IServiceProvider `inject:""`
 	context         context.Context
 	md              metautils.NiceMD
 	unaryServerInfo *grpc.UnaryServerInfo
@@ -56,7 +54,4 @@ func (s *serviceRequest) SetContext(ctx context.Context) {
 }
 func (s *serviceRequest) GetClaimsPrincipal() contracts_claimsprincipal.IClaimsPrincipal {
 	return s.ClaimsPrincipal
-}
-func (s *serviceRequest) GetServiceProvider() contracts_serviceprovider.IServiceProvider {
-	return s.ServiceProvider
 }

@@ -10,7 +10,6 @@ import (
 
 	claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
-	serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/serviceprovider"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	gomock "github.com/golang/mock/gomock"
 	metautils "github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
@@ -108,20 +107,6 @@ func (m *MockIRequest) GetMetadata() metautils.NiceMD {
 func (mr *MockIRequestMockRecorder) GetMetadata() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetadata", reflect.TypeOf((*MockIRequest)(nil).GetMetadata))
-}
-
-// GetServiceProvider mocks base method.
-func (m *MockIRequest) GetServiceProvider() serviceprovider.IServiceProvider {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetServiceProvider")
-	ret0, _ := ret[0].(serviceprovider.IServiceProvider)
-	return ret0
-}
-
-// GetServiceProvider indicates an expected call of GetServiceProvider.
-func (mr *MockIRequestMockRecorder) GetServiceProvider() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceProvider", reflect.TypeOf((*MockIRequest)(nil).GetServiceProvider))
 }
 
 // GetUnaryServerInfo mocks base method.

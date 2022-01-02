@@ -4,8 +4,6 @@ import (
 	"context"
 
 	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
-	contracts_serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/serviceprovider"
-
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"google.golang.org/grpc"
@@ -34,7 +32,6 @@ type (
 		GetContext() context.Context
 		GetContainer() di.Container
 		GetClaimsPrincipal() contracts_claimsprincipal.IClaimsPrincipal
-		GetServiceProvider() contracts_serviceprovider.IServiceProvider
 	}
 	// IInnerRequest ...
 	IInnerRequest interface {

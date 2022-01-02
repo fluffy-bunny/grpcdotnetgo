@@ -6,7 +6,6 @@ import (
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
-	contracts_serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/serviceprovider"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
@@ -22,11 +21,6 @@ func UnaryServerInterceptor(rootContainer di.Container) grpc.UnaryServerIntercep
 		defer requestContainer.Delete()
 
 		ctx = dicontext.SetRequestContainer(ctx, requestContainer)
-
-		// expose the request container in an IServiceProvider object
-		serviceProvider := contracts_serviceprovider.GetIServiceProviderFromContainer(requestContainer)
-		serviceProviderInternal := serviceProvider.(contracts_serviceprovider.IServiceProviderInternal)
-		serviceProviderInternal.SetContainer(requestContainer)
 
 		request := contracts_request.GetIRequestFromContainer(requestContainer)
 		innerRequest := request.(contracts_request.IInnerRequest)
