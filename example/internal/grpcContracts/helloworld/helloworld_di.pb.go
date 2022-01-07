@@ -131,7 +131,7 @@ import (
                     18
                 ],
                 "leading_detached_comments": [
-                    " Copyright 2015 gRPC authors.\n\n Licensed under the Apache License, Version 2.0 (the \"License\");\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n\n     http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n See the License for the specific language governing permissions and\n limitations under the License.\n"
+                    " Copyright 2015 gRPC authors.\r\n\r\n Licensed under the Apache License, Version 2.0 (the \"License\");\r\n you may not use this file except in compliance with the License.\r\n You may obtain a copy of the License at\r\n\r\n     http://www.apache.org/licenses/LICENSE-2.0\r\n\r\n Unless required by applicable law or agreed to in writing, software\r\n distributed under the License is distributed on an \"AS IS\" BASIS,\r\n WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\n See the License for the specific language governing permissions and\r\n limitations under the License.\r\n"
                 ]
             },
             {
@@ -155,7 +155,7 @@ import (
                     76
                 ],
                 "leading_detached_comments": [
-                    "import \"grpcdotnetgo/proto/error/error.proto\";\n"
+                    "import \"grpcdotnetgo/proto/error/error.proto\";\r\n"
                 ]
             },
             {
@@ -389,7 +389,7 @@ import (
                     37,
                     1
                 ],
-                "leading_comments": " The greeting service definition.\n"
+                "leading_comments": " The greeting service definition.\r\n"
             },
             {
                 "path": [
@@ -415,7 +415,7 @@ import (
                     2,
                     53
                 ],
-                "leading_comments": " Sends a greeting\n"
+                "leading_comments": " Sends a greeting\r\n"
             },
             {
                 "path": [
@@ -495,7 +495,7 @@ import (
                     2,
                     54
                 ],
-                "leading_comments": " Sends a greeting\n"
+                "leading_comments": " Sends a greeting\r\n"
             },
             {
                 "path": [
@@ -550,7 +550,7 @@ import (
                     46,
                     1
                 ],
-                "leading_comments": " The request message containing the user's name.\n"
+                "leading_comments": " The request message containing the user's name.\r\n"
             },
             {
                 "path": [
@@ -575,21 +575,6 @@ import (
                     44,
                     2,
                     18
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    0,
-                    2,
-                    0,
-                    4
-                ],
-                "span": [
-                    44,
-                    2,
-                    43,
-                    22
                 ]
             },
             {
@@ -653,21 +638,6 @@ import (
                     0,
                     2,
                     1,
-                    4
-                ],
-                "span": [
-                    45,
-                    2,
-                    44,
-                    18
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    0,
-                    2,
-                    1,
                     6
                 ],
                 "span": [
@@ -715,7 +685,7 @@ import (
                     54,
                     1
                 ],
-                "leading_comments": " The response message containing the greetings\n"
+                "leading_comments": " The response message containing the greetings\r\n"
             },
             {
                 "path": [
@@ -741,22 +711,7 @@ import (
                     2,
                     21
                 ],
-                "trailing_comments": "error.Error error = 999;\n"
-            },
-            {
-                "path": [
-                    4,
-                    1,
-                    2,
-                    0,
-                    4
-                ],
-                "span": [
-                    52,
-                    2,
-                    51,
-                    20
-                ]
+                "trailing_comments": "error.Error error = 999;\r\n"
             },
             {
                 "path": [
@@ -834,21 +789,6 @@ import (
                 "span": [
                     57,
                     2,
-                    21
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    2,
-                    2,
-                    0,
-                    4
-                ],
-                "span": [
-                    57,
-                    2,
-                    56,
                     21
                 ]
             },
