@@ -4,11 +4,12 @@ on:
   push:
     branches: [ '**' ]
     paths-ignore:
-      - 'README.md'
-      - 'example/README.md'
+      - '**.md'
       - 'docs/**'
       - '.github/dependabot.yml'
   pull_request:
+    paths-ignore:
+      - '**.md'
     branches: [ main ]
 env:
   BINARY: 'server'
