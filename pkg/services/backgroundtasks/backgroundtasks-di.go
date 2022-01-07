@@ -25,7 +25,7 @@ func AddSingletonBackgroundTasks(builder *di.Builder) {
 		Build: func(ctn di.Container) (interface{}, error) {
 			jobrunner.Start()
 			obj := &serviceBackgroundTasks{
-				Logger: contracts_logger.GetISingletonLoggerFromContainer(ctn),
+				Logger: contracts_logger.GetILoggerFromContainer(ctn),
 			}
 			//jobrunner.Schedule("@every 5s", ReminderEmails{})
 

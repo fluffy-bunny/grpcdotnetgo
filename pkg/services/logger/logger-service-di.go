@@ -5,7 +5,6 @@ import (
 
 	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
-	grpcdotnetgoutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -26,15 +25,12 @@ func AddScopedILogger(builder *di.Builder) {
 		})
 }
 
-var diServiceNameILoggerSingleton = grpcdotnetgoutils.GenerateUnqueServiceName("ILogger-Singleton")
-
 // AddSingletonILogger adds service to the DI container
 func AddSingletonILogger(builder *di.Builder) {
 	log.Info().
-		Str("serviceName", diServiceNameILoggerSingleton).
-		Msg("IoC: AddSingletonILoggerByFunc")
+		Msg("IoC: AddSingletonILogger")
 
-	contracts_logger.AddSingletonISingletonLoggerByFunc(builder, reflect.TypeOf(&loggerService{}),
+	contracts_logger.AddSingletonILoggerByFunc(builder, reflect.TypeOf(&loggerService{}),
 		func(ctn di.Container) (interface{}, error) {
 			logger := log.With().Logger()
 			return &loggerService{

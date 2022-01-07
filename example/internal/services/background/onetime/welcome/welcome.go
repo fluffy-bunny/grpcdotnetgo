@@ -28,7 +28,7 @@ func (j *welcomeJob) Run() {
 // Job Provider
 //------------------------------------------
 type service struct {
-	Logger contracts_logger.ISingletonLogger `inject:""`
+	Logger contracts_logger.ILogger `inject:""`
 }
 
 func (s *service) GetOneTimeJobs() backgroundtasksContracts.OneTimeJobs {

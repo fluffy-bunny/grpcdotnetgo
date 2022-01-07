@@ -20,7 +20,7 @@ func AddCronOidcJobProvider(builder *di.Builder) {
 			obj := &service{
 				OIDCConfigAccessor: middleware_oidc.GetOIDCConfigAccessorFromContainer(ctn),
 				Storage:            GetOidcBackgroundStorageFromContainer(ctn),
-				Logger:             contracts_logger.GetISingletonLoggerFromContainer(ctn),
+				Logger:             contracts_logger.GetILoggerFromContainer(ctn),
 			}
 			return obj, nil
 		})

@@ -67,7 +67,7 @@ func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypoint
 			subLogger := loggerZ.With().Str("FullMethod", info.FullMethod).Logger()
 
 			permissionDeniedFunc := func() (interface{}, error) {
-				logger.DebugL(&subLogger).Msg("")
+				subLogger.Debug().Msg("")
 				return nil, status.Errorf(codes.PermissionDenied, "permission denied")
 			}
 			elem, ok := grpcEntrypointClaimsMap[info.FullMethod]
