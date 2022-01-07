@@ -51,6 +51,18 @@ In asp.net when a request comes in, a scoped di container is created and is acti
 Looking at the ```IGreeterService```, it is up to your application to implement this interface.  It also must be registered as a scoped object.  In asp.net this is hidden from us, but here we have to do it manually.  
 
 ```go
+import (
+	"fmt"
+
+	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
+	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
+	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
+	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
+	grpc_error "github.com/fluffy-bunny/grpcdotnetgo/pkg/grpc/error"
+	"google.golang.org/grpc/codes"
+)
+
 // Service is used to implement helloworld.GreeterServer.
 type Service struct {
 	Request         contracts_request.IRequest                 `inject:""`
