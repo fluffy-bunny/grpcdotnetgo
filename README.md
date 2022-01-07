@@ -52,36 +52,20 @@ Looking at the ```IGreeterService```, it is up to your application to implement 
 
 ```go
 // Service is used to implement helloworld.GreeterServer.
-type MyGreeterService struct {
-	ContextAccessor contextaccessor.IContextAccessor
-	ClaimsPrincipal claimsprincipal.IClaimsPrincipal
-	Logger          servicesLogger.ILogger
-	config          *internal.Config
+type Service struct {
+	Request         contracts_request.IRequest                 `inject:""`
+	ClaimsPrincipal contracts_claimsprincipal.IClaimsPrincipal `inject:""`
+	Logger          contracts_logger.ILogger                   `inject:""`
+	Config          *internal.Config                           `inject:""`
 }
 
 
-// AddGreeterService adds service to the DI container
-func AddGreeterService(builder *di.Builder) {
+// AddScopedIGreeterService adds service to the DI container
+func AddScopedIGreeterService(builder *di.Builder) {
 	log.Info().
-		Msg("IoC: AddGreeterService")
-	types := di.NewTypeSet()
-	types.Add(pb.TypeIGreeterService)
-
-	builder.Add(di.Def{
-		Scope:            di.Request,
-		ImplementedTypes: types,
-		Type:             reflect.TypeOf(&Service{}),
-		Build: func(ctn di.Container) (interface{}, error) {
-			return &MyGreeterService{
-				config:          servicesConfig.GetConfigFromContainer(ctn),
-				ContextAccessor: contextaccessor.GetContextAccessorFromContainer(ctn),
-				ClaimsPrincipal: claimsprincipal.GetClaimsPrincipalFromContainer(ctn),
-				Logger:          servicesLogger.GetScopedLoggerFromContainer(ctn),
-			}, nil
-		},
-	})
+		Msg("IoC: AddScopedIGreeterService")
+	pb.AddScopedIGreeterService(builder, reflect.TypeOf(&Service{}))
 }
-
 ```
 
 In asp.net core simply by adding an interface into our constructor, the framwork figures out by type what we need and injects it.  
