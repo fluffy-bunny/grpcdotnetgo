@@ -94,8 +94,8 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 		delete(config.Example.OIDCConfig.EntryPoints, k)
 		config.Example.OIDCConfig.EntryPoints[v.FullMethodName] = v
 	}
-	handlerGreeterService.AddGreeterService(builder)
-	handlerGreeterService.AddGreeter2Service(builder)
+	handlerGreeterService.AddScopedIGreeterService(builder)
+	handlerGreeterService.AddScopedIGreeter2Service(builder)
 
 	singletonService.AddSingletonService(builder)
 

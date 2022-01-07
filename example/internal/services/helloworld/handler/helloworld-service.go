@@ -5,19 +5,29 @@ import (
 
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
-	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
-	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
+	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
-	grpcError "github.com/fluffy-bunny/grpcdotnetgo/pkg/grpc/error"
+	grpc_error "github.com/fluffy-bunny/grpcdotnetgo/pkg/grpc/error"
 	"google.golang.org/grpc/codes"
 )
 
 // Service is used to implement helloworld.GreeterServer.
 type Service struct {
-	Request         contracts_request.IRequest                `inject:""`
-	ClaimsPrincipal claimsprincipalContracts.IClaimsPrincipal `inject:""`
-	Logger          loggerContracts.ILogger                   `inject:""`
-	Config          *internal.Config                          `inject:""`
+	Request         contracts_request.IRequest                 `inject:""`
+	ClaimsPrincipal contracts_claimsprincipal.IClaimsPrincipal `inject:""`
+	Logger          contracts_logger.ILogger                   `inject:""`
+	Config          *internal.Config                           `inject:""`
+}
+
+// Ctor if it exists is called when the service is created
+func (s *Service) Ctor() {
+	s.Logger.Info().Msg("Ctor")
+}
+
+// Close if it exists is called when the container is torn down
+func (s *Service) Close() {
+	s.Logger.Info().Msg("Close")
 }
 
 // SayHello implements helloworld.GreeterServer
@@ -29,7 +39,7 @@ func (s *Service) SayHello(in *pb.HelloRequest) (*pb.HelloReply, error) {
 		panic("shits on fire, yo")
 	}
 	if in.Directive == pb.HelloDirectives_HELLO_DIRECTIVES_ERROR {
-		br := grpcError.NewBadRequest()
+		br := grpc_error.NewBadRequest()
 		desc := "The username must only contain alphanumeric characters"
 		br.AddViolation("username", desc)
 		errst := br.GetStatusError(codes.InvalidArgument, "HelloDirectives_HELLO_DIRECTIVES_ERROR")
@@ -42,10 +52,10 @@ func (s *Service) SayHello(in *pb.HelloRequest) (*pb.HelloReply, error) {
 
 // Service2 ...
 type Service2 struct {
-	Request         contracts_request.IRequest                `inject:""`
-	ClaimsPrincipal claimsprincipalContracts.IClaimsPrincipal `inject:""`
-	Logger          loggerContracts.ILogger                   `inject:""`
-	Config          *internal.Config                          `inject:""`
+	Request         contracts_request.IRequest                 `inject:""`
+	ClaimsPrincipal contracts_claimsprincipal.IClaimsPrincipal `inject:""`
+	Logger          contracts_logger.ILogger                   `inject:""`
+	Config          *internal.Config                           `inject:""`
 }
 
 // SayHello implements helloworld.GreeterServer
