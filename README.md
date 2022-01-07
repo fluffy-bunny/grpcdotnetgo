@@ -58,6 +58,15 @@ type Service struct {
 	Logger          contracts_logger.ILogger                   `inject:""`
 	Config          *internal.Config                           `inject:""`
 }
+// Ctor if it exists is called when the service is created
+func (s *Service) Ctor() {
+	s.Logger.Info().Msg("Ctor")
+}
+
+// Close if it exists is called when the container is torn down
+func (s *Service) Close() {
+	s.Logger.Info().Msg("Close")
+}
 
 
 // AddScopedIGreeterService adds service to the DI container
