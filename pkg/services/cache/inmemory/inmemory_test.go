@@ -29,4 +29,13 @@ func TestSameTypeAsScopedTransientSingleton(t *testing.T) {
 
 	val = meCache.Get("test")
 	require.Nil(t, val)
+
+	val = meCache.GetOrInsert("dog", func() (interface{}, time.Duration, error) {
+		return "Bowie", time.Second, nil
+	})
+	require.Equal(t, "Bowie", val)
+	time.Sleep(time.Second)
+
+	val = meCache.Get("dog")
+	require.Nil(t, val)
 }

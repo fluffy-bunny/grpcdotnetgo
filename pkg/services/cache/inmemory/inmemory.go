@@ -16,13 +16,16 @@ type (
 	}
 )
 
+// ReflectTypeService returns the service type
+var ReflectTypeService = reflect.TypeOf(&service{})
+
 func (s *service) Ctor() {
 	s.theCache = gocache.NewGoCache(cache.OneDay, cache.FiveMinutes)
 }
 
 // AddSingletonIMemoryCache adds service to the DI container
 func AddSingletonIMemoryCache(builder *di.Builder) {
-	contracts_cache.AddSingletonIMemoryCache(builder, reflect.TypeOf(&service{}))
+	contracts_cache.AddSingletonIMemoryCache(builder, ReflectTypeService)
 }
 func (s *service) Clear() error {
 	return s.theCache.Clear()
@@ -54,4 +57,16 @@ func (s *service) DelMulti(keys []string) error {
 }
 func (s *service) Close() error {
 	return s.theCache.Close()
+}
+func (s *service) GetOrInsert(k string, adder func() (interface{}, time.Duration, error)) interface{} {
+	result := s.Get(k)
+	if result == nil {
+		obj, ttl, err := adder()
+		if err != nil {
+			return nil
+		}
+		s.Set(k, obj, ttl)
+		result = obj
+	}
+	return result
 }

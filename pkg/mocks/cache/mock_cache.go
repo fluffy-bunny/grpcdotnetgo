@@ -118,6 +118,20 @@ func (mr *MockICacheMockRecorder) GetMulti(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMulti", reflect.TypeOf((*MockICache)(nil).GetMulti), arg0)
 }
 
+// GetOrInsert mocks base method.
+func (m *MockICache) GetOrInsert(arg0 string, arg1 func() (interface{}, time.Duration, error)) interface{} {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetOrInsert", arg0, arg1)
+	ret0, _ := ret[0].(interface{})
+	return ret0
+}
+
+// GetOrInsert indicates an expected call of GetOrInsert.
+func (mr *MockICacheMockRecorder) GetOrInsert(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrInsert", reflect.TypeOf((*MockICache)(nil).GetOrInsert), arg0, arg1)
+}
+
 // Has mocks base method.
 func (m *MockICache) Has(arg0 string) bool {
 	m.ctrl.T.Helper()
@@ -265,6 +279,20 @@ func (m *MockIMemoryCache) GetMulti(arg0 []string) map[string]interface{} {
 func (mr *MockIMemoryCacheMockRecorder) GetMulti(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMulti", reflect.TypeOf((*MockIMemoryCache)(nil).GetMulti), arg0)
+}
+
+// GetOrInsert mocks base method.
+func (m *MockIMemoryCache) GetOrInsert(arg0 string, arg1 func() (interface{}, time.Duration, error)) interface{} {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetOrInsert", arg0, arg1)
+	ret0, _ := ret[0].(interface{})
+	return ret0
+}
+
+// GetOrInsert indicates an expected call of GetOrInsert.
+func (mr *MockIMemoryCacheMockRecorder) GetOrInsert(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrInsert", reflect.TypeOf((*MockIMemoryCache)(nil).GetOrInsert), arg0, arg1)
 }
 
 // Has mocks base method.
