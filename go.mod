@@ -7,7 +7,7 @@ require (
 	github.com/cheekybits/genny v1.0.0
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
-	github.com/fluffy-bunny/sarulabsdi v0.1.40
+	github.com/fluffy-bunny/sarulabsdi v0.1.42
 	github.com/fluffy-bunny/viperEx v0.0.26
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/gogo/googleapis v1.4.1
@@ -15,6 +15,7 @@ require (
 	github.com/gogo/status v1.1.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/mock v1.6.0
+	github.com/gookit/cache v0.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/jnewmano/grpc-json-proxy v0.0.6
 	github.com/lestrrat-go/jwx v1.2.15
@@ -40,6 +41,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/goccy/go-json v0.9.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/gookit/gsr v0.0.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/lestrrat-go/backoff/v2 v2.0.8 // indirect
@@ -49,6 +51,7 @@ require (
 	github.com/lestrrat-go/option v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
