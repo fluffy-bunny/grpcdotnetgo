@@ -58,6 +58,16 @@ func GetICoreConfigFromContainer(ctn di.Container) ICoreConfig {
 	return ctn.GetByType(ReflectTypeICoreConfig).(ICoreConfig)
 }
 
+// GetManyICoreConfigFromContainer alternative to SafeGetManyICoreConfigFromContainer but panics of object is not present
+func GetManyICoreConfigFromContainer(ctn di.Container) []ICoreConfig {
+	objs := ctn.GetManyByType(ReflectTypeICoreConfig)
+	var results []ICoreConfig
+	for _, obj := range objs {
+		results = append(results, obj.(ICoreConfig))
+	}
+	return results
+}
+
 // SafeGetICoreConfigFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetICoreConfigFromContainer(ctn di.Container) (ICoreConfig, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeICoreConfig)
@@ -65,6 +75,19 @@ func SafeGetICoreConfigFromContainer(ctn di.Container) (ICoreConfig, error) {
 		return nil, err
 	}
 	return obj.(ICoreConfig), nil
+}
+
+// SafeGetManyICoreConfigFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyICoreConfigFromContainer(ctn di.Container) ([]ICoreConfig, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeICoreConfig)
+	if err != nil {
+		return nil, err
+	}
+	var results []ICoreConfig
+	for _, obj := range objs {
+		results = append(results, obj.(ICoreConfig))
+	}
+	return results, nil
 }
 
 // ReflectTypeIStartup used when your service claims to implement IStartup
@@ -115,6 +138,16 @@ func GetIStartupFromContainer(ctn di.Container) IStartup {
 	return ctn.GetByType(ReflectTypeIStartup).(IStartup)
 }
 
+// GetManyIStartupFromContainer alternative to SafeGetManyIStartupFromContainer but panics of object is not present
+func GetManyIStartupFromContainer(ctn di.Container) []IStartup {
+	objs := ctn.GetManyByType(ReflectTypeIStartup)
+	var results []IStartup
+	for _, obj := range objs {
+		results = append(results, obj.(IStartup))
+	}
+	return results
+}
+
 // SafeGetIStartupFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIStartupFromContainer(ctn di.Container) (IStartup, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIStartup)
@@ -122,6 +155,19 @@ func SafeGetIStartupFromContainer(ctn di.Container) (IStartup, error) {
 		return nil, err
 	}
 	return obj.(IStartup), nil
+}
+
+// SafeGetManyIStartupFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIStartupFromContainer(ctn di.Container) ([]IStartup, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIStartup)
+	if err != nil {
+		return nil, err
+	}
+	var results []IStartup
+	for _, obj := range objs {
+		results = append(results, obj.(IStartup))
+	}
+	return results, nil
 }
 
 // ReflectTypeIUnaryServerInterceptorBuilder used when your service claims to implement IUnaryServerInterceptorBuilder
@@ -172,6 +218,16 @@ func GetIUnaryServerInterceptorBuilderFromContainer(ctn di.Container) IUnaryServ
 	return ctn.GetByType(ReflectTypeIUnaryServerInterceptorBuilder).(IUnaryServerInterceptorBuilder)
 }
 
+// GetManyIUnaryServerInterceptorBuilderFromContainer alternative to SafeGetManyIUnaryServerInterceptorBuilderFromContainer but panics of object is not present
+func GetManyIUnaryServerInterceptorBuilderFromContainer(ctn di.Container) []IUnaryServerInterceptorBuilder {
+	objs := ctn.GetManyByType(ReflectTypeIUnaryServerInterceptorBuilder)
+	var results []IUnaryServerInterceptorBuilder
+	for _, obj := range objs {
+		results = append(results, obj.(IUnaryServerInterceptorBuilder))
+	}
+	return results
+}
+
 // SafeGetIUnaryServerInterceptorBuilderFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIUnaryServerInterceptorBuilderFromContainer(ctn di.Container) (IUnaryServerInterceptorBuilder, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIUnaryServerInterceptorBuilder)
@@ -179,4 +235,17 @@ func SafeGetIUnaryServerInterceptorBuilderFromContainer(ctn di.Container) (IUnar
 		return nil, err
 	}
 	return obj.(IUnaryServerInterceptorBuilder), nil
+}
+
+// SafeGetManyIUnaryServerInterceptorBuilderFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIUnaryServerInterceptorBuilderFromContainer(ctn di.Container) ([]IUnaryServerInterceptorBuilder, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIUnaryServerInterceptorBuilder)
+	if err != nil {
+		return nil, err
+	}
+	var results []IUnaryServerInterceptorBuilder
+	for _, obj := range objs {
+		results = append(results, obj.(IUnaryServerInterceptorBuilder))
+	}
+	return results, nil
 }

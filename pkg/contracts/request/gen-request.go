@@ -58,6 +58,16 @@ func GetIRequestFromContainer(ctn di.Container) IRequest {
 	return ctn.GetByType(ReflectTypeIRequest).(IRequest)
 }
 
+// GetManyIRequestFromContainer alternative to SafeGetManyIRequestFromContainer but panics of object is not present
+func GetManyIRequestFromContainer(ctn di.Container) []IRequest {
+	objs := ctn.GetManyByType(ReflectTypeIRequest)
+	var results []IRequest
+	for _, obj := range objs {
+		results = append(results, obj.(IRequest))
+	}
+	return results
+}
+
 // SafeGetIRequestFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIRequestFromContainer(ctn di.Container) (IRequest, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIRequest)
@@ -65,6 +75,19 @@ func SafeGetIRequestFromContainer(ctn di.Container) (IRequest, error) {
 		return nil, err
 	}
 	return obj.(IRequest), nil
+}
+
+// SafeGetManyIRequestFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIRequestFromContainer(ctn di.Container) ([]IRequest, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIRequest)
+	if err != nil {
+		return nil, err
+	}
+	var results []IRequest
+	for _, obj := range objs {
+		results = append(results, obj.(IRequest))
+	}
+	return results, nil
 }
 
 // ReflectTypeIItems used when your service claims to implement IItems
@@ -115,6 +138,16 @@ func GetIItemsFromContainer(ctn di.Container) IItems {
 	return ctn.GetByType(ReflectTypeIItems).(IItems)
 }
 
+// GetManyIItemsFromContainer alternative to SafeGetManyIItemsFromContainer but panics of object is not present
+func GetManyIItemsFromContainer(ctn di.Container) []IItems {
+	objs := ctn.GetManyByType(ReflectTypeIItems)
+	var results []IItems
+	for _, obj := range objs {
+		results = append(results, obj.(IItems))
+	}
+	return results
+}
+
 // SafeGetIItemsFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIItemsFromContainer(ctn di.Container) (IItems, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIItems)
@@ -122,4 +155,17 @@ func SafeGetIItemsFromContainer(ctn di.Container) (IItems, error) {
 		return nil, err
 	}
 	return obj.(IItems), nil
+}
+
+// SafeGetManyIItemsFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIItemsFromContainer(ctn di.Container) ([]IItems, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIItems)
+	if err != nil {
+		return nil, err
+	}
+	var results []IItems
+	for _, obj := range objs {
+		results = append(results, obj.(IItems))
+	}
+	return results, nil
 }

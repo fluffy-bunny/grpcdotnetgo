@@ -58,6 +58,16 @@ func GetIHealthServerFromContainer(ctn di.Container) IHealthServer {
 	return ctn.GetByType(ReflectTypeIHealthServer).(IHealthServer)
 }
 
+// GetManyIHealthServerFromContainer alternative to SafeGetManyIHealthServerFromContainer but panics of object is not present
+func GetManyIHealthServerFromContainer(ctn di.Container) []IHealthServer {
+	objs := ctn.GetManyByType(ReflectTypeIHealthServer)
+	var results []IHealthServer
+	for _, obj := range objs {
+		results = append(results, obj.(IHealthServer))
+	}
+	return results
+}
+
 // SafeGetIHealthServerFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIHealthServerFromContainer(ctn di.Container) (IHealthServer, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIHealthServer)
@@ -65,4 +75,17 @@ func SafeGetIHealthServerFromContainer(ctn di.Container) (IHealthServer, error) 
 		return nil, err
 	}
 	return obj.(IHealthServer), nil
+}
+
+// SafeGetManyIHealthServerFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIHealthServerFromContainer(ctn di.Container) ([]IHealthServer, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIHealthServer)
+	if err != nil {
+		return nil, err
+	}
+	var results []IHealthServer
+	for _, obj := range objs {
+		results = append(results, obj.(IHealthServer))
+	}
+	return results, nil
 }

@@ -58,6 +58,16 @@ func GetIServiceProviderFromContainer(ctn di.Container) IServiceProvider {
 	return ctn.GetByType(ReflectTypeIServiceProvider).(IServiceProvider)
 }
 
+// GetManyIServiceProviderFromContainer alternative to SafeGetManyIServiceProviderFromContainer but panics of object is not present
+func GetManyIServiceProviderFromContainer(ctn di.Container) []IServiceProvider {
+	objs := ctn.GetManyByType(ReflectTypeIServiceProvider)
+	var results []IServiceProvider
+	for _, obj := range objs {
+		results = append(results, obj.(IServiceProvider))
+	}
+	return results
+}
+
 // SafeGetIServiceProviderFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIServiceProviderFromContainer(ctn di.Container) (IServiceProvider, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIServiceProvider)
@@ -65,6 +75,19 @@ func SafeGetIServiceProviderFromContainer(ctn di.Container) (IServiceProvider, e
 		return nil, err
 	}
 	return obj.(IServiceProvider), nil
+}
+
+// SafeGetManyIServiceProviderFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIServiceProviderFromContainer(ctn di.Container) ([]IServiceProvider, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIServiceProvider)
+	if err != nil {
+		return nil, err
+	}
+	var results []IServiceProvider
+	for _, obj := range objs {
+		results = append(results, obj.(IServiceProvider))
+	}
+	return results, nil
 }
 
 // ReflectTypeISingletonServiceProvider used when your service claims to implement ISingletonServiceProvider
@@ -115,6 +138,16 @@ func GetISingletonServiceProviderFromContainer(ctn di.Container) ISingletonServi
 	return ctn.GetByType(ReflectTypeISingletonServiceProvider).(ISingletonServiceProvider)
 }
 
+// GetManyISingletonServiceProviderFromContainer alternative to SafeGetManyISingletonServiceProviderFromContainer but panics of object is not present
+func GetManyISingletonServiceProviderFromContainer(ctn di.Container) []ISingletonServiceProvider {
+	objs := ctn.GetManyByType(ReflectTypeISingletonServiceProvider)
+	var results []ISingletonServiceProvider
+	for _, obj := range objs {
+		results = append(results, obj.(ISingletonServiceProvider))
+	}
+	return results
+}
+
 // SafeGetISingletonServiceProviderFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetISingletonServiceProviderFromContainer(ctn di.Container) (ISingletonServiceProvider, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeISingletonServiceProvider)
@@ -122,4 +155,17 @@ func SafeGetISingletonServiceProviderFromContainer(ctn di.Container) (ISingleton
 		return nil, err
 	}
 	return obj.(ISingletonServiceProvider), nil
+}
+
+// SafeGetManyISingletonServiceProviderFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyISingletonServiceProviderFromContainer(ctn di.Container) ([]ISingletonServiceProvider, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeISingletonServiceProvider)
+	if err != nil {
+		return nil, err
+	}
+	var results []ISingletonServiceProvider
+	for _, obj := range objs {
+		results = append(results, obj.(ISingletonServiceProvider))
+	}
+	return results, nil
 }

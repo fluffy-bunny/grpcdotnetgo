@@ -58,6 +58,16 @@ func GetIClaimsPrincipalFromContainer(ctn di.Container) IClaimsPrincipal {
 	return ctn.GetByType(ReflectTypeIClaimsPrincipal).(IClaimsPrincipal)
 }
 
+// GetManyIClaimsPrincipalFromContainer alternative to SafeGetManyIClaimsPrincipalFromContainer but panics of object is not present
+func GetManyIClaimsPrincipalFromContainer(ctn di.Container) []IClaimsPrincipal {
+	objs := ctn.GetManyByType(ReflectTypeIClaimsPrincipal)
+	var results []IClaimsPrincipal
+	for _, obj := range objs {
+		results = append(results, obj.(IClaimsPrincipal))
+	}
+	return results
+}
+
 // SafeGetIClaimsPrincipalFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIClaimsPrincipalFromContainer(ctn di.Container) (IClaimsPrincipal, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIClaimsPrincipal)
@@ -65,4 +75,17 @@ func SafeGetIClaimsPrincipalFromContainer(ctn di.Container) (IClaimsPrincipal, e
 		return nil, err
 	}
 	return obj.(IClaimsPrincipal), nil
+}
+
+// SafeGetManyIClaimsPrincipalFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIClaimsPrincipalFromContainer(ctn di.Container) ([]IClaimsPrincipal, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIClaimsPrincipal)
+	if err != nil {
+		return nil, err
+	}
+	var results []IClaimsPrincipal
+	for _, obj := range objs {
+		results = append(results, obj.(IClaimsPrincipal))
+	}
+	return results, nil
 }

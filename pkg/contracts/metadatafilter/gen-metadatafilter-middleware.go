@@ -58,6 +58,16 @@ func GetIMetadataFilterMiddlewareFromContainer(ctn di.Container) IMetadataFilter
 	return ctn.GetByType(ReflectTypeIMetadataFilterMiddleware).(IMetadataFilterMiddleware)
 }
 
+// GetManyIMetadataFilterMiddlewareFromContainer alternative to SafeGetManyIMetadataFilterMiddlewareFromContainer but panics of object is not present
+func GetManyIMetadataFilterMiddlewareFromContainer(ctn di.Container) []IMetadataFilterMiddleware {
+	objs := ctn.GetManyByType(ReflectTypeIMetadataFilterMiddleware)
+	var results []IMetadataFilterMiddleware
+	for _, obj := range objs {
+		results = append(results, obj.(IMetadataFilterMiddleware))
+	}
+	return results
+}
+
 // SafeGetIMetadataFilterMiddlewareFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIMetadataFilterMiddlewareFromContainer(ctn di.Container) (IMetadataFilterMiddleware, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIMetadataFilterMiddleware)
@@ -65,4 +75,17 @@ func SafeGetIMetadataFilterMiddlewareFromContainer(ctn di.Container) (IMetadataF
 		return nil, err
 	}
 	return obj.(IMetadataFilterMiddleware), nil
+}
+
+// SafeGetManyIMetadataFilterMiddlewareFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIMetadataFilterMiddlewareFromContainer(ctn di.Container) ([]IMetadataFilterMiddleware, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIMetadataFilterMiddleware)
+	if err != nil {
+		return nil, err
+	}
+	var results []IMetadataFilterMiddleware
+	for _, obj := range objs {
+		results = append(results, obj.(IMetadataFilterMiddleware))
+	}
+	return results, nil
 }

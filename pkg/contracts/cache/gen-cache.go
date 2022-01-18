@@ -58,6 +58,16 @@ func GetICacheFromContainer(ctn di.Container) ICache {
 	return ctn.GetByType(ReflectTypeICache).(ICache)
 }
 
+// GetManyICacheFromContainer alternative to SafeGetManyICacheFromContainer but panics of object is not present
+func GetManyICacheFromContainer(ctn di.Container) []ICache {
+	objs := ctn.GetManyByType(ReflectTypeICache)
+	var results []ICache
+	for _, obj := range objs {
+		results = append(results, obj.(ICache))
+	}
+	return results
+}
+
 // SafeGetICacheFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetICacheFromContainer(ctn di.Container) (ICache, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeICache)
@@ -65,6 +75,19 @@ func SafeGetICacheFromContainer(ctn di.Container) (ICache, error) {
 		return nil, err
 	}
 	return obj.(ICache), nil
+}
+
+// SafeGetManyICacheFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyICacheFromContainer(ctn di.Container) ([]ICache, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeICache)
+	if err != nil {
+		return nil, err
+	}
+	var results []ICache
+	for _, obj := range objs {
+		results = append(results, obj.(ICache))
+	}
+	return results, nil
 }
 
 // ReflectTypeIMemoryCache used when your service claims to implement IMemoryCache
@@ -115,6 +138,16 @@ func GetIMemoryCacheFromContainer(ctn di.Container) IMemoryCache {
 	return ctn.GetByType(ReflectTypeIMemoryCache).(IMemoryCache)
 }
 
+// GetManyIMemoryCacheFromContainer alternative to SafeGetManyIMemoryCacheFromContainer but panics of object is not present
+func GetManyIMemoryCacheFromContainer(ctn di.Container) []IMemoryCache {
+	objs := ctn.GetManyByType(ReflectTypeIMemoryCache)
+	var results []IMemoryCache
+	for _, obj := range objs {
+		results = append(results, obj.(IMemoryCache))
+	}
+	return results
+}
+
 // SafeGetIMemoryCacheFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIMemoryCacheFromContainer(ctn di.Container) (IMemoryCache, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIMemoryCache)
@@ -122,4 +155,17 @@ func SafeGetIMemoryCacheFromContainer(ctn di.Container) (IMemoryCache, error) {
 		return nil, err
 	}
 	return obj.(IMemoryCache), nil
+}
+
+// SafeGetManyIMemoryCacheFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIMemoryCacheFromContainer(ctn di.Container) ([]IMemoryCache, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIMemoryCache)
+	if err != nil {
+		return nil, err
+	}
+	var results []IMemoryCache
+	for _, obj := range objs {
+		results = append(results, obj.(IMemoryCache))
+	}
+	return results, nil
 }

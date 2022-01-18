@@ -58,6 +58,16 @@ func GetIOauth2FromContainer(ctn di.Container) IOauth2 {
 	return ctn.GetByType(ReflectTypeIOauth2).(IOauth2)
 }
 
+// GetManyIOauth2FromContainer alternative to SafeGetManyIOauth2FromContainer but panics of object is not present
+func GetManyIOauth2FromContainer(ctn di.Container) []IOauth2 {
+	objs := ctn.GetManyByType(ReflectTypeIOauth2)
+	var results []IOauth2
+	for _, obj := range objs {
+		results = append(results, obj.(IOauth2))
+	}
+	return results
+}
+
 // SafeGetIOauth2FromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIOauth2FromContainer(ctn di.Container) (IOauth2, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIOauth2)
@@ -65,4 +75,17 @@ func SafeGetIOauth2FromContainer(ctn di.Container) (IOauth2, error) {
 		return nil, err
 	}
 	return obj.(IOauth2), nil
+}
+
+// SafeGetManyIOauth2FromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIOauth2FromContainer(ctn di.Container) ([]IOauth2, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIOauth2)
+	if err != nil {
+		return nil, err
+	}
+	var results []IOauth2
+	for _, obj := range objs {
+		results = append(results, obj.(IOauth2))
+	}
+	return results, nil
 }

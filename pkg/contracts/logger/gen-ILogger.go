@@ -58,6 +58,16 @@ func GetILoggerFromContainer(ctn di.Container) ILogger {
 	return ctn.GetByType(ReflectTypeILogger).(ILogger)
 }
 
+// GetManyILoggerFromContainer alternative to SafeGetManyILoggerFromContainer but panics of object is not present
+func GetManyILoggerFromContainer(ctn di.Container) []ILogger {
+	objs := ctn.GetManyByType(ReflectTypeILogger)
+	var results []ILogger
+	for _, obj := range objs {
+		results = append(results, obj.(ILogger))
+	}
+	return results
+}
+
 // SafeGetILoggerFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetILoggerFromContainer(ctn di.Container) (ILogger, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeILogger)
@@ -65,4 +75,17 @@ func SafeGetILoggerFromContainer(ctn di.Container) (ILogger, error) {
 		return nil, err
 	}
 	return obj.(ILogger), nil
+}
+
+// SafeGetManyILoggerFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyILoggerFromContainer(ctn di.Container) ([]ILogger, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeILogger)
+	if err != nil {
+		return nil, err
+	}
+	var results []ILogger
+	for _, obj := range objs {
+		results = append(results, obj.(ILogger))
+	}
+	return results, nil
 }

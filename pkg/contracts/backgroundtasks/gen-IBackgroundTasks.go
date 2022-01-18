@@ -58,6 +58,16 @@ func GetIBackgroundTasksFromContainer(ctn di.Container) IBackgroundTasks {
 	return ctn.GetByType(ReflectTypeIBackgroundTasks).(IBackgroundTasks)
 }
 
+// GetManyIBackgroundTasksFromContainer alternative to SafeGetManyIBackgroundTasksFromContainer but panics of object is not present
+func GetManyIBackgroundTasksFromContainer(ctn di.Container) []IBackgroundTasks {
+	objs := ctn.GetManyByType(ReflectTypeIBackgroundTasks)
+	var results []IBackgroundTasks
+	for _, obj := range objs {
+		results = append(results, obj.(IBackgroundTasks))
+	}
+	return results
+}
+
 // SafeGetIBackgroundTasksFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIBackgroundTasksFromContainer(ctn di.Container) (IBackgroundTasks, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIBackgroundTasks)
@@ -65,4 +75,17 @@ func SafeGetIBackgroundTasksFromContainer(ctn di.Container) (IBackgroundTasks, e
 		return nil, err
 	}
 	return obj.(IBackgroundTasks), nil
+}
+
+// SafeGetManyIBackgroundTasksFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIBackgroundTasksFromContainer(ctn di.Container) ([]IBackgroundTasks, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIBackgroundTasks)
+	if err != nil {
+		return nil, err
+	}
+	var results []IBackgroundTasks
+	for _, obj := range objs {
+		results = append(results, obj.(IBackgroundTasks))
+	}
+	return results, nil
 }

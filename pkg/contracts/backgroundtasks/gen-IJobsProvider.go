@@ -58,6 +58,16 @@ func GetIJobsProviderFromContainer(ctn di.Container) IJobsProvider {
 	return ctn.GetByType(ReflectTypeIJobsProvider).(IJobsProvider)
 }
 
+// GetManyIJobsProviderFromContainer alternative to SafeGetManyIJobsProviderFromContainer but panics of object is not present
+func GetManyIJobsProviderFromContainer(ctn di.Container) []IJobsProvider {
+	objs := ctn.GetManyByType(ReflectTypeIJobsProvider)
+	var results []IJobsProvider
+	for _, obj := range objs {
+		results = append(results, obj.(IJobsProvider))
+	}
+	return results
+}
+
 // SafeGetIJobsProviderFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIJobsProviderFromContainer(ctn di.Container) (IJobsProvider, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIJobsProvider)
@@ -65,4 +75,17 @@ func SafeGetIJobsProviderFromContainer(ctn di.Container) (IJobsProvider, error) 
 		return nil, err
 	}
 	return obj.(IJobsProvider), nil
+}
+
+// SafeGetManyIJobsProviderFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIJobsProviderFromContainer(ctn di.Container) ([]IJobsProvider, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIJobsProvider)
+	if err != nil {
+		return nil, err
+	}
+	var results []IJobsProvider
+	for _, obj := range objs {
+		results = append(results, obj.(IJobsProvider))
+	}
+	return results, nil
 }
