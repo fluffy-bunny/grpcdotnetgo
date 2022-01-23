@@ -58,6 +58,16 @@ func GetITimeUtilsFromContainer(ctn di.Container) ITimeUtils {
 	return ctn.GetByType(ReflectTypeITimeUtils).(ITimeUtils)
 }
 
+// GetManyITimeUtilsFromContainer alternative to SafeGetManyITimeUtilsFromContainer but panics of object is not present
+func GetManyITimeUtilsFromContainer(ctn di.Container) []ITimeUtils {
+	objs := ctn.GetManyByType(ReflectTypeITimeUtils)
+	var results []ITimeUtils
+	for _, obj := range objs {
+		results = append(results, obj.(ITimeUtils))
+	}
+	return results
+}
+
 // SafeGetITimeUtilsFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetITimeUtilsFromContainer(ctn di.Container) (ITimeUtils, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeITimeUtils)
@@ -65,6 +75,19 @@ func SafeGetITimeUtilsFromContainer(ctn di.Container) (ITimeUtils, error) {
 		return nil, err
 	}
 	return obj.(ITimeUtils), nil
+}
+
+// SafeGetManyITimeUtilsFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyITimeUtilsFromContainer(ctn di.Container) ([]ITimeUtils, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeITimeUtils)
+	if err != nil {
+		return nil, err
+	}
+	var results []ITimeUtils
+	for _, obj := range objs {
+		results = append(results, obj.(ITimeUtils))
+	}
+	return results, nil
 }
 
 // ReflectTypeITime used when your service claims to implement ITime
@@ -115,6 +138,16 @@ func GetITimeFromContainer(ctn di.Container) ITime {
 	return ctn.GetByType(ReflectTypeITime).(ITime)
 }
 
+// GetManyITimeFromContainer alternative to SafeGetManyITimeFromContainer but panics of object is not present
+func GetManyITimeFromContainer(ctn di.Container) []ITime {
+	objs := ctn.GetManyByType(ReflectTypeITime)
+	var results []ITime
+	for _, obj := range objs {
+		results = append(results, obj.(ITime))
+	}
+	return results
+}
+
 // SafeGetITimeFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetITimeFromContainer(ctn di.Container) (ITime, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeITime)
@@ -122,4 +155,17 @@ func SafeGetITimeFromContainer(ctn di.Container) (ITime, error) {
 		return nil, err
 	}
 	return obj.(ITime), nil
+}
+
+// SafeGetManyITimeFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyITimeFromContainer(ctn di.Container) ([]ITime, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeITime)
+	if err != nil {
+		return nil, err
+	}
+	var results []ITime
+	for _, obj := range objs {
+		results = append(results, obj.(ITime))
+	}
+	return results, nil
 }
