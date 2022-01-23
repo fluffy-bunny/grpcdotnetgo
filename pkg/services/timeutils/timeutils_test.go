@@ -39,14 +39,13 @@ func TestMockTime(t *testing.T) {
 
 	fmt.Println(mockITime.Now())
 	fmt.Println(mockITime.Now().UTC())
-	fmt.Println(timeUtils.StartOfPreviousMonthUTC())
-	fmt.Println(timeUtils.StartOfCurrentMonthUTC())
-	fmt.Println(timeUtils.StartOfNextMonthUTC())
+	fmt.Println(timeUtils.StartOfMonthUTC(-1))
+	fmt.Println(timeUtils.StartOfMonthUTC(0))
+	fmt.Println(timeUtils.StartOfMonthUTC(1))
 
 	tt := newTime()
 	require.NotNil(t, tt)
 	require.Equal(t, tt.Now().Year(), time.Now().Year())
-
 }
 func TestStartOfNextMonthUTC(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -57,7 +56,7 @@ func TestStartOfNextMonthUTC(t *testing.T) {
 		timeUtils := NewTimeUtils(mockITime)
 		now := mockITime.Now().UTC()
 		fmt.Printf("now date is = %s\n", now)
-		ttNextMonth := timeUtils.StartOfNextMonthUTC()
+		ttNextMonth := timeUtils.StartOfMonthUTC(1)
 		fmt.Printf("next months date is = %s\n", ttNextMonth)
 		require.NotEqual(t, ttNextMonth.Month(), now.Month())
 		if ttNextMonth.Month() == time.January {
@@ -67,7 +66,6 @@ func TestStartOfNextMonthUTC(t *testing.T) {
 		}
 		fmt.Println(ttNextMonth.Unix())
 	}
-
 }
 func TestStartOfCurrentMonthUTC(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -78,7 +76,7 @@ func TestStartOfCurrentMonthUTC(t *testing.T) {
 		timeUtils := NewTimeUtils(mockITime)
 		now := mockITime.Now().UTC()
 		fmt.Printf("now date is = %s\n", now)
-		ttCurrentMonth := timeUtils.StartOfCurrentMonthUTC()
+		ttCurrentMonth := timeUtils.StartOfMonthUTC(0)
 		fmt.Printf("current months date is = %s\n", ttCurrentMonth)
 		require.Equal(t, ttCurrentMonth.Month(), now.Month())
 		require.Equal(t, ttCurrentMonth.Year(), now.Year())
@@ -94,7 +92,7 @@ func TestStartOfPreviousMonthUTC(t *testing.T) {
 		timeUtils := NewTimeUtils(mockITime)
 		now := mockITime.Now().UTC()
 		fmt.Printf("now date is = %s\n", now)
-		ttPrevMonth := timeUtils.StartOfPreviousMonthUTC()
+		ttPrevMonth := timeUtils.StartOfMonthUTC(-1)
 		fmt.Printf("prev months date is = %s\n", ttPrevMonth)
 
 		require.NotEqual(t, ttPrevMonth.Month(), now.Month())

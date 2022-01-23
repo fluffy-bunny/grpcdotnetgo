@@ -34,46 +34,18 @@ func (m *MockITimeUtils) EXPECT() *MockITimeUtilsMockRecorder {
 	return m.recorder
 }
 
-// StartOfCurrentMonthUTC mocks base method.
-func (m *MockITimeUtils) StartOfCurrentMonthUTC() time.Time {
+// StartOfMonthUTC mocks base method.
+func (m *MockITimeUtils) StartOfMonthUTC(arg0 int) time.Time {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StartOfCurrentMonthUTC")
+	ret := m.ctrl.Call(m, "StartOfMonthUTC", arg0)
 	ret0, _ := ret[0].(time.Time)
 	return ret0
 }
 
-// StartOfCurrentMonthUTC indicates an expected call of StartOfCurrentMonthUTC.
-func (mr *MockITimeUtilsMockRecorder) StartOfCurrentMonthUTC() *gomock.Call {
+// StartOfMonthUTC indicates an expected call of StartOfMonthUTC.
+func (mr *MockITimeUtilsMockRecorder) StartOfMonthUTC(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartOfCurrentMonthUTC", reflect.TypeOf((*MockITimeUtils)(nil).StartOfCurrentMonthUTC))
-}
-
-// StartOfNextMonthUTC mocks base method.
-func (m *MockITimeUtils) StartOfNextMonthUTC() time.Time {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StartOfNextMonthUTC")
-	ret0, _ := ret[0].(time.Time)
-	return ret0
-}
-
-// StartOfNextMonthUTC indicates an expected call of StartOfNextMonthUTC.
-func (mr *MockITimeUtilsMockRecorder) StartOfNextMonthUTC() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartOfNextMonthUTC", reflect.TypeOf((*MockITimeUtils)(nil).StartOfNextMonthUTC))
-}
-
-// StartOfPreviousMonthUTC mocks base method.
-func (m *MockITimeUtils) StartOfPreviousMonthUTC() time.Time {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StartOfPreviousMonthUTC")
-	ret0, _ := ret[0].(time.Time)
-	return ret0
-}
-
-// StartOfPreviousMonthUTC indicates an expected call of StartOfPreviousMonthUTC.
-func (mr *MockITimeUtilsMockRecorder) StartOfPreviousMonthUTC() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartOfPreviousMonthUTC", reflect.TypeOf((*MockITimeUtils)(nil).StartOfPreviousMonthUTC))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartOfMonthUTC", reflect.TypeOf((*MockITimeUtils)(nil).StartOfMonthUTC), arg0)
 }
 
 // MockITime is a mock of ITime interface.

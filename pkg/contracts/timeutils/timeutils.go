@@ -10,9 +10,8 @@ type (
 
 	// ITimeUtils ...
 	ITimeUtils interface {
-		StartOfNextMonthUTC() time.Time
-		StartOfCurrentMonthUTC() time.Time
-		StartOfPreviousMonthUTC() time.Time
+		// StartOfMonthUTC where offsetMonth is 0-based (0 = Current Month)
+		StartOfMonthUTC(offsetMonth int) time.Time
 	}
 	// ITime ...
 	ITime interface {
