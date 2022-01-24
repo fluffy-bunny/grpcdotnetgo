@@ -18,7 +18,7 @@ require (
 	github.com/gookit/cache v0.2.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/jnewmano/grpc-json-proxy v0.0.6
-	github.com/lestrrat-go/jwx v1.2.15
+	github.com/lestrrat-go/jwx v1.2.18
 	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/xid v1.3.0
@@ -39,7 +39,7 @@ require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
-	github.com/goccy/go-json v0.9.0 // indirect
+	github.com/goccy/go-json v0.9.4 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gookit/gsr v0.0.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
