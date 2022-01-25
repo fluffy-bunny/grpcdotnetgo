@@ -58,6 +58,16 @@ func GetIKSUIDFromContainer(ctn di.Container) IKSUID {
 	return ctn.GetByType(ReflectTypeIKSUID).(IKSUID)
 }
 
+// GetManyIKSUIDFromContainer alternative to SafeGetManyIKSUIDFromContainer but panics of object is not present
+func GetManyIKSUIDFromContainer(ctn di.Container) []IKSUID {
+	objs := ctn.GetManyByType(ReflectTypeIKSUID)
+	var results []IKSUID
+	for _, obj := range objs {
+		results = append(results, obj.(IKSUID))
+	}
+	return results
+}
+
 // SafeGetIKSUIDFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetIKSUIDFromContainer(ctn di.Container) (IKSUID, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeIKSUID)
@@ -65,4 +75,17 @@ func SafeGetIKSUIDFromContainer(ctn di.Container) (IKSUID, error) {
 		return nil, err
 	}
 	return obj.(IKSUID), nil
+}
+
+// SafeGetManyIKSUIDFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIKSUIDFromContainer(ctn di.Container) ([]IKSUID, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIKSUID)
+	if err != nil {
+		return nil, err
+	}
+	var results []IKSUID
+	for _, obj := range objs {
+		results = append(results, obj.(IKSUID))
+	}
+	return results, nil
 }
