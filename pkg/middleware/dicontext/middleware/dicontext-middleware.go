@@ -2,6 +2,7 @@ package dicontext
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
@@ -39,8 +40,8 @@ func UnaryServerInterceptor(rootContainer di.Container) grpc.UnaryServerIntercep
 		// this ensures that this claims principal object lives for the lifetime of the request
 		claimsPrincipal := claimsprincipalContracts.GetIClaimsPrincipalFromContainer(requestContainer)
 		claimsPrincipal.AddClaim(claimsprincipalContracts.Claim{
-			Type:  "_requestTime",
-			Value: time.Now().UTC().String(),
+			Type:  "_requestTimeUnixMicro",
+			Value: strconv.FormatInt(time.Now().UnixMicro(), 10),
 		})
 		return handler(ctx, req)
 	}

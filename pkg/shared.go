@@ -8,6 +8,8 @@ import (
 	services_metadatafilter "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/metadatafilter"
 	services_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/request"
 	services_serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/serviceprovider"
+	services_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/timeutils"
+	services_uuid "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/uuid"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	_ "github.com/gogo/protobuf/gogoproto" // ensures that go mod vendor brings it down
 )
@@ -45,6 +47,9 @@ func (dngbuilder *DotNetGoBuilder) AddDefaultService() {
 	services_BackgroundTasks.AddSingletonBackgroundTasks(builder)
 	services_metadatafilter.AddSingletonIMetadataFilterMiddlewareNil(builder)
 	services_serviceprovider.AddServiceProviders(builder)
+	services_timeutils.AddSingletonITime(builder)
+	services_timeutils.AddSingletonITime(builder)
+	services_uuid.AddSingletonIKSUID(builder)
 }
 
 // Build ...
