@@ -19,15 +19,18 @@ func TestSameTypeAsScopedTransientSingleton(t *testing.T) {
 	meCache := contracts_cache.GetIMemoryCacheFromContainer(app)
 	require.NotNil(t, meCache)
 
-	val := meCache.Get("test")
+	val, err := meCache.Get("test")
+	require.Error(t, err)
 	require.Nil(t, val)
 
-	meCache.Set("test", "bob", time.Second)
-	val = meCache.Get("test")
+	meCache.SetWithTTL("test", "bob", time.Second)
+	val, err = meCache.Get("test")
+	require.NoError(t, err)
 	require.Equal(t, "bob", val)
 	time.Sleep(time.Second)
 
-	val = meCache.Get("test")
+	val, err = meCache.Get("test")
+	require.Error(t, err)
 	require.Nil(t, val)
 
 	val = meCache.GetOrInsert("dog", func() (interface{}, time.Duration, error) {
@@ -36,6 +39,7 @@ func TestSameTypeAsScopedTransientSingleton(t *testing.T) {
 	require.Equal(t, "Bowie", val)
 	time.Sleep(time.Second)
 
-	val = meCache.Get("dog")
+	val, err = meCache.Get("dog")
+	require.Error(t, err)
 	require.Nil(t, val)
 }

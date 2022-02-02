@@ -34,20 +34,6 @@ func (m *MockICache) EXPECT() *MockICacheMockRecorder {
 	return m.recorder
 }
 
-// Clear mocks base method.
-func (m *MockICache) Clear() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Clear")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Clear indicates an expected call of Clear.
-func (mr *MockICacheMockRecorder) Clear() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Clear", reflect.TypeOf((*MockICache)(nil).Clear))
-}
-
 // Close mocks base method.
 func (m *MockICache) Close() error {
 	m.ctrl.T.Helper()
@@ -62,60 +48,19 @@ func (mr *MockICacheMockRecorder) Close() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockICache)(nil).Close))
 }
 
-// Del mocks base method.
-func (m *MockICache) Del(arg0 string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Del", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Del indicates an expected call of Del.
-func (mr *MockICacheMockRecorder) Del(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Del", reflect.TypeOf((*MockICache)(nil).Del), arg0)
-}
-
-// DelMulti mocks base method.
-func (m *MockICache) DelMulti(arg0 []string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DelMulti", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DelMulti indicates an expected call of DelMulti.
-func (mr *MockICacheMockRecorder) DelMulti(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelMulti", reflect.TypeOf((*MockICache)(nil).DelMulti), arg0)
-}
-
 // Get mocks base method.
-func (m *MockICache) Get(arg0 string) interface{} {
+func (m *MockICache) Get(arg0 string) (interface{}, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", arg0)
 	ret0, _ := ret[0].(interface{})
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Get indicates an expected call of Get.
 func (mr *MockICacheMockRecorder) Get(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockICache)(nil).Get), arg0)
-}
-
-// GetMulti mocks base method.
-func (m *MockICache) GetMulti(arg0 []string) map[string]interface{} {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMulti", arg0)
-	ret0, _ := ret[0].(map[string]interface{})
-	return ret0
-}
-
-// GetMulti indicates an expected call of GetMulti.
-func (mr *MockICacheMockRecorder) GetMulti(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMulti", reflect.TypeOf((*MockICache)(nil).GetMulti), arg0)
 }
 
 // GetOrInsert mocks base method.
@@ -132,46 +77,90 @@ func (mr *MockICacheMockRecorder) GetOrInsert(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrInsert", reflect.TypeOf((*MockICache)(nil).GetOrInsert), arg0, arg1)
 }
 
-// Has mocks base method.
-func (m *MockICache) Has(arg0 string) bool {
+// GetWithTTL mocks base method.
+func (m *MockICache) GetWithTTL(arg0 string) (interface{}, time.Duration, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Has", arg0)
-	ret0, _ := ret[0].(bool)
+	ret := m.ctrl.Call(m, "GetWithTTL", arg0)
+	ret0, _ := ret[0].(interface{})
+	ret1, _ := ret[1].(time.Duration)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetWithTTL indicates an expected call of GetWithTTL.
+func (mr *MockICacheMockRecorder) GetWithTTL(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWithTTL", reflect.TypeOf((*MockICache)(nil).GetWithTTL), arg0)
+}
+
+// Purge mocks base method.
+func (m *MockICache) Purge() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Purge")
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Has indicates an expected call of Has.
-func (mr *MockICacheMockRecorder) Has(arg0 interface{}) *gomock.Call {
+// Purge indicates an expected call of Purge.
+func (mr *MockICacheMockRecorder) Purge() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Has", reflect.TypeOf((*MockICache)(nil).Has), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Purge", reflect.TypeOf((*MockICache)(nil).Purge))
+}
+
+// Remove mocks base method.
+func (m *MockICache) Remove(arg0 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Remove", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Remove indicates an expected call of Remove.
+func (mr *MockICacheMockRecorder) Remove(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockICache)(nil).Remove), arg0)
 }
 
 // Set mocks base method.
-func (m *MockICache) Set(arg0 string, arg1 interface{}, arg2 time.Duration) error {
+func (m *MockICache) Set(arg0 string, arg1 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Set", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "Set", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Set indicates an expected call of Set.
-func (mr *MockICacheMockRecorder) Set(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockICacheMockRecorder) Set(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockICache)(nil).Set), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockICache)(nil).Set), arg0, arg1)
 }
 
-// SetMulti mocks base method.
-func (m *MockICache) SetMulti(arg0 map[string]interface{}, arg1 time.Duration) error {
+// SetTTL mocks base method.
+func (m *MockICache) SetTTL(arg0 time.Duration) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetMulti", arg0, arg1)
+	ret := m.ctrl.Call(m, "SetTTL", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SetMulti indicates an expected call of SetMulti.
-func (mr *MockICacheMockRecorder) SetMulti(arg0, arg1 interface{}) *gomock.Call {
+// SetTTL indicates an expected call of SetTTL.
+func (mr *MockICacheMockRecorder) SetTTL(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetMulti", reflect.TypeOf((*MockICache)(nil).SetMulti), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetTTL", reflect.TypeOf((*MockICache)(nil).SetTTL), arg0)
+}
+
+// SetWithTTL mocks base method.
+func (m *MockICache) SetWithTTL(arg0 string, arg1 interface{}, arg2 time.Duration) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetWithTTL", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetWithTTL indicates an expected call of SetWithTTL.
+func (mr *MockICacheMockRecorder) SetWithTTL(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetWithTTL", reflect.TypeOf((*MockICache)(nil).SetWithTTL), arg0, arg1, arg2)
 }
 
 // MockIMemoryCache is a mock of IMemoryCache interface.
@@ -197,20 +186,6 @@ func (m *MockIMemoryCache) EXPECT() *MockIMemoryCacheMockRecorder {
 	return m.recorder
 }
 
-// Clear mocks base method.
-func (m *MockIMemoryCache) Clear() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Clear")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Clear indicates an expected call of Clear.
-func (mr *MockIMemoryCacheMockRecorder) Clear() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Clear", reflect.TypeOf((*MockIMemoryCache)(nil).Clear))
-}
-
 // Close mocks base method.
 func (m *MockIMemoryCache) Close() error {
 	m.ctrl.T.Helper()
@@ -225,60 +200,19 @@ func (mr *MockIMemoryCacheMockRecorder) Close() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockIMemoryCache)(nil).Close))
 }
 
-// Del mocks base method.
-func (m *MockIMemoryCache) Del(arg0 string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Del", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Del indicates an expected call of Del.
-func (mr *MockIMemoryCacheMockRecorder) Del(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Del", reflect.TypeOf((*MockIMemoryCache)(nil).Del), arg0)
-}
-
-// DelMulti mocks base method.
-func (m *MockIMemoryCache) DelMulti(arg0 []string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DelMulti", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DelMulti indicates an expected call of DelMulti.
-func (mr *MockIMemoryCacheMockRecorder) DelMulti(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelMulti", reflect.TypeOf((*MockIMemoryCache)(nil).DelMulti), arg0)
-}
-
 // Get mocks base method.
-func (m *MockIMemoryCache) Get(arg0 string) interface{} {
+func (m *MockIMemoryCache) Get(arg0 string) (interface{}, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", arg0)
 	ret0, _ := ret[0].(interface{})
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Get indicates an expected call of Get.
 func (mr *MockIMemoryCacheMockRecorder) Get(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockIMemoryCache)(nil).Get), arg0)
-}
-
-// GetMulti mocks base method.
-func (m *MockIMemoryCache) GetMulti(arg0 []string) map[string]interface{} {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMulti", arg0)
-	ret0, _ := ret[0].(map[string]interface{})
-	return ret0
-}
-
-// GetMulti indicates an expected call of GetMulti.
-func (mr *MockIMemoryCacheMockRecorder) GetMulti(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMulti", reflect.TypeOf((*MockIMemoryCache)(nil).GetMulti), arg0)
 }
 
 // GetOrInsert mocks base method.
@@ -295,44 +229,88 @@ func (mr *MockIMemoryCacheMockRecorder) GetOrInsert(arg0, arg1 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrInsert", reflect.TypeOf((*MockIMemoryCache)(nil).GetOrInsert), arg0, arg1)
 }
 
-// Has mocks base method.
-func (m *MockIMemoryCache) Has(arg0 string) bool {
+// GetWithTTL mocks base method.
+func (m *MockIMemoryCache) GetWithTTL(arg0 string) (interface{}, time.Duration, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Has", arg0)
-	ret0, _ := ret[0].(bool)
+	ret := m.ctrl.Call(m, "GetWithTTL", arg0)
+	ret0, _ := ret[0].(interface{})
+	ret1, _ := ret[1].(time.Duration)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetWithTTL indicates an expected call of GetWithTTL.
+func (mr *MockIMemoryCacheMockRecorder) GetWithTTL(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWithTTL", reflect.TypeOf((*MockIMemoryCache)(nil).GetWithTTL), arg0)
+}
+
+// Purge mocks base method.
+func (m *MockIMemoryCache) Purge() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Purge")
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Has indicates an expected call of Has.
-func (mr *MockIMemoryCacheMockRecorder) Has(arg0 interface{}) *gomock.Call {
+// Purge indicates an expected call of Purge.
+func (mr *MockIMemoryCacheMockRecorder) Purge() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Has", reflect.TypeOf((*MockIMemoryCache)(nil).Has), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Purge", reflect.TypeOf((*MockIMemoryCache)(nil).Purge))
+}
+
+// Remove mocks base method.
+func (m *MockIMemoryCache) Remove(arg0 string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Remove", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Remove indicates an expected call of Remove.
+func (mr *MockIMemoryCacheMockRecorder) Remove(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockIMemoryCache)(nil).Remove), arg0)
 }
 
 // Set mocks base method.
-func (m *MockIMemoryCache) Set(arg0 string, arg1 interface{}, arg2 time.Duration) error {
+func (m *MockIMemoryCache) Set(arg0 string, arg1 interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Set", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "Set", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Set indicates an expected call of Set.
-func (mr *MockIMemoryCacheMockRecorder) Set(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockIMemoryCacheMockRecorder) Set(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockIMemoryCache)(nil).Set), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockIMemoryCache)(nil).Set), arg0, arg1)
 }
 
-// SetMulti mocks base method.
-func (m *MockIMemoryCache) SetMulti(arg0 map[string]interface{}, arg1 time.Duration) error {
+// SetTTL mocks base method.
+func (m *MockIMemoryCache) SetTTL(arg0 time.Duration) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetMulti", arg0, arg1)
+	ret := m.ctrl.Call(m, "SetTTL", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SetMulti indicates an expected call of SetMulti.
-func (mr *MockIMemoryCacheMockRecorder) SetMulti(arg0, arg1 interface{}) *gomock.Call {
+// SetTTL indicates an expected call of SetTTL.
+func (mr *MockIMemoryCacheMockRecorder) SetTTL(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetMulti", reflect.TypeOf((*MockIMemoryCache)(nil).SetMulti), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetTTL", reflect.TypeOf((*MockIMemoryCache)(nil).SetTTL), arg0)
+}
+
+// SetWithTTL mocks base method.
+func (m *MockIMemoryCache) SetWithTTL(arg0 string, arg1 interface{}, arg2 time.Duration) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetWithTTL", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetWithTTL indicates an expected call of SetWithTTL.
+func (mr *MockIMemoryCacheMockRecorder) SetWithTTL(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetWithTTL", reflect.TypeOf((*MockIMemoryCache)(nil).SetWithTTL), arg0, arg1, arg2)
 }

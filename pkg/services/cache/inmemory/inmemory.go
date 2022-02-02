@@ -4,68 +4,75 @@ import (
 	"reflect"
 	"time"
 
+	ttlcache "github.com/ReneKroon/ttlcache/v2"
 	contracts_cache "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/cache"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/gookit/cache"
-	"github.com/gookit/cache/gocache"
 )
 
 type (
 	service struct {
-		theCache *gocache.GoCache
+		ttlCache ttlcache.SimpleCache
 	}
 )
+
+// BuildBreak lets me know that this service needs to implement this interface
+func BuildBreak() contracts_cache.IMemoryCache {
+	return &service{}
+}
 
 // ReflectTypeService returns the service type
 var ReflectTypeService = reflect.TypeOf(&service{})
 
 func (s *service) Ctor() {
-	s.theCache = gocache.NewGoCache(cache.OneDay, cache.FiveMinutes)
+	s.ttlCache = ttlcache.NewCache()
+	s.ttlCache.SetTTL(contracts_cache.Forever)
 }
 
 // AddSingletonIMemoryCache adds service to the DI container
 func AddSingletonIMemoryCache(builder *di.Builder) {
 	contracts_cache.AddSingletonIMemoryCache(builder, ReflectTypeService)
 }
-func (s *service) Clear() error {
-	return s.theCache.Clear()
+
+func (s *service) Get(key string) (interface{}, error) {
+	return s.ttlCache.Get(key)
 }
 
-// Has basic operation
-func (s *service) Has(key string) bool {
-	return s.theCache.Has(key)
-}
-func (s *service) Del(key string) error {
-	return s.theCache.Del(key)
-}
-func (s *service) Get(key string) interface{} {
-	return s.theCache.Get(key)
-}
-func (s *service) Set(key string, val interface{}, ttl time.Duration) error {
-	return s.theCache.Set(key, val, ttl)
+func (s *service) GetWithTTL(key string) (interface{}, time.Duration, error) {
+	return s.ttlCache.GetWithTTL(key)
 }
 
-// GetMulti multi operation
-func (s *service) GetMulti(keys []string) map[string]interface{} {
-	return s.theCache.GetMulti(keys)
+func (s *service) Set(key string, data interface{}) error {
+	return s.ttlCache.Set(key, data)
 }
-func (s *service) SetMulti(values map[string]interface{}, ttl time.Duration) error {
-	return s.theCache.SetMulti(values, ttl)
+
+func (s *service) SetTTL(ttl time.Duration) error {
+	return s.ttlCache.SetTTL(ttl)
 }
-func (s *service) DelMulti(keys []string) error {
-	return s.theCache.DelMulti(keys)
+
+func (s *service) SetWithTTL(key string, data interface{}, ttl time.Duration) error {
+	return s.ttlCache.SetWithTTL(key, data, ttl)
 }
+
+func (s *service) Remove(key string) error {
+	return s.ttlCache.Remove(key)
+}
+
 func (s *service) Close() error {
-	return s.theCache.Close()
+	return s.ttlCache.Close()
 }
+
+func (s *service) Purge() error {
+	return s.ttlCache.Purge()
+}
+
 func (s *service) GetOrInsert(k string, adder func() (interface{}, time.Duration, error)) interface{} {
-	result := s.Get(k)
-	if result == nil {
+	result, err := s.Get(k)
+	if err != nil || result == nil {
 		obj, ttl, err := adder()
 		if err != nil {
 			return nil
 		}
-		s.Set(k, obj, ttl)
+		s.SetWithTTL(k, obj, ttl)
 		result = obj
 	}
 	return result
