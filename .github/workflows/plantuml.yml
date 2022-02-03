@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
       - name: Get specific changed files
         id: changed-files-specific
-        uses: tj-actions/changed-files@v13
+        uses: tj-actions/changed-files@v14.3
         with:
           files: |
             **.puml
