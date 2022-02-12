@@ -8,7 +8,7 @@ require (
 	github.com/cheekybits/genny v1.0.0
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
-	github.com/fluffy-bunny/sarulabsdi v0.1.50
+	github.com/fluffy-bunny/sarulabsdi v0.1.53
 	github.com/fluffy-bunny/viperEx v0.0.26
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/gogo/googleapis v1.4.1

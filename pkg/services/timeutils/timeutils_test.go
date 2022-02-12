@@ -104,3 +104,27 @@ func TestStartOfPreviousMonthUTC(t *testing.T) {
 		fmt.Println(ttPrevMonth.Unix())
 	}
 }
+func TestTimeNowUtc(t *testing.T) {
+	tNow := time.Now()
+	tNowUTC := tNow.UTC()
+	fmt.Printf("tNow = %s\n", tNow)
+	fmt.Printf("tNowUTC = %s\n", tNowUTC)
+
+	fmt.Println(tNow.Format("2006"))
+	fmt.Println(tNowUTC.Format("2006"))
+
+	fmt.Println(tNow.Format("YYYYMM"))
+	fmt.Println(tNowUTC.Format("200601"))
+
+	fmt.Println(tNow.Format("20060102"))
+	fmt.Println(tNowUTC.Format("20060102"))
+
+	fmt.Println(tNow.Format("2006010215"))
+	fmt.Println(tNowUTC.Format("2006010215"))
+
+	fmt.Println(tNow.Format("200601021504"))
+	fmt.Println(tNowUTC.Format("200601021504"))
+
+	fmt.Println(tNow.Format("20060102150405"))
+	fmt.Println(tNowUTC.Format("20060102150405"))
+}

@@ -71,3 +71,38 @@ func NewMockITimeDate(ctrl *gomock.Controller, year int, month time.Month, day i
 	mockITime.EXPECT().Now().Return(mockTimeNow).AnyTimes()
 	return mockITime
 }
+
+// NewMockTimeNowDate ...
+func NewMockTimeNowDate(ctrl *gomock.Controller, year int, month time.Month, day int, hour int, min int, sec int, nsec int, loc *time.Location) contracts_timeutils.TimeNow {
+	mockITime := mocks_timeutils.NewMockITime(ctrl)
+	mockTimeNow := time.Date(year, month, day, hour, min, sec, nsec, loc)
+	mockITime.EXPECT().Now().Return(mockTimeNow).AnyTimes()
+	return func() time.Time {
+		return mockITime.Now()
+	}
+}
+
+// NewMockTimeNowYearMonthDate ...
+func NewMockTimeNowYearMonthDate(ctrl *gomock.Controller, year int, month time.Month) contracts_timeutils.TimeNow {
+	return NewMockTimeNowDate(ctrl, year, month, 1, 0, 0, 0, 0, time.UTC)
+}
+
+// NewMockTimeNowYearMonthDayDate ...
+func NewMockTimeNowYearMonthDayDate(ctrl *gomock.Controller, year int, month time.Month, day int) contracts_timeutils.TimeNow {
+	return NewMockTimeNowDate(ctrl, year, month, day, 0, 0, 0, 0, time.UTC)
+}
+
+// NewMockTimeNowYearMonthDayHourDate ...
+func NewMockTimeNowYearMonthDayHourDate(ctrl *gomock.Controller, year int, month time.Month, day int, hour int) contracts_timeutils.TimeNow {
+	return NewMockTimeNowDate(ctrl, year, month, day, hour, 0, 0, 0, time.UTC)
+}
+
+// NewMockTimeNowYearMonthDayHourMinDate ...
+func NewMockTimeNowYearMonthDayHourMinDate(ctrl *gomock.Controller, year int, month time.Month, day int, hour int, min int) contracts_timeutils.TimeNow {
+	return NewMockTimeNowDate(ctrl, year, month, day, hour, min, 0, 0, time.UTC)
+}
+
+// AddTimeNow adds a singleton of Now to the container
+func AddTimeNow(builder *di.Builder) {
+	contracts_timeutils.AddTimeNowFunc(builder, time.Now)
+}
