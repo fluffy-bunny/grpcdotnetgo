@@ -58,6 +58,16 @@ func GetILoggerFromContainer(ctn di.Container) ILogger {
 	return ctn.GetByType(ReflectTypeILogger).(ILogger)
 }
 
+// GetManyILoggerFromContainer alternative to SafeGetManyILoggerFromContainer but panics of object is not present
+func GetManyILoggerFromContainer(ctn di.Container) []ILogger {
+	objs := ctn.GetManyByType(ReflectTypeILogger)
+	var results []ILogger
+	for _, obj := range objs {
+		results = append(results, obj.(ILogger))
+	}
+	return results
+}
+
 // SafeGetILoggerFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetILoggerFromContainer(ctn di.Container) (ILogger, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeILogger)
@@ -65,6 +75,19 @@ func SafeGetILoggerFromContainer(ctn di.Container) (ILogger, error) {
 		return nil, err
 	}
 	return obj.(ILogger), nil
+}
+
+// SafeGetManyILoggerFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyILoggerFromContainer(ctn di.Container) ([]ILogger, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeILogger)
+	if err != nil {
+		return nil, err
+	}
+	var results []ILogger
+	for _, obj := range objs {
+		results = append(results, obj.(ILogger))
+	}
+	return results, nil
 }
 
 // ReflectTypeISingletonLogger used when your service claims to implement ISingletonLogger
@@ -115,6 +138,16 @@ func GetISingletonLoggerFromContainer(ctn di.Container) ISingletonLogger {
 	return ctn.GetByType(ReflectTypeISingletonLogger).(ISingletonLogger)
 }
 
+// GetManyISingletonLoggerFromContainer alternative to SafeGetManyISingletonLoggerFromContainer but panics of object is not present
+func GetManyISingletonLoggerFromContainer(ctn di.Container) []ISingletonLogger {
+	objs := ctn.GetManyByType(ReflectTypeISingletonLogger)
+	var results []ISingletonLogger
+	for _, obj := range objs {
+		results = append(results, obj.(ISingletonLogger))
+	}
+	return results
+}
+
 // SafeGetISingletonLoggerFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetISingletonLoggerFromContainer(ctn di.Container) (ISingletonLogger, error) {
 	obj, err := ctn.SafeGetByType(ReflectTypeISingletonLogger)
@@ -122,4 +155,17 @@ func SafeGetISingletonLoggerFromContainer(ctn di.Container) (ISingletonLogger, e
 		return nil, err
 	}
 	return obj.(ISingletonLogger), nil
+}
+
+// SafeGetManyISingletonLoggerFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyISingletonLoggerFromContainer(ctn di.Container) ([]ISingletonLogger, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeISingletonLogger)
+	if err != nil {
+		return nil, err
+	}
+	var results []ISingletonLogger
+	for _, obj := range objs {
+		results = append(results, obj.(ISingletonLogger))
+	}
+	return results, nil
 }
