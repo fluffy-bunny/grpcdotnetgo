@@ -29,12 +29,12 @@ func AddScopedILogger(builder *di.Builder) {
 func AddSingletonILogger(builder *di.Builder) {
 	log.Info().
 		Msg("IoC: AddSingletonILogger")
-
-	contracts_logger.AddSingletonILoggerByFunc(builder, reflect.TypeOf(&loggerService{}),
-		func(ctn di.Container) (interface{}, error) {
-			logger := log.With().Logger()
-			return &loggerService{
-				Logger: &logger,
-			}, nil
-		})
+	bldFunc := func(ctn di.Container) (interface{}, error) {
+		logger := log.With().Logger()
+		return &loggerService{
+			Logger: &logger,
+		}, nil
+	}
+	contracts_logger.AddSingletonISingletonLoggerByFunc(builder, reflect.TypeOf(&loggerService{}), bldFunc)
+	contracts_logger.AddSingletonILoggerByFunc(builder, reflect.TypeOf(&loggerService{}), bldFunc)
 }

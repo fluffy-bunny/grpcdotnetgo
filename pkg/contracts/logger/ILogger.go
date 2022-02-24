@@ -1,8 +1,8 @@
 package logger
 
-//go:generate genny   -pkg $GOPACKAGE        -in=../../../genny/sarulabsdi/interface-types.go -out=gen-$GOFILE gen "InterfaceType=ILogger"
+//go:generate genny   -pkg $GOPACKAGE        -in=../../../genny/sarulabsdi/interface-types.go -out=gen-$GOFILE gen "InterfaceType=ILogger,ISingletonLogger"
 
-//go:generate mockgen -package=$GOPACKAGE -destination=../../mocks/$GOPACKAGE/mock_$GOFILE   github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/$GOPACKAGE ILogger
+//go:generate mockgen -package=$GOPACKAGE -destination=../../mocks/$GOPACKAGE/mock_$GOFILE   github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/$GOPACKAGE ILogger,ISingletonLogger
 
 import (
 	"github.com/rs/zerolog"
@@ -19,5 +19,9 @@ type (
 		Trace() *zerolog.Event
 
 		GetLogger() *zerolog.Logger
+	}
+	// ISingletonLogger when you absolutely need a singleton logger
+	ISingletonLogger interface {
+		ILogger
 	}
 )
