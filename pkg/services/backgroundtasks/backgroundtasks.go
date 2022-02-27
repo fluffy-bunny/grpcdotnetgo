@@ -41,7 +41,7 @@ func NewOneTimeJobs(jobs ...*contracts_backgroundtasks.OneTimeJob) contracts_bac
 
 type serviceBackgroundTasks struct {
 	Logger        loggerContracts.ILogger                   `inject:""`
-	JobsProviders []contracts_backgroundtasks.IJobsProvider `inject:""`
+	JobsProviders []contracts_backgroundtasks.IJobsProvider `inject:"optional"`
 }
 
 // BuildBreak ...
