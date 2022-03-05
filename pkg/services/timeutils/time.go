@@ -8,6 +8,7 @@ import (
 	mocks_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/mocks/timeutils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/golang/mock/gomock"
+	"github.com/tkuchiki/parsetime"
 )
 
 type (
@@ -105,4 +106,15 @@ func NewMockTimeNowYearMonthDayHourMinDate(ctrl *gomock.Controller, year int, mo
 // AddTimeNow adds a singleton of Now to the container
 func AddTimeNow(builder *di.Builder) {
 	contracts_timeutils.AddTimeNowFunc(builder, time.Now)
+}
+
+// AddTimeParse adds a singleton of Parse to the container
+func AddTimeParse(builder *di.Builder) {
+	contracts_timeutils.AddTimeParseFunc(builder, func(value string) (time.Time, error) {
+		p, err := parsetime.NewParseTime()
+		if err != nil {
+			return time.Time{}, err
+		}
+		return p.Parse(value)
+	})
 }

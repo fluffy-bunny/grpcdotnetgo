@@ -2,7 +2,7 @@ package timeutils
 
 import "time"
 
-//go:generate genny   -pkg $GOPACKAGE        -in=../../../genny/sarulabsdi/func-types.go      -out=gen-func-$GOFILE gen "FuncType=TimeNow"
+//go:generate genny   -pkg $GOPACKAGE        -in=../../../genny/sarulabsdi/func-types.go      -out=gen-func-$GOFILE gen "FuncType=TimeNow,TimeParse"
 //go:generate genny   -pkg $GOPACKAGE        -in=../../../genny/sarulabsdi/interface-types.go -out=gen-$GOFILE      gen "InterfaceType=ITimeUtils,ITime"
 
 //go:generate mockgen -package=$GOPACKAGE -destination=../../mocks/$GOPACKAGE/mock_$GOFILE   github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/$GOPACKAGE ITimeUtils,ITime
@@ -22,4 +22,6 @@ type (
 	}
 	// TimeNow ...
 	TimeNow func() time.Time
+	// TimeParse ...
+	TimeParse func(value string) (time.Time, error)
 )

@@ -49,6 +49,7 @@ func (dngbuilder *DotNetGoBuilder) AddDefaultService() {
 	services_serviceprovider.AddServiceProviders(builder)
 	services_timeutils.AddSingletonITime(builder)
 	services_timeutils.AddTimeNow(builder)
+	services_timeutils.AddTimeParse(builder)
 	services_uuid.AddSingletonIKSUID(builder)
 }
 

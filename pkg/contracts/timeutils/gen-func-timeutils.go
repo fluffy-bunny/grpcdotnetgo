@@ -59,3 +59,53 @@ func SafeGetManyTimeNowFromContainer(ctn di.Container) ([]TimeNow, error) {
 	}
 	return results, nil
 }
+
+// ReflectTypeTimeParse used when your service claims to implement TimeParse
+var ReflectTypeTimeParse = reflect.TypeOf(TimeParse(nil))
+
+// AddSingletonTimeParseFunc adds a func to the DI
+func AddTimeParseFunc(builder *di.Builder, fnc TimeParse) {
+	di.AddFunc(builder, fnc)
+}
+
+// RemoveAllTimeParseFunc removes all TimeParse functions from the DI
+func RemoveAllTimeParseFunc(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeTimeParse)
+}
+
+// GetTimeParseFromContainer alternative to SafeGetTimeParseFromContainer but panics of object is not present
+func GetTimeParseFromContainer(ctn di.Container) TimeParse {
+	return ctn.GetByType(ReflectTypeTimeParse).(TimeParse)
+}
+
+// GetManyTimeParseFromContainer alternative to SafeGetManyTimeParseFromContainer but panics of object is not present
+func GetManyTimeParseFromContainer(ctn di.Container) []TimeParse {
+	objs := ctn.GetManyByType(ReflectTypeTimeParse)
+	var results []TimeParse
+	for _, obj := range objs {
+		results = append(results, obj.(TimeParse))
+	}
+	return results
+}
+
+// SafeGetTimeParseFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetTimeParseFromContainer(ctn di.Container) (TimeParse, error) {
+	obj, err := ctn.SafeGetByType(ReflectTypeTimeParse)
+	if err != nil {
+		return nil, err
+	}
+	return obj.(TimeParse), nil
+}
+
+// SafeGetManyTimeParseFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyTimeParseFromContainer(ctn di.Container) ([]TimeParse, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeTimeParse)
+	if err != nil {
+		return nil, err
+	}
+	var results []TimeParse
+	for _, obj := range objs {
+		results = append(results, obj.(TimeParse))
+	}
+	return results, nil
+}
