@@ -13,39 +13,46 @@ import (
 // ReflectTypeIJobsProvider used when your service claims to implement IJobsProvider
 var ReflectTypeIJobsProvider = di.GetInterfaceReflectType((*IJobsProvider)(nil))
 
-// AddSingletonIJobsProviderByObj adds a prebuilt obj
-func AddSingletonIJobsProviderByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIJobsProvider)
+// AddSingletonIJobsProvider adds a type that implements IJobsProvider
+func AddSingletonIJobsProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddSingletonIJobsProvider adds a type that implements IJobsProvider
-func AddSingletonIJobsProvider(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIJobsProvider)
+// AddSingletonIJobsProviderByObj adds a prebuilt obj
+func AddSingletonIJobsProviderByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIJobsProviderByFunc adds a type by a custom func
-func AddSingletonIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIJobsProvider)
+func AddSingletonIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIJobsProvider adds a type that implements IJobsProvider
-func AddTransientIJobsProvider(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIJobsProvider)
+func AddTransientIJobsProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIJobsProviderByFunc adds a type by a custom func
-func AddTransientIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIJobsProvider)
+func AddTransientIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIJobsProvider adds a type that implements IJobsProvider
-func AddScopedIJobsProvider(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIJobsProvider)
+func AddScopedIJobsProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIJobsProviderByFunc adds a type by a custom func
-func AddScopedIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIJobsProvider)
+func AddScopedIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // RemoveAllIJobsProvider removes all IJobsProvider from the DI

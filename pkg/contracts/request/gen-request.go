@@ -13,39 +13,46 @@ import (
 // ReflectTypeIRequest used when your service claims to implement IRequest
 var ReflectTypeIRequest = di.GetInterfaceReflectType((*IRequest)(nil))
 
-// AddSingletonIRequestByObj adds a prebuilt obj
-func AddSingletonIRequestByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIRequest)
+// AddSingletonIRequest adds a type that implements IRequest
+func AddSingletonIRequest(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddSingletonIRequest adds a type that implements IRequest
-func AddSingletonIRequest(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIRequest)
+// AddSingletonIRequestByObj adds a prebuilt obj
+func AddSingletonIRequestByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIRequestByFunc adds a type by a custom func
-func AddSingletonIRequestByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIRequest)
+func AddSingletonIRequestByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIRequest adds a type that implements IRequest
-func AddTransientIRequest(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIRequest)
+func AddTransientIRequest(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIRequestByFunc adds a type by a custom func
-func AddTransientIRequestByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIRequest)
+func AddTransientIRequestByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIRequest adds a type that implements IRequest
-func AddScopedIRequest(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIRequest)
+func AddScopedIRequest(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIRequestByFunc adds a type by a custom func
-func AddScopedIRequestByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIRequest)
+func AddScopedIRequestByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // RemoveAllIRequest removes all IRequest from the DI
@@ -93,39 +100,46 @@ func SafeGetManyIRequestFromContainer(ctn di.Container) ([]IRequest, error) {
 // ReflectTypeIItems used when your service claims to implement IItems
 var ReflectTypeIItems = di.GetInterfaceReflectType((*IItems)(nil))
 
-// AddSingletonIItemsByObj adds a prebuilt obj
-func AddSingletonIItemsByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIItems)
+// AddSingletonIItems adds a type that implements IItems
+func AddSingletonIItems(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddSingletonIItems adds a type that implements IItems
-func AddSingletonIItems(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIItems)
+// AddSingletonIItemsByObj adds a prebuilt obj
+func AddSingletonIItemsByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIItemsByFunc adds a type by a custom func
-func AddSingletonIItemsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIItems)
+func AddSingletonIItemsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIItems adds a type that implements IItems
-func AddTransientIItems(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIItems)
+func AddTransientIItems(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIItemsByFunc adds a type by a custom func
-func AddTransientIItemsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIItems)
+func AddTransientIItemsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIItems adds a type that implements IItems
-func AddScopedIItems(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIItems)
+func AddScopedIItems(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIItemsByFunc adds a type by a custom func
-func AddScopedIItemsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIItems)
+func AddScopedIItemsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // RemoveAllIItems removes all IItems from the DI

@@ -13,39 +13,46 @@ import (
 // ReflectTypeIServiceProvider used when your service claims to implement IServiceProvider
 var ReflectTypeIServiceProvider = di.GetInterfaceReflectType((*IServiceProvider)(nil))
 
-// AddSingletonIServiceProviderByObj adds a prebuilt obj
-func AddSingletonIServiceProviderByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIServiceProvider)
+// AddSingletonIServiceProvider adds a type that implements IServiceProvider
+func AddSingletonIServiceProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceProvider)
+	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddSingletonIServiceProvider adds a type that implements IServiceProvider
-func AddSingletonIServiceProvider(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIServiceProvider)
+// AddSingletonIServiceProviderByObj adds a prebuilt obj
+func AddSingletonIServiceProviderByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceProvider)
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIServiceProviderByFunc adds a type by a custom func
-func AddSingletonIServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIServiceProvider)
+func AddSingletonIServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceProvider)
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIServiceProvider adds a type that implements IServiceProvider
-func AddTransientIServiceProvider(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIServiceProvider)
+func AddTransientIServiceProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceProvider)
+	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIServiceProviderByFunc adds a type by a custom func
-func AddTransientIServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIServiceProvider)
+func AddTransientIServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceProvider)
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIServiceProvider adds a type that implements IServiceProvider
-func AddScopedIServiceProvider(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIServiceProvider)
+func AddScopedIServiceProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceProvider)
+	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIServiceProviderByFunc adds a type by a custom func
-func AddScopedIServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIServiceProvider)
+func AddScopedIServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceProvider)
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // RemoveAllIServiceProvider removes all IServiceProvider from the DI
@@ -93,39 +100,46 @@ func SafeGetManyIServiceProviderFromContainer(ctn di.Container) ([]IServiceProvi
 // ReflectTypeISingletonServiceProvider used when your service claims to implement ISingletonServiceProvider
 var ReflectTypeISingletonServiceProvider = di.GetInterfaceReflectType((*ISingletonServiceProvider)(nil))
 
-// AddSingletonISingletonServiceProviderByObj adds a prebuilt obj
-func AddSingletonISingletonServiceProviderByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeISingletonServiceProvider)
+// AddSingletonISingletonServiceProvider adds a type that implements ISingletonServiceProvider
+func AddSingletonISingletonServiceProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonServiceProvider)
+	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddSingletonISingletonServiceProvider adds a type that implements ISingletonServiceProvider
-func AddSingletonISingletonServiceProvider(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeISingletonServiceProvider)
+// AddSingletonISingletonServiceProviderByObj adds a prebuilt obj
+func AddSingletonISingletonServiceProviderByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonServiceProvider)
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonISingletonServiceProviderByFunc adds a type by a custom func
-func AddSingletonISingletonServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeISingletonServiceProvider)
+func AddSingletonISingletonServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonServiceProvider)
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientISingletonServiceProvider adds a type that implements ISingletonServiceProvider
-func AddTransientISingletonServiceProvider(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeISingletonServiceProvider)
+func AddTransientISingletonServiceProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonServiceProvider)
+	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientISingletonServiceProviderByFunc adds a type by a custom func
-func AddTransientISingletonServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeISingletonServiceProvider)
+func AddTransientISingletonServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonServiceProvider)
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedISingletonServiceProvider adds a type that implements ISingletonServiceProvider
-func AddScopedISingletonServiceProvider(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeISingletonServiceProvider)
+func AddScopedISingletonServiceProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonServiceProvider)
+	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedISingletonServiceProviderByFunc adds a type by a custom func
-func AddScopedISingletonServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeISingletonServiceProvider)
+func AddScopedISingletonServiceProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonServiceProvider)
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // RemoveAllISingletonServiceProvider removes all ISingletonServiceProvider from the DI

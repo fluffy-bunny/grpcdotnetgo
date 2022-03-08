@@ -13,39 +13,46 @@ import (
 // ReflectTypeIBackgroundTasks used when your service claims to implement IBackgroundTasks
 var ReflectTypeIBackgroundTasks = di.GetInterfaceReflectType((*IBackgroundTasks)(nil))
 
-// AddSingletonIBackgroundTasksByObj adds a prebuilt obj
-func AddSingletonIBackgroundTasksByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIBackgroundTasks)
+// AddSingletonIBackgroundTasks adds a type that implements IBackgroundTasks
+func AddSingletonIBackgroundTasks(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddSingletonIBackgroundTasks adds a type that implements IBackgroundTasks
-func AddSingletonIBackgroundTasks(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIBackgroundTasks)
+// AddSingletonIBackgroundTasksByObj adds a prebuilt obj
+func AddSingletonIBackgroundTasksByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIBackgroundTasksByFunc adds a type by a custom func
-func AddSingletonIBackgroundTasksByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIBackgroundTasks)
+func AddSingletonIBackgroundTasksByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIBackgroundTasks adds a type that implements IBackgroundTasks
-func AddTransientIBackgroundTasks(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIBackgroundTasks)
+func AddTransientIBackgroundTasks(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIBackgroundTasksByFunc adds a type by a custom func
-func AddTransientIBackgroundTasksByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIBackgroundTasks)
+func AddTransientIBackgroundTasksByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIBackgroundTasks adds a type that implements IBackgroundTasks
-func AddScopedIBackgroundTasks(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIBackgroundTasks)
+func AddScopedIBackgroundTasks(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIBackgroundTasksByFunc adds a type by a custom func
-func AddScopedIBackgroundTasksByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIBackgroundTasks)
+func AddScopedIBackgroundTasksByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // RemoveAllIBackgroundTasks removes all IBackgroundTasks from the DI

@@ -13,39 +13,46 @@ import (
 // ReflectTypeIHealthServer used when your service claims to implement IHealthServer
 var ReflectTypeIHealthServer = di.GetInterfaceReflectType((*IHealthServer)(nil))
 
-// AddSingletonIHealthServerByObj adds a prebuilt obj
-func AddSingletonIHealthServerByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIHealthServer)
+// AddSingletonIHealthServer adds a type that implements IHealthServer
+func AddSingletonIHealthServer(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddSingletonIHealthServer adds a type that implements IHealthServer
-func AddSingletonIHealthServer(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIHealthServer)
+// AddSingletonIHealthServerByObj adds a prebuilt obj
+func AddSingletonIHealthServerByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIHealthServerByFunc adds a type by a custom func
-func AddSingletonIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIHealthServer)
+func AddSingletonIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIHealthServer adds a type that implements IHealthServer
-func AddTransientIHealthServer(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIHealthServer)
+func AddTransientIHealthServer(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIHealthServerByFunc adds a type by a custom func
-func AddTransientIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIHealthServer)
+func AddTransientIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIHealthServer adds a type that implements IHealthServer
-func AddScopedIHealthServer(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIHealthServer)
+func AddScopedIHealthServer(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIHealthServerByFunc adds a type by a custom func
-func AddScopedIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIHealthServer)
+func AddScopedIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // RemoveAllIHealthServer removes all IHealthServer from the DI

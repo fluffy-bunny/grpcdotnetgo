@@ -13,39 +13,46 @@ import (
 // ReflectTypeIClaimsPrincipal used when your service claims to implement IClaimsPrincipal
 var ReflectTypeIClaimsPrincipal = di.GetInterfaceReflectType((*IClaimsPrincipal)(nil))
 
-// AddSingletonIClaimsPrincipalByObj adds a prebuilt obj
-func AddSingletonIClaimsPrincipalByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIClaimsPrincipal)
+// AddSingletonIClaimsPrincipal adds a type that implements IClaimsPrincipal
+func AddSingletonIClaimsPrincipal(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddSingletonIClaimsPrincipal adds a type that implements IClaimsPrincipal
-func AddSingletonIClaimsPrincipal(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIClaimsPrincipal)
+// AddSingletonIClaimsPrincipalByObj adds a prebuilt obj
+func AddSingletonIClaimsPrincipalByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIClaimsPrincipalByFunc adds a type by a custom func
-func AddSingletonIClaimsPrincipalByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIClaimsPrincipal)
+func AddSingletonIClaimsPrincipalByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIClaimsPrincipal adds a type that implements IClaimsPrincipal
-func AddTransientIClaimsPrincipal(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIClaimsPrincipal)
+func AddTransientIClaimsPrincipal(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIClaimsPrincipalByFunc adds a type by a custom func
-func AddTransientIClaimsPrincipalByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIClaimsPrincipal)
+func AddTransientIClaimsPrincipalByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIClaimsPrincipal adds a type that implements IClaimsPrincipal
-func AddScopedIClaimsPrincipal(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIClaimsPrincipal)
+func AddScopedIClaimsPrincipal(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIClaimsPrincipalByFunc adds a type by a custom func
-func AddScopedIClaimsPrincipalByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIClaimsPrincipal)
+func AddScopedIClaimsPrincipalByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // RemoveAllIClaimsPrincipal removes all IClaimsPrincipal from the DI

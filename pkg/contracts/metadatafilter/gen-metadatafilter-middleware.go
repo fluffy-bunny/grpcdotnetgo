@@ -13,39 +13,46 @@ import (
 // ReflectTypeIMetadataFilterMiddleware used when your service claims to implement IMetadataFilterMiddleware
 var ReflectTypeIMetadataFilterMiddleware = di.GetInterfaceReflectType((*IMetadataFilterMiddleware)(nil))
 
-// AddSingletonIMetadataFilterMiddlewareByObj adds a prebuilt obj
-func AddSingletonIMetadataFilterMiddlewareByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIMetadataFilterMiddleware)
+// AddSingletonIMetadataFilterMiddleware adds a type that implements IMetadataFilterMiddleware
+func AddSingletonIMetadataFilterMiddleware(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddSingletonIMetadataFilterMiddleware adds a type that implements IMetadataFilterMiddleware
-func AddSingletonIMetadataFilterMiddleware(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIMetadataFilterMiddleware)
+// AddSingletonIMetadataFilterMiddlewareByObj adds a prebuilt obj
+func AddSingletonIMetadataFilterMiddlewareByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIMetadataFilterMiddlewareByFunc adds a type by a custom func
-func AddSingletonIMetadataFilterMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIMetadataFilterMiddleware)
+func AddSingletonIMetadataFilterMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIMetadataFilterMiddleware adds a type that implements IMetadataFilterMiddleware
-func AddTransientIMetadataFilterMiddleware(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIMetadataFilterMiddleware)
+func AddTransientIMetadataFilterMiddleware(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIMetadataFilterMiddlewareByFunc adds a type by a custom func
-func AddTransientIMetadataFilterMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIMetadataFilterMiddleware)
+func AddTransientIMetadataFilterMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIMetadataFilterMiddleware adds a type that implements IMetadataFilterMiddleware
-func AddScopedIMetadataFilterMiddleware(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIMetadataFilterMiddleware)
+func AddScopedIMetadataFilterMiddleware(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIMetadataFilterMiddlewareByFunc adds a type by a custom func
-func AddScopedIMetadataFilterMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIMetadataFilterMiddleware)
+func AddScopedIMetadataFilterMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // RemoveAllIMetadataFilterMiddleware removes all IMetadataFilterMiddleware from the DI
