@@ -13,19 +13,30 @@ import (
 	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
+	contracts_serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/serviceprovider"
+	contracts_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/timeutils"
+	contracts_uuid "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/uuid"
 	grpc_error "github.com/fluffy-bunny/grpcdotnetgo/pkg/grpc/error"
+
 	"google.golang.org/grpc/codes"
 )
 
 // Service is used to implement helloworld.GreeterServer.
 type Service struct {
+	ServiceProvider contracts_serviceprovider.IServiceProvider `inject:""`
 	Request         contracts_request.IRequest                 `inject:""`
+	ScopedItems     contracts_request.IItems                   `inject:""`
 	ClaimsPrincipal contracts_claimsprincipal.IClaimsPrincipal `inject:""`
 	Logger          contracts_logger.ILogger                   `inject:""`
 	Config          *contracts_config.Config                   `inject:""`
 	Singleton       contracts_singleton.ISingleton             `inject:""`
 	Scoped          contracts_scoped.IScoped                   `inject:""`
 	Transient       []contracts_transient.ITransient           `inject:""`
+	TimeNow         contracts_timeutils.TimeNow                `inject:""`
+	TimeParse       contracts_timeutils.TimeParse              `inject:""`
+	Time            contracts_timeutils.ITime                  `inject:""`
+	TimeUtils       contracts_timeutils.ITimeUtils             `inject:""`
+	KSUID           contracts_uuid.IKSUID                      `inject:""`
 	GenerateUUID    contracts_lambda.GenerateUUID              `inject:""`
 	instanceID      string
 }
