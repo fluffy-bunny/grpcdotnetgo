@@ -1,13 +1,18 @@
 package singleton
 
 import (
-	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
+	contracts_config "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/config"
+	contracts_singleton "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/singleton"
 )
 
 // Service is used to implement helloworld.GreeterServer.
 type service struct {
 	name   string
-	config *internal.Config
+	config *contracts_config.Config
+}
+
+func buildBreak() contracts_singleton.ISingleton {
+	return &service{}
 }
 
 // SetName ...
@@ -17,5 +22,5 @@ func (s *service) SetName(in string) {
 
 // SetName ...
 func (s *service) GetName() string {
-	return s.name
+	return "service-singleton:" + s.name
 }

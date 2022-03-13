@@ -4,6 +4,11 @@ import (
 	"fmt"
 
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
+	contracts_config "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/config"
+	contracts_lambda "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/lambda"
+	contracts_scoped "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/scoped"
+	contracts_singleton "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/singleton"
+	contracts_transient "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/transient"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
 	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
@@ -17,12 +22,18 @@ type Service struct {
 	Request         contracts_request.IRequest                 `inject:""`
 	ClaimsPrincipal contracts_claimsprincipal.IClaimsPrincipal `inject:""`
 	Logger          contracts_logger.ILogger                   `inject:""`
-	Config          *internal.Config                           `inject:""`
+	Config          *contracts_config.Config                   `inject:""`
+	Singleton       contracts_singleton.ISingleton             `inject:""`
+	Scoped          contracts_scoped.IScoped                   `inject:""`
+	Transient       []contracts_transient.ITransient           `inject:""`
+	GenerateUUID    contracts_lambda.GenerateUUID              `inject:""`
+	instanceID      string
 }
 
 // Ctor if it exists is called when the service is created
 func (s *Service) Ctor() {
-	s.Logger.Info().Msg("Ctor")
+	s.instanceID = s.GenerateUUID()
+	s.Logger.Info().Str("instanceID", s.instanceID).Msg("Ctor")
 }
 
 // Close if it exists is called when the container is torn down
@@ -55,7 +66,7 @@ type Service2 struct {
 	Request         contracts_request.IRequest                 `inject:""`
 	ClaimsPrincipal contracts_claimsprincipal.IClaimsPrincipal `inject:""`
 	Logger          contracts_logger.ILogger                   `inject:""`
-	Config          *internal.Config                           `inject:""`
+	Config          *contracts_config.Config                   `inject:""`
 }
 
 // SayHello implements helloworld.GreeterServer

@@ -1,36 +1,45 @@
 package transient
 
 import (
-	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
+	contracts_config "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/config"
+	contracts_transient "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/transient"
 )
 
 // Service is used to implement helloworld.GreeterServer.
-type Service struct {
-	name   string
-	config *internal.Config
+type (
+	service struct {
+		name   string
+		config *contracts_config.Config
+	}
+	service2 struct {
+		name   string
+		config *contracts_config.Config
+	}
+)
+
+func buildBreak() contracts_transient.ITransient {
+	return &service{}
+}
+func buildBreak2() contracts_transient.ITransient {
+	return &service2{}
 }
 
 // SetName ...
-func (s *Service) SetName(in string) {
+func (s *service) SetName(in string) {
 	s.name = in
 }
 
 // SetName ...
-func (s *Service) GetName() string {
-	return s.name
-}
-
-type Service2 struct {
-	name   string
-	config *internal.Config
+func (s *service) GetName() string {
+	return "service-transient:" + s.name
 }
 
 // SetName ...
-func (s *Service2) SetName(in string) {
+func (s *service2) SetName(in string) {
 	s.name = in
 }
 
 // SetName ...
-func (s *Service2) GetName() string {
-	return s.name
+func (s *service2) GetName() string {
+	return "service2-transient:" + s.name
 }

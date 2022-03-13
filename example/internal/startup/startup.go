@@ -5,17 +5,19 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
+	contracts_config "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/config"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
-	backgroundCounterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/background/cron/counter"
-	backgroundWelcomeService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/background/onetime/welcome"
-	healthService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/health"
-	handlerGreeterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/helloworld/handler"
-	singletonService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
-	transientService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
+	background_CounterService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/background/cron/counter"
+	background_WelcomeService "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/background/onetime/welcome"
+	services_health "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/health"
+	services_helloworld_handler "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/helloworld/handler"
+	services_lambda "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/lambda"
+	services_scoped "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/scoped"
+	services_singleton "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/singleton"
+	services_transient "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/auth/oauth2"
-	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
-	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
+	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	contracts_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext/middleware"
 	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
@@ -45,27 +47,27 @@ func getConfigPath() string {
 // Startup type
 type Startup struct {
 	MockOIDCService interface{}
-	ConfigOptions   *coreContracts.ConfigOptions
+	ConfigOptions   *contracts_core.ConfigOptions
 	RootContainer   di.Container
 }
 
 // NewStartup creates a new IStartup object
-func NewStartup() coreContracts.IStartup {
+func NewStartup() contracts_core.IStartup {
 	startup := &Startup{}
 	startup.ctor()
 	return startup
 }
 
 func (s *Startup) ctor() {
-	s.ConfigOptions = &coreContracts.ConfigOptions{
-		Destination: &internal.Config{},
-		RootConfig:  internal.ConfigDefaultYaml,
+	s.ConfigOptions = &contracts_core.ConfigOptions{
+		Destination: &contracts_config.Config{},
+		RootConfig:  contracts_config.ConfigDefaultJSON,
 		ConfigPath:  getConfigPath(),
 	}
 }
 
 // GetConfigOptions is called by the runtime to determine where to write the configuration information to
-func (s *Startup) GetConfigOptions() *coreContracts.ConfigOptions {
+func (s *Startup) GetConfigOptions() *contracts_core.ConfigOptions {
 	return s.ConfigOptions
 }
 
@@ -76,14 +78,14 @@ func (s *Startup) SetRootContainer(container di.Container) {
 
 // GetPort get the port number
 func (s *Startup) GetPort() int {
-	config := s.ConfigOptions.Destination.(*internal.Config)
-	return config.Example.GRPCPort
+	config := s.ConfigOptions.Destination.(*contracts_config.Config)
+	return config.Example.Port
 }
 
 // ConfigureServices is where we register our services with the DI
 func (s *Startup) ConfigureServices(builder *di.Builder) {
 	// this is how  you get your config before you register your services
-	config := s.ConfigOptions.Destination.(*internal.Config)
+	config := s.ConfigOptions.Destination.(*contracts_config.Config)
 
 	var mm = make(map[string]middleware_oidc.EntryPointConfig)
 
@@ -94,18 +96,19 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 		delete(config.Example.OIDCConfig.EntryPoints, k)
 		config.Example.OIDCConfig.EntryPoints[v.FullMethodName] = v
 	}
-	handlerGreeterService.AddScopedIGreeterService(builder)
-	handlerGreeterService.AddScopedIGreeter2Service(builder)
+	services_helloworld_handler.AddScopedIGreeterService(builder)
+	services_helloworld_handler.AddScopedIGreeter2Service(builder)
 
-	singletonService.AddSingletonService(builder)
-
-	transientService.AddTransientService(builder)
+	services_lambda.AddGenerateUUIDFunc(builder)
+	services_singleton.AddSingletonISingleton(builder)
+	services_scoped.AddScopedIScoped(builder)
+	services_transient.AddTransientITransient(builder)
 	if config.Example.EnableTransient2 {
-		transientService.AddTransientService2(builder)
+		services_transient.AddTransientITransient2(builder)
 	}
 
-	backgroundCounterService.AddCronCounterJobProvider(builder)
-	backgroundWelcomeService.AddOneTimeWelcomeJobProvider(builder)
+	background_CounterService.AddCronCounterJobProvider(builder)
+	background_WelcomeService.AddOneTimeWelcomeJobProvider(builder)
 
 	mockoidcservice.AddMockOIDCService(builder)
 
@@ -113,31 +116,31 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 	//	backgroundOidcService.AddCronOidcJobProvider(builder)
 	//	services_oidc.AddOIDCAuthHandler(builder)
 
-	healthService.AddSingletonHealthService(builder)
+	services_health.AddSingletonHealthService(builder)
 }
 
 // Configure setups up our middleware
-func (s *Startup) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
+func (s *Startup) Configure(unaryServerInterceptorBuilder contracts_core.IUnaryServerInterceptorBuilder) {
 	// this is how  you get your config before you register your services
-	config := s.ConfigOptions.Destination.(*internal.Config)
+	config := s.ConfigOptions.Destination.(*contracts_config.Config)
 
 	grpcFuncAuthConfig := oauth2.NewGrpcFuncAuthConfig(config.Example.OIDCConfig.Authority,
 		"bearer", 5)
 	for _, v := range config.Example.OIDCConfig.EntryPoints {
 		methodClaims := oauth2.MethodClaims{
-			OR:  []claimsprincipalContracts.Claim{},
-			AND: []claimsprincipalContracts.Claim{},
+			OR:  []contracts_claimsprincipal.Claim{},
+			AND: []contracts_claimsprincipal.Claim{},
 		}
 
 		for _, vv := range v.ClaimsConfig.AND {
-			methodClaims.AND = append(methodClaims.AND, claimsprincipalContracts.Claim{
+			methodClaims.AND = append(methodClaims.AND, contracts_claimsprincipal.Claim{
 				Type:  vv.Type,
 				Value: vv.Value,
 			})
 		}
 
 		for _, vv := range v.ClaimsConfig.OR {
-			methodClaims.OR = append(methodClaims.OR, claimsprincipalContracts.Claim{
+			methodClaims.OR = append(methodClaims.OR, contracts_claimsprincipal.Claim{
 				Type:  vv.Type,
 				Value: vv.Value,
 			})
@@ -176,7 +179,7 @@ func (s *Startup) RegisterGRPCEndpoints(server *grpc.Server) []interface{} {
 	var endpoints []interface{}
 	endpoints = append(endpoints, pb.RegisterGreeterServerDI(server))
 	endpoints = append(endpoints, pb.RegisterGreeter2ServerDI(server))
-	healthServer, _ := coreContracts.SafeGetIHealthServerFromContainer(s.RootContainer)
+	healthServer, _ := contracts_core.SafeGetIHealthServerFromContainer(s.RootContainer)
 	if healthServer != nil {
 		health.RegisterHealthServer(server, healthServer)
 		endpoints = append(endpoints, healthServer)
@@ -185,8 +188,8 @@ func (s *Startup) RegisterGRPCEndpoints(server *grpc.Server) []interface{} {
 }
 
 // GetStartupManifest wrapper
-func (s *Startup) GetStartupManifest() coreContracts.StartupManifest {
-	return coreContracts.StartupManifest{
+func (s *Startup) GetStartupManifest() contracts_core.StartupManifest {
+	return contracts_core.StartupManifest{
 		Name:    "hello",
 		Version: "test.1",
 	}
