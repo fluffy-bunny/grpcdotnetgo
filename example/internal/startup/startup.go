@@ -99,7 +99,8 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 	services_helloworld_handler.AddScopedIGreeterService(builder)
 	services_helloworld_handler.AddScopedIGreeter2Service(builder)
 
-	services_lambda.AddGenerateUUIDFunc(builder)
+	services_lambda.AddGenerateGoogleUUIDFunc(builder)
+	services_lambda.AddGenerateSatoriUUIDFunc(builder)
 	services_singleton.AddSingletonISingleton(builder)
 	services_scoped.AddScopedIScoped(builder)
 	services_transient.AddTransientITransient(builder)

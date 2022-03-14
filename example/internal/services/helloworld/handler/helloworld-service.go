@@ -3,6 +3,8 @@ package handler
 import (
 	"fmt"
 
+	"strings"
+
 	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	contracts_config "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/config"
 	contracts_lambda "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/lambda"
@@ -17,7 +19,6 @@ import (
 	contracts_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/timeutils"
 	contracts_uuid "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/uuid"
 	grpc_error "github.com/fluffy-bunny/grpcdotnetgo/pkg/grpc/error"
-
 	"google.golang.org/grpc/codes"
 )
 
@@ -31,19 +32,29 @@ type Service struct {
 	Config          *contracts_config.Config                   `inject:""`
 	Singleton       contracts_singleton.ISingleton             `inject:""`
 	Scoped          contracts_scoped.IScoped                   `inject:""`
-	Transient       []contracts_transient.ITransient           `inject:""`
+	Transients      []contracts_transient.ITransient           `inject:""`
+	Transient       contracts_transient.ITransient             `inject:""`
 	TimeNow         contracts_timeutils.TimeNow                `inject:""`
 	TimeParse       contracts_timeutils.TimeParse              `inject:""`
 	Time            contracts_timeutils.ITime                  `inject:""`
 	TimeUtils       contracts_timeutils.ITimeUtils             `inject:""`
 	KSUID           contracts_uuid.IKSUID                      `inject:""`
 	GenerateUUID    contracts_lambda.GenerateUUID              `inject:""`
+	GenerateUUIDs   []contracts_lambda.GenerateUUID            `inject:""`
 	instanceID      string
+	multiUUIDs      []string
 }
 
 // Ctor if it exists is called when the service is created
 func (s *Service) Ctor() {
 	s.instanceID = s.GenerateUUID()
+	builder := strings.Builder{}
+	for _, t := range s.GenerateUUIDs {
+		builder.WriteString(t())
+		builder.WriteString(":")
+		s.multiUUIDs = append(s.multiUUIDs, t())
+	}
+	s.Logger.Info().Msg(builder.String())
 	s.Logger.Info().Str("instanceID", s.instanceID).Msg("Ctor")
 }
 
@@ -69,6 +80,7 @@ func (s *Service) SayHello(in *pb.HelloRequest) (*pb.HelloReply, error) {
 		return nil, errst
 	}
 	s.Logger.Info().Msgf("Received: %v", in.GetName())
+
 	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
 }
 

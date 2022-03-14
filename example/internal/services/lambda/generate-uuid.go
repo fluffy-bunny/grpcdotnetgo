@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 )
 
-// AddGenerateUUIDFunc adds a singleton of Now to the container
-func AddGenerateUUIDFunc(builder *di.Builder) {
+// AddGenerateGoogleUUIDFunc adds a singleton of Now to the container
+func AddGenerateGoogleUUIDFunc(builder *di.Builder) {
 	contracts_lambda.AddGenerateUUIDFunc(builder, generateUUID)
 }
 

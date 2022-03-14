@@ -8,7 +8,7 @@ require (
 	github.com/cheekybits/genny v1.0.0
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
-	github.com/fluffy-bunny/sarulabsdi v0.1.55
+	github.com/fluffy-bunny/sarulabsdi v0.1.56
 	github.com/fluffy-bunny/viperEx v0.0.26
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/gogo/googleapis v1.4.1
@@ -56,6 +56,7 @@ require (
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
