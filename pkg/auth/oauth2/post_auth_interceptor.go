@@ -9,16 +9,19 @@ import (
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/gogo/status"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 )
 
-func validate(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
+func validate(logEvent *zerolog.Event, claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
 	if !validateAND(claimsConfig, claimsPrincipal) {
+		logEvent.Msg("AND validation failed")
 		return false
 	}
 	if !validateOR(claimsConfig, claimsPrincipal) {
+		logEvent.Msg("OR validation failed")
 		return false
 	}
 	return true
@@ -53,30 +56,45 @@ func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInt
 	return FinalAuthVerificationMiddlewareUsingClaimsMap(entryPointConfig)
 }
 
-// FinalAuthVerificationMiddlewareUsingClaimsMap evaluates the claims principal
+// FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption evaluates the claims principal
 func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap map[string]middleware_oidc.EntryPointConfig, enableZeroTrust bool) grpc.UnaryServerInterceptor {
 
 	log.Info().Interface("entryPointConfig", grpcEntrypointClaimsMap).Send()
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		requestContainer := middleware_dicontext.GetRequestContainer(ctx)
+		var subLogger zerolog.Logger
 		if requestContainer != nil {
-			claimsPrincipal := claimsprincipalContracts.GetIClaimsPrincipalFromContainer(requestContainer)
 			logger := loggerContracts.GetILoggerFromContainer(requestContainer)
 			loggerZ := logger.GetLogger()
-			subLogger := loggerZ.With().Str("FullMethod", info.FullMethod).Logger()
+			subLogger = loggerZ.With().
+				Bool("enableZeroTrust", enableZeroTrust).
+				Str("FullMethod", info.FullMethod).
+				Logger()
+		} else {
+			subLogger = log.With().Bool("enableZeroTrust", enableZeroTrust).
+				Str("FullMethod", info.FullMethod).
+				Logger()
+		}
+
+		debugEvent := subLogger.Debug()
+		debugEvent.Msg("FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption Enter")
+		defer debugEvent.Msg("FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption Exit")
+		if requestContainer != nil {
+			claimsPrincipal := claimsprincipalContracts.GetIClaimsPrincipalFromContainer(requestContainer)
 
 			permissionDeniedFunc := func() (interface{}, error) {
-				subLogger.Debug().Msg("")
+				debugEvent.Msg("Permission denied")
 				return nil, status.Errorf(codes.PermissionDenied, "permission denied")
 			}
 			elem, ok := grpcEntrypointClaimsMap[info.FullMethod]
 			if !ok && enableZeroTrust {
+				debugEvent.Msg("FullMethod not found in entrypoint claims map")
 				return permissionDeniedFunc()
-			} else {
-				if !validate(elem.ClaimsConfig, claimsPrincipal) {
-					return permissionDeniedFunc()
-				}
+			}
+			if !validate(debugEvent, elem.ClaimsConfig, claimsPrincipal) {
+				debugEvent.Msg("ClaimsConfig validation failed")
+				return permissionDeniedFunc()
 			}
 		}
 		return handler(ctx, req)
