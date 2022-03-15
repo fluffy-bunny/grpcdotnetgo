@@ -5,6 +5,7 @@ import (
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
+	"github.com/rs/zerolog/log"
 	suiteTestify "github.com/stretchr/testify/suite"
 )
 
@@ -70,7 +71,6 @@ type testSuite struct {
 
 // before each test
 func (suite *testSuite) SetupTest() {
-
 	suite.testCases = []struct {
 		Desc            string
 		Config          *middleware_oidc.ClaimsConfig
@@ -151,7 +151,8 @@ func (suite *testSuite) SetupTest() {
 // suite.
 func (suite *testSuite) TestValidation() {
 	for _, tc := range suite.testCases {
-		actual := validate(*tc.Config, tc.ClaimsPrincipal)
+
+		actual := validate(log.Debug(), *tc.Config, tc.ClaimsPrincipal)
 		suite.Equal(actual, tc.expected, tc.Desc)
 	}
 }
