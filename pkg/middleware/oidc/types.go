@@ -20,6 +20,32 @@ type (
 	}
 )
 
+// NewClaimFactTypeAndValueClaim ...
+func NewClaimFactTypeAndValueClaim(claim claimsprincipalContracts.Claim) ClaimFact {
+	return ClaimFact{
+		Claim:     claim,
+		Directive: ClaimTypeAndValue,
+	}
+}
+
+// NewClaimFactTypeAndValue ...
+func NewClaimFactTypeAndValue(claimType string, value string) ClaimFact {
+	return NewClaimFactTypeAndValueClaim(claimsprincipalContracts.Claim{
+		Type:  claimType,
+		Value: value,
+	})
+}
+
+// NewClaimFactType ...
+func NewClaimFactType(claimType string) ClaimFact {
+	return ClaimFact{
+		Claim: claimsprincipalContracts.Claim{
+			Type: claimType,
+		},
+		Directive: ClaimType,
+	}
+}
+
 const (
 	// ClaimTypeAndValue ...
 	ClaimTypeAndValue ClaimFactDirective = 0
