@@ -10,10 +10,15 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// ClaimsConfig ...
 type ClaimsConfig struct {
-	OR  []claimsprincipalContracts.Claim `mapstructure:"OR"`
-	AND []claimsprincipalContracts.Claim `mapstructure:"AND"`
+	OR      []claimsprincipalContracts.Claim `mapstructure:"OR"`
+	AND     []claimsprincipalContracts.Claim `mapstructure:"AND"`
+	ORTYPE  []string                         `mapstructure:"OR_TYPE"`
+	ANDTYPE []string                         `mapstructure:"AND_TYPE"`
 }
+
+// EntryPointConfig ...
 type EntryPointConfig struct {
 	FullMethodName string       `mapstructure:"FULL_METHOD_NAME"`
 	ClaimsConfig   ClaimsConfig `mapstructure:"CLAIMS_CONFIG"`

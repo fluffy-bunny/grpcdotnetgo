@@ -7,6 +7,7 @@ import (
 	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/gogo/status"
 	"github.com/rs/zerolog"
@@ -20,14 +21,22 @@ func validate(logEvent *zerolog.Event, claimsConfig middleware_oidc.ClaimsConfig
 		logEvent.Msg("AND validation failed")
 		return false
 	}
+	if !validateANDTYPE(claimsConfig, claimsPrincipal) {
+		logEvent.Msg("AND validation failed")
+		return false
+	}
 	if !validateOR(claimsConfig, claimsPrincipal) {
+		logEvent.Msg("OR validation failed")
+		return false
+	}
+	if !validateORTYPE(claimsConfig, claimsPrincipal) {
 		logEvent.Msg("OR validation failed")
 		return false
 	}
 	return true
 }
 func validateAND(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
-	if claimsConfig.AND == nil || len(claimsConfig.AND) == 0 {
+	if utils.IsEmptyOrNil(claimsConfig.AND) {
 		return true
 	}
 	for _, v := range claimsConfig.AND {
@@ -37,12 +46,36 @@ func validateAND(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal clai
 	}
 	return true
 }
+func validateANDTYPE(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
+	if utils.IsEmptyOrNil(claimsConfig.ANDTYPE) {
+		return true
+	}
+	for _, v := range claimsConfig.ANDTYPE {
+		if !claimsPrincipal.HasClaimType(v) {
+			return false
+		}
+	}
+	return true
+}
+
 func validateOR(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
-	if claimsConfig.OR == nil || len(claimsConfig.OR) == 0 {
+	if utils.IsEmptyOrNil(claimsConfig.OR) {
 		return true
 	}
 	for _, v := range claimsConfig.OR {
 		if claimsPrincipal.HasClaim(v) {
+			return true
+		}
+	}
+	return false
+}
+
+func validateORTYPE(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
+	if utils.IsEmptyOrNil(claimsConfig.ORTYPE) {
+		return true
+	}
+	for _, v := range claimsConfig.ORTYPE {
+		if claimsPrincipal.HasClaimType(v) {
 			return true
 		}
 	}

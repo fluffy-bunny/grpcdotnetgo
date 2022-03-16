@@ -17,4 +17,5 @@ type IClaimsPrincipal interface {
 	AddClaim(claim Claim)
 	RemoveClaim(claim Claim)
 	GetClaimsByType(claimType string) []Claim
+	HasClaimType(claimType string) bool
 }

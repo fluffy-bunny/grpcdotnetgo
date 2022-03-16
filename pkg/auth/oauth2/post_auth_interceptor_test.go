@@ -32,6 +32,34 @@ var (
 			},
 		},
 	}
+	configAndOrAndTypeOrType = middleware_oidc.ClaimsConfig{
+		AND: []claimsprincipalContracts.Claim{
+			{
+				Type:  "claimAnd1",
+				Value: "claimAnd1_1",
+			},
+			{
+				Type:  "claimAnd1",
+				Value: "claimAnd1_2",
+			},
+		},
+		ANDTYPE: []string{
+			"claimAnd1", "claimAnd2",
+		},
+		OR: []claimsprincipalContracts.Claim{
+			{
+				Type:  "claimOr1",
+				Value: "claimOr1_1",
+			},
+			{
+				Type:  "claimOr1",
+				Value: "claimOr1_2",
+			},
+		},
+		ORTYPE: []string{
+			"claimOr1", "claimOr2",
+		},
+	}
 
 	configAndOnly = middleware_oidc.ClaimsConfig{
 		AND: []claimsprincipalContracts.Claim{
@@ -45,6 +73,11 @@ var (
 			},
 		},
 	}
+	configAndTypeOnly = middleware_oidc.ClaimsConfig{
+		ANDTYPE: []string{
+			"claimAnd1", "claimAnd2",
+		},
+	}
 	configOrOnly = middleware_oidc.ClaimsConfig{
 		OR: []claimsprincipalContracts.Claim{
 			{
@@ -55,6 +88,11 @@ var (
 				Type:  "claimOr1",
 				Value: "claimOr1_2",
 			},
+		},
+	}
+	configOrTypeOnly = middleware_oidc.ClaimsConfig{
+		ORTYPE: []string{
+			"claimOr1", "claimOr2",
 		},
 	}
 )
@@ -77,7 +115,68 @@ func (suite *testSuite) SetupTest() {
 		ClaimsPrincipal claimsprincipalContracts.IClaimsPrincipal
 		expected        bool
 	}{
-
+		{
+			"TestFullAndOrAndTypeOrTypeTrue",
+			&configAndOrAndTypeOrType,
+			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+				"claimAnd1": []interface{}{"claimAnd1_1", "claimAnd1_2"},
+				"claimAnd2": []interface{}{"test"},
+				"claimOr1":  []interface{}{"claimOr1_1", "claimOr1_2"},
+				"claimOr2":  []interface{}{"test"},
+				"random":    []interface{}{"a", "d"},
+			}),
+			true,
+		},
+		{
+			"TestFullAndOrAndTypeOrTypeFalse",
+			&configAndOrAndTypeOrType,
+			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+				"claimAnd1": []interface{}{"claimAnd1_1", "claimAnd1_2"},
+				"blah":      []interface{}{"test"},
+				"claimOr1":  []interface{}{"claimOr1_1", "claimOr1_2"},
+				"claimOr2":  []interface{}{"test"},
+				"random":    []interface{}{"a", "d"},
+			}),
+			false,
+		},
+		{
+			"TestAndTypeOnlyTrue",
+			&configAndTypeOnly,
+			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+				"claimAnd1": []interface{}{"test"},
+				"claimAnd2": []interface{}{"test"},
+				"random":    []interface{}{"a", "d"},
+			}),
+			true,
+		},
+		{
+			"TestAndTypeOnlyFalse",
+			&configAndTypeOnly,
+			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+				"claimAnd1": []interface{}{"test"},
+				"bla":       []interface{}{"test"},
+				"random":    []interface{}{"a", "d"},
+			}),
+			false,
+		},
+		{
+			"TestOrTypeOnlyTrue",
+			&configOrTypeOnly,
+			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+				"claimOr1": []interface{}{"test"},
+				"claimOr2": []interface{}{"test"},
+				"random":   []interface{}{"a", "d"},
+			}),
+			true,
+		},
+		{
+			"TestOrTypeOnlyFalse",
+			&configOrTypeOnly,
+			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+				"random": []interface{}{"a", "d"},
+			}),
+			false,
+		},
 		{
 			"TestFullAndOrTrue",
 			&configAndOr,
@@ -151,7 +250,6 @@ func (suite *testSuite) SetupTest() {
 // suite.
 func (suite *testSuite) TestValidation() {
 	for _, tc := range suite.testCases {
-
 		actual := validate(log.Debug(), *tc.Config, tc.ClaimsPrincipal)
 		suite.Equal(actual, tc.expected, tc.Desc)
 	}

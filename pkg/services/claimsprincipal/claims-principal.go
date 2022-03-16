@@ -51,6 +51,10 @@ func (c *claimsPrincipal) RemoveClaim(claim claimsprincipalContracts.Claim) {
 		c.claims[claim.Type] = removeIndex(claims, *foundidx)
 	}
 }
+func (c *claimsPrincipal) HasClaimType(claimType string) bool {
+	_, ok := c.claims[claimType]
+	return ok
+}
 
 func (c *claimsPrincipal) GetClaimsByType(claimType string) []claimsprincipalContracts.Claim {
 	claimParent, ok := c.claims[claimType]

@@ -88,6 +88,20 @@ func (mr *MockIClaimsPrincipalMockRecorder) HasClaim(arg0 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasClaim", reflect.TypeOf((*MockIClaimsPrincipal)(nil).HasClaim), arg0)
 }
 
+// HasClaimType mocks base method.
+func (m *MockIClaimsPrincipal) HasClaimType(arg0 string) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HasClaimType", arg0)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// HasClaimType indicates an expected call of HasClaimType.
+func (mr *MockIClaimsPrincipalMockRecorder) HasClaimType(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasClaimType", reflect.TypeOf((*MockIClaimsPrincipal)(nil).HasClaimType), arg0)
+}
+
 // RemoveClaim mocks base method.
 func (m *MockIClaimsPrincipal) RemoveClaim(arg0 claimsprincipal.Claim) {
 	m.ctrl.T.Helper()
