@@ -19,8 +19,7 @@ func NewEntryPointClaimsBuilder() *EntryPointClaimsBuilder {
 
 // WithGrpcEntrypointPermissionsClaimsMapOpen helper to add a single entrypoint config
 func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapOpen(fullMethodName string) *EntryPointClaimsBuilder {
-	result := s.ensureEntry(fullMethodName)
-	s.GrpcEntrypointClaimsMap[fullMethodName] = result
+	s.ensureEntry(fullMethodName)
 	return s
 }
 
