@@ -11,88 +11,156 @@ import (
 
 var (
 	configAndOr = middleware_oidc.ClaimsConfig{
-		AND: []claimsprincipalContracts.Claim{
+		AND: []middleware_oidc.ClaimFact{
 			{
-				Type:  "claimAnd1",
-				Value: "claimAnd1_1",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimAnd1",
+					Value: "claimAnd1_1",
+				},
 			},
 			{
-				Type:  "claimAnd1",
-				Value: "claimAnd1_2",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimAnd1",
+					Value: "claimAnd1_2",
+				},
 			},
 		},
-		OR: []claimsprincipalContracts.Claim{
+		OR: []middleware_oidc.ClaimFact{
 			{
-				Type:  "claimOr1",
-				Value: "claimOr1_1",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimOr1",
+					Value: "claimOr1_1",
+				},
+				Directive: middleware_oidc.ClaimTypeAndValue,
 			},
 			{
-				Type:  "claimOr1",
-				Value: "claimOr1_2",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimOr1",
+					Value: "claimOr1_2",
+				},
+				Directive: middleware_oidc.ClaimTypeAndValue,
 			},
 		},
 	}
 	configAndOrAndTypeOrType = middleware_oidc.ClaimsConfig{
-		AND: []claimsprincipalContracts.Claim{
+		AND: []middleware_oidc.ClaimFact{
 			{
-				Type:  "claimAnd1",
-				Value: "claimAnd1_1",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimAnd1",
+					Value: "claimAnd1_1",
+				},
+				Directive: middleware_oidc.ClaimTypeAndValue,
 			},
 			{
-				Type:  "claimAnd1",
-				Value: "claimAnd1_2",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimAnd1",
+					Value: "claimAnd1_2",
+				},
+				Directive: middleware_oidc.ClaimTypeAndValue,
+			},
+
+			{
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimAnd2",
+					Value: "random",
+				},
+				Directive: middleware_oidc.ClaimType,
 			},
 		},
-		ANDTYPE: []string{
-			"claimAnd1", "claimAnd2",
-		},
-		OR: []claimsprincipalContracts.Claim{
+		OR: []middleware_oidc.ClaimFact{
 			{
-				Type:  "claimOr1",
-				Value: "claimOr1_1",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimOr1",
+					Value: "claimOr1_1",
+				},
+				Directive: middleware_oidc.ClaimTypeAndValue,
 			},
 			{
-				Type:  "claimOr1",
-				Value: "claimOr1_2",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimOr1",
+					Value: "claimOr1_2",
+				},
+				Directive: middleware_oidc.ClaimTypeAndValue,
 			},
-		},
-		ORTYPE: []string{
-			"claimOr1", "claimOr2",
+			{
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimOr2",
+					Value: "random",
+				},
+				Directive: middleware_oidc.ClaimType,
+			},
 		},
 	}
 
 	configAndOnly = middleware_oidc.ClaimsConfig{
-		AND: []claimsprincipalContracts.Claim{
+		AND: []middleware_oidc.ClaimFact{
 			{
-				Type:  "claimAnd1",
-				Value: "claimAnd1_1",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimAnd1",
+					Value: "claimAnd1_1",
+				},
+				Directive: middleware_oidc.ClaimTypeAndValue,
 			},
 			{
-				Type:  "claimAnd1",
-				Value: "claimAnd1_2",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimAnd1",
+					Value: "claimAnd1_2",
+				},
+				Directive: middleware_oidc.ClaimTypeAndValue,
 			},
 		},
 	}
 	configAndTypeOnly = middleware_oidc.ClaimsConfig{
-		ANDTYPE: []string{
-			"claimAnd1", "claimAnd2",
+		AND: []middleware_oidc.ClaimFact{
+			{
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimAnd1",
+					Value: "random",
+				},
+				Directive: middleware_oidc.ClaimType,
+			},
+			{
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimAnd2",
+					Value: "random",
+				},
+				Directive: middleware_oidc.ClaimType,
+			},
 		},
 	}
 	configOrOnly = middleware_oidc.ClaimsConfig{
-		OR: []claimsprincipalContracts.Claim{
+		OR: []middleware_oidc.ClaimFact{
 			{
-				Type:  "claimOr1",
-				Value: "claimOr1_1",
-			},
-			{
-				Type:  "claimOr1",
-				Value: "claimOr1_2",
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimOr1",
+					Value: "claimOr1_1",
+				},
+				Directive: middleware_oidc.ClaimTypeAndValue,
+			}, {
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimOr1",
+					Value: "claimOr1_2",
+				},
+				Directive: middleware_oidc.ClaimTypeAndValue,
 			},
 		},
 	}
 	configOrTypeOnly = middleware_oidc.ClaimsConfig{
-		ORTYPE: []string{
-			"claimOr1", "claimOr2",
+		OR: []middleware_oidc.ClaimFact{
+			{
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimOr1",
+					Value: "random",
+				},
+				Directive: middleware_oidc.ClaimType,
+			},
+			{
+				Claim: claimsprincipalContracts.Claim{
+					Type:  "claimOr2",
+					Value: "random",
+				},
+				Directive: middleware_oidc.ClaimType,
+			},
 		},
 	}
 )

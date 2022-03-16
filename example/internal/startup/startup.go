@@ -135,15 +135,15 @@ func (s *Startup) Configure(unaryServerInterceptorBuilder contracts_core.IUnaryS
 
 		for _, vv := range v.ClaimsConfig.AND {
 			methodClaims.AND = append(methodClaims.AND, contracts_claimsprincipal.Claim{
-				Type:  vv.Type,
-				Value: vv.Value,
+				Type:  vv.Claim.Type,
+				Value: vv.Claim.Value,
 			})
 		}
 
 		for _, vv := range v.ClaimsConfig.OR {
 			methodClaims.OR = append(methodClaims.OR, contracts_claimsprincipal.Claim{
-				Type:  vv.Type,
-				Value: vv.Value,
+				Type:  vv.Claim.Type,
+				Value: vv.Claim.Value,
 			})
 		}
 

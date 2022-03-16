@@ -21,40 +21,34 @@ func validate(logEvent *zerolog.Event, claimsConfig middleware_oidc.ClaimsConfig
 		logEvent.Msg("AND validation failed")
 		return false
 	}
-	if !validateANDTYPE(claimsConfig, claimsPrincipal) {
-		logEvent.Msg("AND validation failed")
-		return false
-	}
+
 	if !validateOR(claimsConfig, claimsPrincipal) {
 		logEvent.Msg("OR validation failed")
 		return false
 	}
-	if !validateORTYPE(claimsConfig, claimsPrincipal) {
-		logEvent.Msg("OR validation failed")
-		return false
-	}
+
 	return true
 }
 func validateAND(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
 	if utils.IsEmptyOrNil(claimsConfig.AND) {
 		return true
 	}
-	for _, v := range claimsConfig.AND {
-		if !claimsPrincipal.HasClaim(v) {
-			return false
+
+	if !utils.IsEmptyOrNil(claimsConfig.AND) {
+		for _, v := range claimsConfig.AND {
+			if v.Directive == middleware_oidc.ClaimTypeAndValue {
+				if !claimsPrincipal.HasClaim(v.Claim) {
+					return false
+				}
+			}
+			if v.Directive == middleware_oidc.ClaimType {
+				if !claimsPrincipal.HasClaimType(v.Claim.Type) {
+					return false
+				}
+			}
 		}
 	}
-	return true
-}
-func validateANDTYPE(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
-	if utils.IsEmptyOrNil(claimsConfig.ANDTYPE) {
-		return true
-	}
-	for _, v := range claimsConfig.ANDTYPE {
-		if !claimsPrincipal.HasClaimType(v) {
-			return false
-		}
-	}
+
 	return true
 }
 
@@ -62,23 +56,21 @@ func validateOR(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claim
 	if utils.IsEmptyOrNil(claimsConfig.OR) {
 		return true
 	}
-	for _, v := range claimsConfig.OR {
-		if claimsPrincipal.HasClaim(v) {
-			return true
+	if !utils.IsEmptyOrNil(claimsConfig.OR) {
+		for _, v := range claimsConfig.OR {
+			if v.Directive == middleware_oidc.ClaimTypeAndValue {
+				if claimsPrincipal.HasClaim(v.Claim) {
+					return true
+				}
+			}
+			if v.Directive == middleware_oidc.ClaimType {
+				if claimsPrincipal.HasClaimType(v.Claim.Type) {
+					return true
+				}
+			}
 		}
 	}
-	return false
-}
 
-func validateORTYPE(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
-	if utils.IsEmptyOrNil(claimsConfig.ORTYPE) {
-		return true
-	}
-	for _, v := range claimsConfig.ORTYPE {
-		if claimsPrincipal.HasClaimType(v) {
-			return true
-		}
-	}
 	return false
 }
 

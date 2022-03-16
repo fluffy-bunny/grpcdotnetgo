@@ -23,38 +23,64 @@ func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapOpen(ful
 	return s
 }
 
+// WithGrpcEntrypointPermissionsClaimFactsMapAND helper to add a single entrypoint config
+func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimFactsMapAND(fullMethodName string, claimFacts ...middleware_oidc.ClaimFact) *EntryPointClaimsBuilder {
+	result := s.ensureEntry(fullMethodName)
+	for _, claimFact := range claimFacts {
+		result.ClaimsConfig.AND = append(result.ClaimsConfig.AND, claimFact)
+	}
+	return s
+}
+
 // WithGrpcEntrypointPermissionsClaimsMapAND helper to add a single entrypoint config
 func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapAND(fullMethodName string, claims ...claimsprincipalContracts.Claim) *EntryPointClaimsBuilder {
-	result := s.ensureEntry(fullMethodName)
 	for _, claim := range claims {
-		result.ClaimsConfig.AND = append(result.ClaimsConfig.AND, claim)
+		s.WithGrpcEntrypointPermissionsClaimFactsMapAND(fullMethodName, middleware_oidc.ClaimFact{
+			Claim:     claim,
+			Directive: middleware_oidc.ClaimTypeAndValue,
+		})
 	}
 	return s
 }
 
 // WithGrpcEntrypointPermissionsClaimsMapANDTYPE helper to add a single entrypoint config
 func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapANDTYPE(fullMethodName string, claimTypes ...string) *EntryPointClaimsBuilder {
-	result := s.ensureEntry(fullMethodName)
 	for _, claimType := range claimTypes {
-		result.ClaimsConfig.ANDTYPE = append(result.ClaimsConfig.ANDTYPE, claimType)
+		s.WithGrpcEntrypointPermissionsClaimFactsMapAND(fullMethodName, middleware_oidc.ClaimFact{
+			Claim:     claimsprincipalContracts.Claim{Type: claimType},
+			Directive: middleware_oidc.ClaimType,
+		})
+	}
+	return s
+}
+
+// WithGrpcEntrypointPermissionsClaimFactsMapOR helper to add a single entrypoint config
+func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimFactsMapOR(fullMethodName string, claimFacts ...middleware_oidc.ClaimFact) *EntryPointClaimsBuilder {
+	result := s.ensureEntry(fullMethodName)
+	for _, claimFact := range claimFacts {
+		result.ClaimsConfig.OR = append(result.ClaimsConfig.OR, claimFact)
 	}
 	return s
 }
 
 // WithGrpcEntrypointPermissionsClaimsMapOR helper to add a single entrypoint config
 func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapOR(fullMethodName string, claims ...claimsprincipalContracts.Claim) *EntryPointClaimsBuilder {
-	result := s.ensureEntry(fullMethodName)
 	for _, claim := range claims {
-		result.ClaimsConfig.OR = append(result.ClaimsConfig.OR, claim)
+		s.WithGrpcEntrypointPermissionsClaimFactsMapOR(fullMethodName, middleware_oidc.ClaimFact{
+			Claim:     claim,
+			Directive: middleware_oidc.ClaimTypeAndValue,
+		})
 	}
 	return s
 }
 
 // WithGrpcEntrypointPermissionsClaimsMapORTYPE helper to add a single entrypoint config
 func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapORTYPE(fullMethodName string, claimTypes ...string) *EntryPointClaimsBuilder {
-	result := s.ensureEntry(fullMethodName)
 	for _, claimType := range claimTypes {
-		result.ClaimsConfig.ORTYPE = append(result.ClaimsConfig.ORTYPE, claimType)
+		s.WithGrpcEntrypointPermissionsClaimFactsMapOR(fullMethodName, middleware_oidc.ClaimFact{
+			Claim:     claimsprincipalContracts.Claim{Type: claimType},
+			Directive: middleware_oidc.ClaimType,
+		})
 	}
 	return s
 }

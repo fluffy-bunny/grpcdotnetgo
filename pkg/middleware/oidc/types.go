@@ -10,12 +10,27 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type (
+	// ClaimFactDirective ...
+	ClaimFactDirective int64
+	// ClaimFact ...
+	ClaimFact struct {
+		Claim     claimsprincipalContracts.Claim
+		Directive ClaimFactDirective
+	}
+)
+
+const (
+	// ClaimTypeAndValue ...
+	ClaimTypeAndValue ClaimFactDirective = 0
+	// ClaimType ...
+	ClaimType = 1
+)
+
 // ClaimsConfig ...
 type ClaimsConfig struct {
-	OR      []claimsprincipalContracts.Claim `mapstructure:"OR"`
-	AND     []claimsprincipalContracts.Claim `mapstructure:"AND"`
-	ORTYPE  []string                         `mapstructure:"OR_TYPE"`
-	ANDTYPE []string                         `mapstructure:"AND_TYPE"`
+	OR  []ClaimFact `mapstructure:"OR"`
+	AND []ClaimFact `mapstructure:"AND"`
 }
 
 // EntryPointConfig ...
