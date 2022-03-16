@@ -90,7 +90,7 @@ func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInt
 }
 
 // FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption evaluates the claims principal
-func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap map[string]middleware_oidc.EntryPointConfig, enableZeroTrust bool) grpc.UnaryServerInterceptor {
+func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig, enableZeroTrust bool) grpc.UnaryServerInterceptor {
 
 	log.Info().Interface("entryPointConfig", grpcEntrypointClaimsMap).Send()
 
@@ -135,11 +135,11 @@ func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypoint
 }
 
 // FinalAuthVerificationMiddlewareUsingClaimsMap evaluates the claims principal
-func FinalAuthVerificationMiddlewareUsingClaimsMap(grpcEntrypointClaimsMap map[string]middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
+func FinalAuthVerificationMiddlewareUsingClaimsMap(grpcEntrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
 	return FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap, false)
 }
 
 // FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrust evaluates the claims principal
-func FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrust(grpcEntrypointClaimsMap map[string]middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
+func FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrust(grpcEntrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
 	return FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap, true)
 }
