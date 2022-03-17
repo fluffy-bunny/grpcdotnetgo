@@ -80,8 +80,8 @@ type IOIDCConfig interface {
 	GetEntryPoints() map[string]*EntryPointConfig
 }
 
-func buildBreak() IOIDCConfig {
-	return &OIDCConfig{}
+func assertImplementation() {
+	var _ IOIDCConfig = (*OIDCConfig)(nil)
 }
 
 // GetAuthority ...

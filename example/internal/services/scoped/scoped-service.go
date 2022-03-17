@@ -11,8 +11,8 @@ type service struct {
 	config *contracts_config.Config
 }
 
-func buildBreak() contracts_scoped.IScoped {
-	return &service{}
+func assertImplementation() {
+	var _ contracts_scoped.IScoped = (*service)(nil)
 }
 
 // SetName ...

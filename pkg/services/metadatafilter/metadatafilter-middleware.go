@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	contractsmetadatafilter "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/metadatafilter"
+	sets "github.com/fluffy-bunny/grpcdotnetgo/pkg/gods/sets/hashset"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/rs/zerolog/log"
@@ -13,15 +14,15 @@ import (
 
 type (
 	metadataFilterMiddleware struct {
-		alwaysAllowed          map[string]bool
-		additionalByEntryPoint map[string]map[string]bool
+		alwaysAllowed          *sets.StringSet
+		additionalByEntryPoint map[string]sets.StringSet
 	}
 )
 
 // AddSingletonIMetadataFilterMiddleware adds service to the DI container
 func AddSingletonIMetadataFilterMiddleware(builder *di.Builder,
-	alwaysAllowed map[string]bool,
-	additionalByEntryPoint map[string]map[string]bool) {
+	alwaysAllowed *sets.StringSet,
+	additionalByEntryPoint map[string]sets.StringSet) {
 	log.Info().
 		Msg("IoC: AddSingletonIMetadataFilterMiddleware")
 	contractsmetadatafilter.AddSingletonIMetadataFilterMiddlewareByFunc(builder, reflect.TypeOf(&metadataFilterMiddleware{}),
@@ -41,13 +42,13 @@ func (s *metadataFilterMiddleware) GetUnaryServerInterceptor() grpc.UnaryServerI
 		entryPointAllowed, entryPointExists := s.additionalByEntryPoint[info.FullMethod]
 		notAllowedHeaders := []string{}
 		for header := range md {
-			_, exists := s.alwaysAllowed[header]
+			exists := s.alwaysAllowed.Contains(header)
 			if exists {
 				continue
 			}
 			// is it explictly allowed for this entry point?
-			if entryPointExists && entryPointAllowed != nil {
-				_, exists := entryPointAllowed[header]
+			if entryPointExists {
+				exists := entryPointAllowed.Contains(header)
 				if exists {
 					continue
 				}

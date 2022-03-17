@@ -15,8 +15,8 @@ type (
 	}
 )
 
-func buildBreak() contracts_auth.IModularAuthMiddleware {
-	return &service{}
+func assertImplementation() {
+	var _ contracts_auth.IModularAuthMiddleware = (*service)(nil)
 }
 
 // AddSingletonIModularAuthMiddleware ...
