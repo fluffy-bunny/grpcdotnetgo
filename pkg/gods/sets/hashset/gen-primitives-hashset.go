@@ -12,10 +12,9 @@
 //
 // References: http://en.wikipedia.org/wiki/Set_%28abstract_data_type%29
 
-package sets
+package hashset
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -97,22 +96,6 @@ func (set *StringSet) String() string {
 	}
 	str += strings.Join(items, ", ")
 	return str
-}
-
-// ToJSON outputs the JSON representation of the set.
-func (set *StringSet) ToJSON() ([]byte, error) {
-	return json.Marshal(set.Values())
-}
-
-// FromJSON populates the set from the input JSON representation.
-func (set *StringSet) FromJSON(data []byte) error {
-	var elements []string
-	err := json.Unmarshal(data, &elements)
-	if err == nil {
-		set.Clear()
-		set.Add(elements...)
-	}
-	return err
 }
 
 // Copyright (c) 2015, Emir Pasic. All rights reserved.
@@ -204,22 +187,6 @@ func (set *IntSet) String() string {
 	return str
 }
 
-// ToJSON outputs the JSON representation of the set.
-func (set *IntSet) ToJSON() ([]byte, error) {
-	return json.Marshal(set.Values())
-}
-
-// FromJSON populates the set from the input JSON representation.
-func (set *IntSet) FromJSON(data []byte) error {
-	var elements []int
-	err := json.Unmarshal(data, &elements)
-	if err == nil {
-		set.Clear()
-		set.Add(elements...)
-	}
-	return err
-}
-
 // Copyright (c) 2015, Emir Pasic. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -307,22 +274,6 @@ func (set *Int32Set) String() string {
 	}
 	str += strings.Join(items, ", ")
 	return str
-}
-
-// ToJSON outputs the JSON representation of the set.
-func (set *Int32Set) ToJSON() ([]byte, error) {
-	return json.Marshal(set.Values())
-}
-
-// FromJSON populates the set from the input JSON representation.
-func (set *Int32Set) FromJSON(data []byte) error {
-	var elements []int32
-	err := json.Unmarshal(data, &elements)
-	if err == nil {
-		set.Clear()
-		set.Add(elements...)
-	}
-	return err
 }
 
 // Copyright (c) 2015, Emir Pasic. All rights reserved.
@@ -414,22 +365,6 @@ func (set *Int64Set) String() string {
 	return str
 }
 
-// ToJSON outputs the JSON representation of the set.
-func (set *Int64Set) ToJSON() ([]byte, error) {
-	return json.Marshal(set.Values())
-}
-
-// FromJSON populates the set from the input JSON representation.
-func (set *Int64Set) FromJSON(data []byte) error {
-	var elements []int64
-	err := json.Unmarshal(data, &elements)
-	if err == nil {
-		set.Clear()
-		set.Add(elements...)
-	}
-	return err
-}
-
 // Copyright (c) 2015, Emir Pasic. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -517,22 +452,6 @@ func (set *UintSet) String() string {
 	}
 	str += strings.Join(items, ", ")
 	return str
-}
-
-// ToJSON outputs the JSON representation of the set.
-func (set *UintSet) ToJSON() ([]byte, error) {
-	return json.Marshal(set.Values())
-}
-
-// FromJSON populates the set from the input JSON representation.
-func (set *UintSet) FromJSON(data []byte) error {
-	var elements []uint
-	err := json.Unmarshal(data, &elements)
-	if err == nil {
-		set.Clear()
-		set.Add(elements...)
-	}
-	return err
 }
 
 // Copyright (c) 2015, Emir Pasic. All rights reserved.
@@ -624,22 +543,6 @@ func (set *Uint32Set) String() string {
 	return str
 }
 
-// ToJSON outputs the JSON representation of the set.
-func (set *Uint32Set) ToJSON() ([]byte, error) {
-	return json.Marshal(set.Values())
-}
-
-// FromJSON populates the set from the input JSON representation.
-func (set *Uint32Set) FromJSON(data []byte) error {
-	var elements []uint32
-	err := json.Unmarshal(data, &elements)
-	if err == nil {
-		set.Clear()
-		set.Add(elements...)
-	}
-	return err
-}
-
 // Copyright (c) 2015, Emir Pasic. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -727,22 +630,6 @@ func (set *Uint64Set) String() string {
 	}
 	str += strings.Join(items, ", ")
 	return str
-}
-
-// ToJSON outputs the JSON representation of the set.
-func (set *Uint64Set) ToJSON() ([]byte, error) {
-	return json.Marshal(set.Values())
-}
-
-// FromJSON populates the set from the input JSON representation.
-func (set *Uint64Set) FromJSON(data []byte) error {
-	var elements []uint64
-	err := json.Unmarshal(data, &elements)
-	if err == nil {
-		set.Clear()
-		set.Add(elements...)
-	}
-	return err
 }
 
 // Copyright (c) 2015, Emir Pasic. All rights reserved.
@@ -834,22 +721,6 @@ func (set *Float32Set) String() string {
 	return str
 }
 
-// ToJSON outputs the JSON representation of the set.
-func (set *Float32Set) ToJSON() ([]byte, error) {
-	return json.Marshal(set.Values())
-}
-
-// FromJSON populates the set from the input JSON representation.
-func (set *Float32Set) FromJSON(data []byte) error {
-	var elements []float32
-	err := json.Unmarshal(data, &elements)
-	if err == nil {
-		set.Clear()
-		set.Add(elements...)
-	}
-	return err
-}
-
 // Copyright (c) 2015, Emir Pasic. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -937,20 +808,4 @@ func (set *Float64Set) String() string {
 	}
 	str += strings.Join(items, ", ")
 	return str
-}
-
-// ToJSON outputs the JSON representation of the set.
-func (set *Float64Set) ToJSON() ([]byte, error) {
-	return json.Marshal(set.Values())
-}
-
-// FromJSON populates the set from the input JSON representation.
-func (set *Float64Set) FromJSON(data []byte) error {
-	var elements []float64
-	err := json.Unmarshal(data, &elements)
-	if err == nil {
-		set.Clear()
-		set.Add(elements...)
-	}
-	return err
 }
