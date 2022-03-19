@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	contractsmetadatafilter "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/metadatafilter"
-	sets "github.com/fluffy-bunny/grpcdotnetgo/pkg/gods/sets/hashset"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/gods/sets/hashset"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/rs/zerolog/log"
@@ -14,15 +14,15 @@ import (
 
 type (
 	metadataFilterMiddleware struct {
-		alwaysAllowed          *sets.StringSet
-		additionalByEntryPoint map[string]sets.StringSet
+		alwaysAllowed          *hashset.StringSet
+		additionalByEntryPoint map[string]hashset.StringSet
 	}
 )
 
 // AddSingletonIMetadataFilterMiddleware adds service to the DI container
 func AddSingletonIMetadataFilterMiddleware(builder *di.Builder,
-	alwaysAllowed *sets.StringSet,
-	additionalByEntryPoint map[string]sets.StringSet) {
+	alwaysAllowed *hashset.StringSet,
+	additionalByEntryPoint map[string]hashset.StringSet) {
 	log.Info().
 		Msg("IoC: AddSingletonIMetadataFilterMiddleware")
 	contractsmetadatafilter.AddSingletonIMetadataFilterMiddlewareByFunc(builder, reflect.TypeOf(&metadataFilterMiddleware{}),
