@@ -4,36 +4,15 @@ import (
 	"context"
 	"strings"
 
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/wellknown"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/rs/xid"
 	"github.com/rs/zerolog"
-
 	"google.golang.org/grpc"
-
 	"google.golang.org/grpc/metadata"
 )
 
-// XCorrelationIDName wellknown name
-const XCorrelationIDName = "x-correlation-id"
-
-// LogCorrelationIDName wellknown name
-const LogCorrelationIDName = "correlation_id"
-
-// XSpanName wellknown name
-const XSpanName = "x-span"
-
-// LogSpanName wellknown name
-const LogSpanName = "span"
-
-// XParentName wellknown name
-const XParentName = "x-parent"
-
-// LogParentName wellknown name
-const LogParentName = "parent"
-
-// XRequestID wellknown name
-const XRequestID = "x-request-id"
-
+// EnsureCorrelationIDUnaryServerInterceptor ...
 func EnsureCorrelationIDUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		var correlationID string // if not found in header, we generate a new one
@@ -43,30 +22,30 @@ func EnsureCorrelationIDUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 		for key, v := range md {
 			lowerKey := strings.ToLower(key)
-			if lowerKey == XCorrelationIDName {
+			if lowerKey == wellknown.XCorrelationIDName {
 				correlationID = v[0]
 			}
-			if lowerKey == XRequestID {
+			if lowerKey == wellknown.XRequestID {
 				requestID = v[0]
 			}
 		}
 
 		if len(correlationID) == 0 {
 			correlationID = genCorrelationID()
-			md[XCorrelationIDName] = []string{correlationID}
+			md[wellknown.XCorrelationIDName] = []string{correlationID}
 		}
 
 		loggerMap["correlation_id"] = correlationID
 		// this came into us, so its a parent
-		items := md[XSpanName]
+		items := md[wellknown.XSpanName]
 		if items != nil && len(items) > 0 {
-			loggerMap[LogParentName] = items[0]
-			md[XParentName] = []string{items[0]}
+			loggerMap[wellknown.LogParentName] = items[0]
+			md[wellknown.XParentName] = []string{items[0]}
 		}
 		// generate a new span for this context
 		newSpanID := generateSpanID()
-		md[XSpanName] = []string{newSpanID}
-		loggerMap[LogSpanName] = newSpanID
+		md[wellknown.XSpanName] = []string{newSpanID}
+		loggerMap[wellknown.LogSpanName] = newSpanID
 		log := zerolog.Ctx(ctx)
 		log.UpdateContext(func(c zerolog.Context) zerolog.Context {
 			for k, v := range loggerMap {
@@ -78,8 +57,8 @@ func EnsureCorrelationIDUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		ctx = md.ToIncoming(ctx)
 
 		md2 := metadata.Pairs(
-			XRequestID, requestID,
-			XCorrelationIDName, correlationID)
+			wellknown.XRequestID, requestID,
+			wellknown.XCorrelationIDName, correlationID)
 		grpc.SendHeader(ctx, md2)
 		return handler(ctx, req)
 	}

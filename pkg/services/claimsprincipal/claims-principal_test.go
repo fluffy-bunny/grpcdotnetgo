@@ -34,5 +34,4 @@ func Test_add_claim(t *testing.T) {
 	cp.RemoveClaim(claim)
 	claims = cp.GetClaims()
 	assert.Empty(t, claims)
-
 }

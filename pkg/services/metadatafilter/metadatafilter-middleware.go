@@ -14,22 +14,22 @@ import (
 
 type (
 	metadataFilterMiddleware struct {
-		alwaysAllowed          *hashset.StringSet
-		additionalByEntryPoint map[string]hashset.StringSet
+		allowedGlobal       *hashset.StringSet
+		allowedByEntryPoint map[string]*hashset.StringSet
 	}
 )
 
 // AddSingletonIMetadataFilterMiddleware adds service to the DI container
 func AddSingletonIMetadataFilterMiddleware(builder *di.Builder,
-	alwaysAllowed *hashset.StringSet,
-	additionalByEntryPoint map[string]hashset.StringSet) {
+	allowedGlobal *hashset.StringSet,
+	allowedByEntryPoint map[string]*hashset.StringSet) {
 	log.Info().
 		Msg("IoC: AddSingletonIMetadataFilterMiddleware")
 	contractsmetadatafilter.AddSingletonIMetadataFilterMiddlewareByFunc(builder, reflect.TypeOf(&metadataFilterMiddleware{}),
 		func(ctn di.Container) (interface{}, error) {
 			return &metadataFilterMiddleware{
-				alwaysAllowed:          alwaysAllowed,
-				additionalByEntryPoint: additionalByEntryPoint,
+				allowedGlobal:       allowedGlobal,
+				allowedByEntryPoint: allowedByEntryPoint,
 			}, nil
 		})
 }
@@ -39,10 +39,10 @@ func (s *metadataFilterMiddleware) GetUnaryServerInterceptor() grpc.UnaryServerI
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		md := metautils.ExtractIncoming(ctx)
 
-		entryPointAllowed, entryPointExists := s.additionalByEntryPoint[info.FullMethod]
+		entryPointAllowed, entryPointExists := s.allowedByEntryPoint[info.FullMethod]
 		notAllowedHeaders := []string{}
 		for header := range md {
-			exists := s.alwaysAllowed.Contains(header)
+			exists := s.allowedGlobal.Contains(header)
 			if exists {
 				continue
 			}

@@ -18,6 +18,7 @@ import (
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/auth/oauth2"
 	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	contracts_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
+	middleware_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/claimsprincipal"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext/middleware"
 	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
@@ -168,7 +169,7 @@ func (s *Startup) Configure(unaryServerInterceptorBuilder contracts_core.IUnaryS
 	//	unaryServerInterceptorBuilder.Use(middleware_grpc_auth.UnaryServerInterceptor(authHandler))
 
 	unaryServerInterceptorBuilder.Use(oauth2.OAuth2UnaryServerInterceptor(oidcContext))
-	unaryServerInterceptorBuilder.Use(oauth2.FinalAuthVerificationMiddleware(s.RootContainer))
+	unaryServerInterceptorBuilder.Use(middleware_claimsprincipal.FinalAuthVerificationMiddleware(s.RootContainer))
 
 	unaryServerInterceptorBuilder.Use(middleware_grpc_recovery.UnaryServerInterceptor(recoveryOpts...))
 
