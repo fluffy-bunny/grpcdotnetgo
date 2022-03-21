@@ -6,6 +6,7 @@ import (
 
 	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 	grpchealth "google.golang.org/grpc/health/grpc_health_v1"
 )
 
@@ -22,5 +23,7 @@ func (s *service) Watch(*grpchealth.HealthCheckRequest, grpchealth.Health_WatchS
 
 // AddSingletonHealthService helper
 func AddSingletonHealthService(builder *di.Builder) {
+	log.Info().Msg("IoC: AddSingletonHealthService")
+
 	coreContracts.AddSingletonIHealthServer(builder, reflect.TypeOf(&service{}))
 }

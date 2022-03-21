@@ -24,8 +24,7 @@ func AddScopedIServiceProvider(builder *di.Builder) {
 
 // AddSingletonISingletonServiceProvider adds service to the DI container
 func AddSingletonISingletonServiceProvider(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddSingletonIServiceProvider")
+	log.Info().Msg("IoC: AddSingletonIServiceProvider")
 	contracts_serviceprovider.AddSingletonISingletonServiceProvider(builder, reflect.TypeOf(&serviceSingleton{}))
 }
 

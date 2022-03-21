@@ -23,8 +23,7 @@ type (
 func AddSingletonIMetadataFilterMiddleware(builder *di.Builder,
 	allowedGlobal *hashset.StringSet,
 	allowedByEntryPoint map[string]*hashset.StringSet) {
-	log.Info().
-		Msg("IoC: AddSingletonIMetadataFilterMiddleware")
+	log.Info().Msg("IoC: AddSingletonIMetadataFilterMiddleware")
 	contractsmetadatafilter.AddSingletonIMetadataFilterMiddlewareByFunc(builder, reflect.TypeOf(&metadataFilterMiddleware{}),
 		func(ctn di.Container) (interface{}, error) {
 			return &metadataFilterMiddleware{

@@ -15,6 +15,6 @@ var (
 // AddSingletonISingleton adds service to the DI container
 func AddSingletonISingleton(builder *di.Builder) {
 	log.Info().
-		Msg("IoC: AddSingletonService")
+		Msg("IoC: AddSingletonISingleton")
 	contracts_singleton.AddSingletonISingleton(builder, rtGetType)
 }
