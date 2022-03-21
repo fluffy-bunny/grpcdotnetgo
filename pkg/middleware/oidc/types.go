@@ -55,8 +55,8 @@ const (
 
 // ClaimsConfig ...
 type ClaimsConfig struct {
-	OR  []ClaimFact `mapstructure:"OR"`
-	AND []ClaimFact `mapstructure:"AND"`
+	OR  []*ClaimFact `mapstructure:"OR"`
+	AND []*ClaimFact `mapstructure:"AND"`
 }
 
 // EntryPointConfig ...

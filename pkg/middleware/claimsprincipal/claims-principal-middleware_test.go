@@ -12,7 +12,7 @@ import (
 
 var (
 	configAndOr = middleware_oidc.ClaimsConfig{
-		AND: []middleware_oidc.ClaimFact{
+		AND: []*middleware_oidc.ClaimFact{
 			{
 				Claim: claimsprincipalContracts.Claim{
 					Type:  "claimAnd1",
@@ -26,7 +26,7 @@ var (
 				},
 			},
 		},
-		OR: []middleware_oidc.ClaimFact{
+		OR: []*middleware_oidc.ClaimFact{
 			{
 				Claim: claimsprincipalContracts.Claim{
 					Type:  "claimOr1",
@@ -44,7 +44,7 @@ var (
 		},
 	}
 	configAndOrAndTypeOrType = middleware_oidc.ClaimsConfig{
-		AND: []middleware_oidc.ClaimFact{
+		AND: []*middleware_oidc.ClaimFact{
 			{
 				Claim: claimsprincipalContracts.Claim{
 					Type:  "claimAnd1",
@@ -68,7 +68,7 @@ var (
 				Directive: middleware_oidc.ClaimType,
 			},
 		},
-		OR: []middleware_oidc.ClaimFact{
+		OR: []*middleware_oidc.ClaimFact{
 			{
 				Claim: claimsprincipalContracts.Claim{
 					Type:  "claimOr1",
@@ -94,7 +94,7 @@ var (
 	}
 
 	configAndOnly = middleware_oidc.ClaimsConfig{
-		AND: []middleware_oidc.ClaimFact{
+		AND: []*middleware_oidc.ClaimFact{
 			{
 				Claim: claimsprincipalContracts.Claim{
 					Type:  "claimAnd1",
@@ -112,7 +112,7 @@ var (
 		},
 	}
 	configAndTypeOnly = middleware_oidc.ClaimsConfig{
-		AND: []middleware_oidc.ClaimFact{
+		AND: []*middleware_oidc.ClaimFact{
 			{
 				Claim: claimsprincipalContracts.Claim{
 					Type:  "claimAnd1",
@@ -130,7 +130,7 @@ var (
 		},
 	}
 	configOrOnly = middleware_oidc.ClaimsConfig{
-		OR: []middleware_oidc.ClaimFact{
+		OR: []*middleware_oidc.ClaimFact{
 			{
 				Claim: claimsprincipalContracts.Claim{
 					Type:  "claimOr1",
@@ -147,7 +147,7 @@ var (
 		},
 	}
 	configOrTypeOnly = middleware_oidc.ClaimsConfig{
-		OR: []middleware_oidc.ClaimFact{
+		OR: []*middleware_oidc.ClaimFact{
 			{
 				Claim: claimsprincipalContracts.Claim{
 					Type:  "claimOr1",
