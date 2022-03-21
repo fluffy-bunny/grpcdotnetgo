@@ -17,11 +17,9 @@ type (
 	}
 )
 
-func buildBreak() contracts_transient.ITransient {
-	return &service{}
-}
-func buildBreak2() contracts_transient.ITransient {
-	return &service2{}
+func assertImplementation() {
+	var _ contracts_transient.ITransient = (*service)(nil)
+	var _ contracts_transient.ITransient = (*service2)(nil)
 }
 
 // SetName ...

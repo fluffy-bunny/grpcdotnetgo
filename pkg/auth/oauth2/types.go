@@ -5,7 +5,6 @@ import (
 	"net/url"
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
-	claimsprincipalServices "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 
 	jwxk "github.com/lestrrat-go/jwx/jwk"
 )
@@ -81,38 +80,4 @@ func NewGrpcFuncAuthConfig(authority string, expectedScheme string, clockSkewMin
 		ClockSkewMinutes:       clockSkewMinutes,
 		FullMethodNameToClaims: make(map[string]MethodClaims),
 	}
-}
-
-// ClaimsPrincipalFromClaimsMap ...
-func ClaimsPrincipalFromClaimsMap(claimsMap map[string]interface{}) claimsprincipalContracts.IClaimsPrincipal {
-	principal := claimsprincipalServices.NewIClaimsPrincipal()
-	for key, element := range claimsMap {
-		switch value := element.(type) {
-		case string:
-			principal.AddClaim(claimsprincipalContracts.Claim{
-				Type:  key,
-				Value: value,
-			})
-
-		case []interface{}:
-			for _, value := range value {
-				switch claimValue := value.(type) {
-				case string:
-					principal.AddClaim(claimsprincipalContracts.Claim{
-						Type:  key,
-						Value: claimValue,
-					})
-				}
-			}
-		case []string:
-			for _, value := range value {
-				principal.AddClaim(claimsprincipalContracts.Claim{
-					Type:  key,
-					Value: value,
-				})
-			}
-		}
-
-	}
-	return principal
 }

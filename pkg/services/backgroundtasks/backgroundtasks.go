@@ -44,9 +44,8 @@ type serviceBackgroundTasks struct {
 	JobsProviders []contracts_backgroundtasks.IJobsProvider `inject:"optional"`
 }
 
-// BuildBreak ...
-func BuildBreak() contracts_backgroundtasks.IBackgroundTasks {
-	return &serviceBackgroundTasks{}
+func assertImplementation() {
+	var _ contracts_backgroundtasks.IBackgroundTasks = (*serviceBackgroundTasks)(nil)
 }
 
 // AddSingletonBackgroundTasks ...

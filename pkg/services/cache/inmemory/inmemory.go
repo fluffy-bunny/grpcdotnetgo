@@ -15,9 +15,8 @@ type (
 	}
 )
 
-// BuildBreak lets me know that this service needs to implement this interface
-func BuildBreak() contracts_cache.IMemoryCache {
-	return &service{}
+func assertImplementation() {
+	var _ contracts_cache.IMemoryCache = (*service)(nil)
 }
 
 // ReflectTypeService returns the service type

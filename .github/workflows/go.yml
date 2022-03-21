@@ -89,6 +89,7 @@ jobs:
       run: |
         go install github.com/golang/mock/mockgen@latest
 
+
     - name: Install genny
       run: |
         go version

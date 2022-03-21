@@ -5,6 +5,7 @@ import (
 	"time"
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	claimsprincipalServices "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	jwxt "github.com/lestrrat-go/jwx/jwt"
 	"github.com/rs/zerolog/log"
 )
@@ -65,7 +66,7 @@ func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken st
 	if err != nil {
 		return nil, err
 	}
-	result := ClaimsPrincipalFromClaimsMap(claimsMap)
+	result := claimsprincipalServices.ClaimsPrincipalFromClaimsMap(claimsMap)
 
 	return result, nil
 }

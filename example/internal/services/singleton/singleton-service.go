@@ -11,8 +11,8 @@ type service struct {
 	config *contracts_config.Config
 }
 
-func buildBreak() contracts_singleton.ISingleton {
-	return &service{}
+func assertImplementation() {
+	var _ contracts_singleton.ISingleton = (*service)(nil)
 }
 
 // SetName ...

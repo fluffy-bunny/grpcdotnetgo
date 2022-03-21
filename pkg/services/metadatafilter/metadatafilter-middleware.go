@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	contractsmetadatafilter "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/metadatafilter"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/gods/sets/hashset"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
 	"github.com/rs/zerolog/log"
@@ -13,22 +14,22 @@ import (
 
 type (
 	metadataFilterMiddleware struct {
-		alwaysAllowed          map[string]bool
-		additionalByEntryPoint map[string]map[string]bool
+		allowedGlobal       *hashset.StringSet
+		allowedByEntryPoint map[string]*hashset.StringSet
 	}
 )
 
 // AddSingletonIMetadataFilterMiddleware adds service to the DI container
 func AddSingletonIMetadataFilterMiddleware(builder *di.Builder,
-	alwaysAllowed map[string]bool,
-	additionalByEntryPoint map[string]map[string]bool) {
+	allowedGlobal *hashset.StringSet,
+	allowedByEntryPoint map[string]*hashset.StringSet) {
 	log.Info().
 		Msg("IoC: AddSingletonIMetadataFilterMiddleware")
 	contractsmetadatafilter.AddSingletonIMetadataFilterMiddlewareByFunc(builder, reflect.TypeOf(&metadataFilterMiddleware{}),
 		func(ctn di.Container) (interface{}, error) {
 			return &metadataFilterMiddleware{
-				alwaysAllowed:          alwaysAllowed,
-				additionalByEntryPoint: additionalByEntryPoint,
+				allowedGlobal:       allowedGlobal,
+				allowedByEntryPoint: allowedByEntryPoint,
 			}, nil
 		})
 }
@@ -38,16 +39,16 @@ func (s *metadataFilterMiddleware) GetUnaryServerInterceptor() grpc.UnaryServerI
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		md := metautils.ExtractIncoming(ctx)
 
-		entryPointAllowed, entryPointExists := s.additionalByEntryPoint[info.FullMethod]
+		entryPointAllowed, entryPointExists := s.allowedByEntryPoint[info.FullMethod]
 		notAllowedHeaders := []string{}
 		for header := range md {
-			_, exists := s.alwaysAllowed[header]
+			exists := s.allowedGlobal.Contains(header)
 			if exists {
 				continue
 			}
 			// is it explictly allowed for this entry point?
-			if entryPointExists && entryPointAllowed != nil {
-				_, exists := entryPointAllowed[header]
+			if entryPointExists {
+				exists := entryPointAllowed.Contains(header)
 				if exists {
 					continue
 				}

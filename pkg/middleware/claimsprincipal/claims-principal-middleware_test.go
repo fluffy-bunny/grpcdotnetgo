@@ -1,10 +1,11 @@
-package oauth2
+package claimsprincipal
 
 import (
 	"testing"
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
+	claimsprincipalServices "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	"github.com/rs/zerolog/log"
 	suiteTestify "github.com/stretchr/testify/suite"
 )
@@ -186,7 +187,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestFullAndOrAndTypeOrTypeTrue",
 			&configAndOrAndTypeOrType,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimAnd1": []interface{}{"claimAnd1_1", "claimAnd1_2"},
 				"claimAnd2": []interface{}{"test"},
 				"claimOr1":  []interface{}{"claimOr1_1", "claimOr1_2"},
@@ -198,7 +199,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestFullAndOrAndTypeOrTypeFalse",
 			&configAndOrAndTypeOrType,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimAnd1": []interface{}{"claimAnd1_1", "claimAnd1_2"},
 				"blah":      []interface{}{"test"},
 				"claimOr1":  []interface{}{"claimOr1_1", "claimOr1_2"},
@@ -210,7 +211,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestAndTypeOnlyTrue",
 			&configAndTypeOnly,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimAnd1": []interface{}{"test"},
 				"claimAnd2": []interface{}{"test"},
 				"random":    []interface{}{"a", "d"},
@@ -220,7 +221,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestAndTypeOnlyFalse",
 			&configAndTypeOnly,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimAnd1": []interface{}{"test"},
 				"bla":       []interface{}{"test"},
 				"random":    []interface{}{"a", "d"},
@@ -230,7 +231,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestOrTypeOnlyTrue",
 			&configOrTypeOnly,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimOr1": []interface{}{"test"},
 				"claimOr2": []interface{}{"test"},
 				"random":   []interface{}{"a", "d"},
@@ -240,7 +241,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestOrTypeOnlyFalse",
 			&configOrTypeOnly,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"random": []interface{}{"a", "d"},
 			}),
 			false,
@@ -248,7 +249,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestFullAndOrTrue",
 			&configAndOr,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimAnd1": []interface{}{"claimAnd1_1", "claimAnd1_2"},
 				"claimOr1":  []interface{}{"claimOr1_1", "claimOr1_2"},
 				"random":    []interface{}{"a", "d"},
@@ -258,7 +259,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestFullAndOrFalse",
 			&configAndOr,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimAnd1": []interface{}{"junk", "claimAnd1_2"},
 				"claimOr1":  []interface{}{"claimOr1_1", "claimOr1_2"},
 			}),
@@ -267,7 +268,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestFullAndOrFalse2",
 			&configAndOr,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimAnd1": []interface{}{"junk", "claimAnd1_2"},
 			}),
 			false,
@@ -275,7 +276,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestFullAndOnlyTrue",
 			&configAndOnly,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimAnd1": []interface{}{"claimAnd1_1", "claimAnd1_2"},
 			}),
 			true,
@@ -283,7 +284,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestFullAndOnlyFalse",
 			&configAndOnly,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimAnd1": []interface{}{"junk", "claimAnd1_2"},
 			}),
 			false,
@@ -291,7 +292,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestFullOrOnlyTrue",
 			&configOrOnly,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimOr1": []interface{}{"claimOr1_1", "claimOr1_2"},
 			}),
 			true,
@@ -299,7 +300,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestFullOrOnlyFalse",
 			&configOrOnly,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{
 				"claimOr1": []interface{}{"junk", "junk2"},
 			}),
 			false,
@@ -307,7 +308,7 @@ func (suite *testSuite) SetupTest() {
 		{
 			"TestFullOrOnlyFalse2",
 			&configOrOnly,
-			ClaimsPrincipalFromClaimsMap(map[string]interface{}{}),
+			claimsprincipalServices.ClaimsPrincipalFromClaimsMap(map[string]interface{}{}),
 			false,
 		},
 	}
