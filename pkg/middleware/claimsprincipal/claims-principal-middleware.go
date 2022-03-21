@@ -102,7 +102,7 @@ func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypoint
 				Logger()
 		}
 
-		debugEvent := subLogger.Debug()
+		debugEvent := subLogger.Debug().Str("FullMethod", info.FullMethod)
 		debugEvent.Msg("FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption Enter")
 		defer debugEvent.Msg("FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption Exit")
 		if requestContainer != nil {
