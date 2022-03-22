@@ -55,14 +55,39 @@ const (
 
 // ClaimsConfig ...
 type ClaimsConfig struct {
-	OR  []*ClaimFact `mapstructure:"OR"`
-	AND []*ClaimFact `mapstructure:"AND"`
+	OR    []*ClaimFact `mapstructure:"OR"`
+	AND   []*ClaimFact `mapstructure:"AND"`
+	Child *ClaimsConfig
+}
+
+// GetChild gets or creates a child config that will be changed to the parent for evalutation
+func (s *ClaimsConfig) GetChild() *ClaimsConfig {
+	if s.Child == nil {
+		s.Child = &ClaimsConfig{}
+	}
+	return s.Child
+}
+
+// WithGrpcEntrypointPermissionsClaimFactsMapOR helper to add a single entrypoint config
+func (s *ClaimsConfig) WithGrpcEntrypointPermissionsClaimFactsMapOR(claimFacts ...*ClaimFact) *ClaimsConfig {
+	for _, claimFact := range claimFacts {
+		s.OR = append(s.OR, claimFact)
+	}
+	return s
+}
+
+// WithGrpcEntrypointPermissionsClaimFactsMapAND helper to add a single entrypoint config
+func (s *ClaimsConfig) WithGrpcEntrypointPermissionsClaimFactsMapAND(claimFacts ...*ClaimFact) *ClaimsConfig {
+	for _, claimFact := range claimFacts {
+		s.AND = append(s.AND, claimFact)
+	}
+	return s
 }
 
 // EntryPointConfig ...
 type EntryPointConfig struct {
-	FullMethodName string       `mapstructure:"FULL_METHOD_NAME"`
-	ClaimsConfig   ClaimsConfig `mapstructure:"CLAIMS_CONFIG"`
+	FullMethodName string        `mapstructure:"FULL_METHOD_NAME"`
+	ClaimsConfig   *ClaimsConfig `mapstructure:"CLAIMS_CONFIG"`
 }
 
 // OIDCConfig  env:OIDC_CONFIG

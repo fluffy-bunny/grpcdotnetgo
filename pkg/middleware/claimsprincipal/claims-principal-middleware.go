@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
-func validate(logEvent *zerolog.Event, claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
+func validate(logEvent *zerolog.Event, claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
 	if !validateAND(claimsConfig, claimsPrincipal) {
 		logEvent.Msg("AND validation failed")
 		return false
@@ -26,10 +26,12 @@ func validate(logEvent *zerolog.Event, claimsConfig middleware_oidc.ClaimsConfig
 		logEvent.Msg("OR validation failed")
 		return false
 	}
-
+	if claimsConfig.Child != nil {
+		return validate(logEvent, claimsConfig.Child, claimsPrincipal)
+	}
 	return true
 }
-func validateAND(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
+func validateAND(claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
 	if utils.IsEmptyOrNil(claimsConfig.AND) {
 		return true
 	}
@@ -52,7 +54,7 @@ func validateAND(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal clai
 	return true
 }
 
-func validateOR(claimsConfig middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
+func validateOR(claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
 	if utils.IsEmptyOrNil(claimsConfig.OR) {
 		return true
 	}

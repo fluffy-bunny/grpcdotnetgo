@@ -1,7 +1,7 @@
 package claimsprincipal
 
 import (
-	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	contracts_core_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 )
 
@@ -25,15 +25,13 @@ func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapOpen(ful
 
 // WithGrpcEntrypointPermissionsClaimFactsMapAND helper to add a single entrypoint config
 func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimFactsMapAND(fullMethodName string, claimFacts ...*middleware_oidc.ClaimFact) *EntryPointClaimsBuilder {
-	result := s.ensureEntry(fullMethodName)
-	for _, claimFact := range claimFacts {
-		result.ClaimsConfig.AND = append(result.ClaimsConfig.AND, claimFact)
-	}
+	cc := s.GetClaimsConfig(fullMethodName)
+	cc.WithGrpcEntrypointPermissionsClaimFactsMapAND(claimFacts...)
 	return s
 }
 
 // WithGrpcEntrypointPermissionsClaimsMapAND helper to add a single entrypoint config
-func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapAND(fullMethodName string, claims ...claimsprincipalContracts.Claim) *EntryPointClaimsBuilder {
+func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapAND(fullMethodName string, claims ...contracts_core_claimsprincipal.Claim) *EntryPointClaimsBuilder {
 	for _, claim := range claims {
 		s.WithGrpcEntrypointPermissionsClaimFactsMapAND(fullMethodName, &middleware_oidc.ClaimFact{
 			Claim:     claim,
@@ -47,24 +45,28 @@ func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapAND(full
 func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapANDTYPE(fullMethodName string, claimTypes ...string) *EntryPointClaimsBuilder {
 	for _, claimType := range claimTypes {
 		s.WithGrpcEntrypointPermissionsClaimFactsMapAND(fullMethodName, &middleware_oidc.ClaimFact{
-			Claim:     claimsprincipalContracts.Claim{Type: claimType},
+			Claim:     contracts_core_claimsprincipal.Claim{Type: claimType},
 			Directive: middleware_oidc.ClaimType,
 		})
 	}
 	return s
 }
 
+// GetClaimsConfig ...
+func (s *EntryPointClaimsBuilder) GetClaimsConfig(fullMethodName string) *middleware_oidc.ClaimsConfig {
+	result := s.ensureEntry(fullMethodName)
+	return result.ClaimsConfig
+}
+
 // WithGrpcEntrypointPermissionsClaimFactsMapOR helper to add a single entrypoint config
 func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimFactsMapOR(fullMethodName string, claimFacts ...*middleware_oidc.ClaimFact) *EntryPointClaimsBuilder {
-	result := s.ensureEntry(fullMethodName)
-	for _, claimFact := range claimFacts {
-		result.ClaimsConfig.OR = append(result.ClaimsConfig.OR, claimFact)
-	}
+	cc := s.GetClaimsConfig(fullMethodName)
+	cc.WithGrpcEntrypointPermissionsClaimFactsMapOR(claimFacts...)
 	return s
 }
 
 // WithGrpcEntrypointPermissionsClaimsMapOR helper to add a single entrypoint config
-func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapOR(fullMethodName string, claims ...claimsprincipalContracts.Claim) *EntryPointClaimsBuilder {
+func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapOR(fullMethodName string, claims ...contracts_core_claimsprincipal.Claim) *EntryPointClaimsBuilder {
 	for _, claim := range claims {
 		s.WithGrpcEntrypointPermissionsClaimFactsMapOR(fullMethodName, &middleware_oidc.ClaimFact{
 			Claim:     claim,
@@ -78,7 +80,7 @@ func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapOR(fullM
 func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapORTYPE(fullMethodName string, claimTypes ...string) *EntryPointClaimsBuilder {
 	for _, claimType := range claimTypes {
 		s.WithGrpcEntrypointPermissionsClaimFactsMapOR(fullMethodName, &middleware_oidc.ClaimFact{
-			Claim:     claimsprincipalContracts.Claim{Type: claimType},
+			Claim:     contracts_core_claimsprincipal.Claim{Type: claimType},
 			Directive: middleware_oidc.ClaimType,
 		})
 	}
@@ -90,24 +92,28 @@ func (s *EntryPointClaimsBuilder) ensureEntry(fullMethodName string) *middleware
 	if !ok {
 		result = &middleware_oidc.EntryPointConfig{
 			FullMethodName: fullMethodName,
-			ClaimsConfig:   middleware_oidc.ClaimsConfig{},
+			ClaimsConfig:   &middleware_oidc.ClaimsConfig{},
 		}
 		s.GrpcEntrypointClaimsMap[fullMethodName] = result
 	}
 	return result
 }
+
+// NewClaimFactTypeAndValue ...
 func NewClaimFactTypeAndValue(claimType string, value string) *middleware_oidc.ClaimFact {
 	return &middleware_oidc.ClaimFact{
-		Claim: claimsprincipalContracts.Claim{
+		Claim: contracts_core_claimsprincipal.Claim{
 			Type:  claimType,
 			Value: value,
 		},
 		Directive: middleware_oidc.ClaimTypeAndValue,
 	}
 }
+
+// NewClaimFactType ...
 func NewClaimFactType(claimType string) *middleware_oidc.ClaimFact {
 	return &middleware_oidc.ClaimFact{
-		Claim: claimsprincipalContracts.Claim{
+		Claim: contracts_core_claimsprincipal.Claim{
 			Type: claimType,
 		},
 		Directive: middleware_oidc.ClaimType,
