@@ -41,7 +41,7 @@ func ValidateConfigPath(configPath string) error {
 	}
 	return nil
 }
-func loadConfig(configOptions *coreContracts.ConfigOptions) error {
+func LoadConfig(configOptions *coreContracts.ConfigOptions) error {
 	v := viper.NewWithOptions(viper.KeyDelimiter("__"))
 	var err error
 	v.SetConfigType("json")
@@ -202,7 +202,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 		startup := plugin.GetStartup()
 
 		configOptions := startup.GetConfigOptions()
-		err = loadConfig(configOptions)
+		err = LoadConfig(configOptions)
 		if err != nil {
 			panic(err)
 		}
