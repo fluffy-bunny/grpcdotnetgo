@@ -16,7 +16,13 @@ var ReflectTypeITransient = di.GetInterfaceReflectType((*ITransient)(nil))
 // AddSingletonITransient adds a type that implements ITransient
 func AddSingletonITransient(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonITransientWithMetadata adds a type that implements ITransient
+func AddSingletonITransientWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonITransientByObj adds a prebuilt obj
@@ -25,10 +31,22 @@ func AddSingletonITransientByObj(builder *di.Builder, obj interface{}, implement
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonITransientByObjWithMetadata adds a prebuilt obj
+func AddSingletonITransientByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonITransientByFunc adds a type by a custom func
 func AddSingletonITransientByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonITransientByFuncWithMetadata adds a type by a custom func
+func AddSingletonITransientByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientITransient adds a type that implements ITransient
@@ -37,10 +55,22 @@ func AddTransientITransient(builder *di.Builder, implType reflect.Type, implemen
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientITransientWithMetadata adds a type that implements ITransient
+func AddTransientITransientWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientITransientByFunc adds a type by a custom func
 func AddTransientITransientByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientITransientByFuncWithMetadata adds a type by a custom func
+func AddTransientITransientByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedITransient adds a type that implements ITransient
@@ -49,10 +79,22 @@ func AddScopedITransient(builder *di.Builder, implType reflect.Type, implemented
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedITransientWithMetadata adds a type that implements ITransient
+func AddScopedITransientWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedITransientByFunc adds a type by a custom func
 func AddScopedITransientByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedITransientByFuncWithMetadata adds a type by a custom func
+func AddScopedITransientByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllITransient removes all ITransient from the DI
@@ -82,6 +124,18 @@ func SafeGetITransientFromContainer(ctn di.Container) (ITransient, error) {
 		return nil, err
 	}
 	return obj.(ITransient), nil
+}
+
+// GetITransientDefinition returns that last definition registered that this container can provide
+func GetITransientDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeITransient)
+	return def
+}
+
+// GetITransientDefinitions returns all definitions that this container can provide
+func GetITransientDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeITransient)
+	return defs
 }
 
 // SafeGetManyITransientFromContainer trys to get the object by type, will not panic, returns nil and error

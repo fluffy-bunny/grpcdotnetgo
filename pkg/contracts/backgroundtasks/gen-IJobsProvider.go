@@ -16,7 +16,13 @@ var ReflectTypeIJobsProvider = di.GetInterfaceReflectType((*IJobsProvider)(nil))
 // AddSingletonIJobsProvider adds a type that implements IJobsProvider
 func AddSingletonIJobsProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonIJobsProviderWithMetadata adds a type that implements IJobsProvider
+func AddSingletonIJobsProviderWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIJobsProviderByObj adds a prebuilt obj
@@ -25,10 +31,22 @@ func AddSingletonIJobsProviderByObj(builder *di.Builder, obj interface{}, implem
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonIJobsProviderByObjWithMetadata adds a prebuilt obj
+func AddSingletonIJobsProviderByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonIJobsProviderByFunc adds a type by a custom func
 func AddSingletonIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonIJobsProviderByFuncWithMetadata adds a type by a custom func
+func AddSingletonIJobsProviderByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIJobsProvider adds a type that implements IJobsProvider
@@ -37,10 +55,22 @@ func AddTransientIJobsProvider(builder *di.Builder, implType reflect.Type, imple
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientIJobsProviderWithMetadata adds a type that implements IJobsProvider
+func AddTransientIJobsProviderWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientIJobsProviderByFunc adds a type by a custom func
 func AddTransientIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientIJobsProviderByFuncWithMetadata adds a type by a custom func
+func AddTransientIJobsProviderByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIJobsProvider adds a type that implements IJobsProvider
@@ -49,10 +79,22 @@ func AddScopedIJobsProvider(builder *di.Builder, implType reflect.Type, implemen
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedIJobsProviderWithMetadata adds a type that implements IJobsProvider
+func AddScopedIJobsProviderWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedIJobsProviderByFunc adds a type by a custom func
 func AddScopedIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedIJobsProviderByFuncWithMetadata adds a type by a custom func
+func AddScopedIJobsProviderByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllIJobsProvider removes all IJobsProvider from the DI
@@ -82,6 +124,18 @@ func SafeGetIJobsProviderFromContainer(ctn di.Container) (IJobsProvider, error) 
 		return nil, err
 	}
 	return obj.(IJobsProvider), nil
+}
+
+// GetIJobsProviderDefinition returns that last definition registered that this container can provide
+func GetIJobsProviderDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeIJobsProvider)
+	return def
+}
+
+// GetIJobsProviderDefinitions returns all definitions that this container can provide
+func GetIJobsProviderDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeIJobsProvider)
+	return defs
 }
 
 // SafeGetManyIJobsProviderFromContainer trys to get the object by type, will not panic, returns nil and error

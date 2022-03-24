@@ -16,7 +16,13 @@ var ReflectTypeICache = di.GetInterfaceReflectType((*ICache)(nil))
 // AddSingletonICache adds a type that implements ICache
 func AddSingletonICache(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonICacheWithMetadata adds a type that implements ICache
+func AddSingletonICacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonICacheByObj adds a prebuilt obj
@@ -25,10 +31,22 @@ func AddSingletonICacheByObj(builder *di.Builder, obj interface{}, implementedTy
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonICacheByObjWithMetadata adds a prebuilt obj
+func AddSingletonICacheByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonICacheByFunc adds a type by a custom func
 func AddSingletonICacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonICacheByFuncWithMetadata adds a type by a custom func
+func AddSingletonICacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientICache adds a type that implements ICache
@@ -37,10 +55,22 @@ func AddTransientICache(builder *di.Builder, implType reflect.Type, implementedT
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientICacheWithMetadata adds a type that implements ICache
+func AddTransientICacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientICacheByFunc adds a type by a custom func
 func AddTransientICacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientICacheByFuncWithMetadata adds a type by a custom func
+func AddTransientICacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedICache adds a type that implements ICache
@@ -49,10 +79,22 @@ func AddScopedICache(builder *di.Builder, implType reflect.Type, implementedType
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedICacheWithMetadata adds a type that implements ICache
+func AddScopedICacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedICacheByFunc adds a type by a custom func
 func AddScopedICacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedICacheByFuncWithMetadata adds a type by a custom func
+func AddScopedICacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllICache removes all ICache from the DI
@@ -84,6 +126,18 @@ func SafeGetICacheFromContainer(ctn di.Container) (ICache, error) {
 	return obj.(ICache), nil
 }
 
+// GetICacheDefinition returns that last definition registered that this container can provide
+func GetICacheDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeICache)
+	return def
+}
+
+// GetICacheDefinitions returns all definitions that this container can provide
+func GetICacheDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeICache)
+	return defs
+}
+
 // SafeGetManyICacheFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetManyICacheFromContainer(ctn di.Container) ([]ICache, error) {
 	objs, err := ctn.SafeGetManyByType(ReflectTypeICache)
@@ -103,7 +157,13 @@ var ReflectTypeIMemoryCache = di.GetInterfaceReflectType((*IMemoryCache)(nil))
 // AddSingletonIMemoryCache adds a type that implements IMemoryCache
 func AddSingletonIMemoryCache(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonIMemoryCacheWithMetadata adds a type that implements IMemoryCache
+func AddSingletonIMemoryCacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIMemoryCacheByObj adds a prebuilt obj
@@ -112,10 +172,22 @@ func AddSingletonIMemoryCacheByObj(builder *di.Builder, obj interface{}, impleme
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonIMemoryCacheByObjWithMetadata adds a prebuilt obj
+func AddSingletonIMemoryCacheByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonIMemoryCacheByFunc adds a type by a custom func
 func AddSingletonIMemoryCacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonIMemoryCacheByFuncWithMetadata adds a type by a custom func
+func AddSingletonIMemoryCacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIMemoryCache adds a type that implements IMemoryCache
@@ -124,10 +196,22 @@ func AddTransientIMemoryCache(builder *di.Builder, implType reflect.Type, implem
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientIMemoryCacheWithMetadata adds a type that implements IMemoryCache
+func AddTransientIMemoryCacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientIMemoryCacheByFunc adds a type by a custom func
 func AddTransientIMemoryCacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientIMemoryCacheByFuncWithMetadata adds a type by a custom func
+func AddTransientIMemoryCacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIMemoryCache adds a type that implements IMemoryCache
@@ -136,10 +220,22 @@ func AddScopedIMemoryCache(builder *di.Builder, implType reflect.Type, implement
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedIMemoryCacheWithMetadata adds a type that implements IMemoryCache
+func AddScopedIMemoryCacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedIMemoryCacheByFunc adds a type by a custom func
 func AddScopedIMemoryCacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedIMemoryCacheByFuncWithMetadata adds a type by a custom func
+func AddScopedIMemoryCacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllIMemoryCache removes all IMemoryCache from the DI
@@ -169,6 +265,18 @@ func SafeGetIMemoryCacheFromContainer(ctn di.Container) (IMemoryCache, error) {
 		return nil, err
 	}
 	return obj.(IMemoryCache), nil
+}
+
+// GetIMemoryCacheDefinition returns that last definition registered that this container can provide
+func GetIMemoryCacheDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeIMemoryCache)
+	return def
+}
+
+// GetIMemoryCacheDefinitions returns all definitions that this container can provide
+func GetIMemoryCacheDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeIMemoryCache)
+	return defs
 }
 
 // SafeGetManyIMemoryCacheFromContainer trys to get the object by type, will not panic, returns nil and error

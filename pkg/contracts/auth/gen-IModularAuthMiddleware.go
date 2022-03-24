@@ -16,7 +16,13 @@ var ReflectTypeIModularAuthMiddleware = di.GetInterfaceReflectType((*IModularAut
 // AddSingletonIModularAuthMiddleware adds a type that implements IModularAuthMiddleware
 func AddSingletonIModularAuthMiddleware(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonIModularAuthMiddlewareWithMetadata adds a type that implements IModularAuthMiddleware
+func AddSingletonIModularAuthMiddlewareWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIModularAuthMiddlewareByObj adds a prebuilt obj
@@ -25,10 +31,22 @@ func AddSingletonIModularAuthMiddlewareByObj(builder *di.Builder, obj interface{
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonIModularAuthMiddlewareByObjWithMetadata adds a prebuilt obj
+func AddSingletonIModularAuthMiddlewareByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonIModularAuthMiddlewareByFunc adds a type by a custom func
 func AddSingletonIModularAuthMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonIModularAuthMiddlewareByFuncWithMetadata adds a type by a custom func
+func AddSingletonIModularAuthMiddlewareByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIModularAuthMiddleware adds a type that implements IModularAuthMiddleware
@@ -37,10 +55,22 @@ func AddTransientIModularAuthMiddleware(builder *di.Builder, implType reflect.Ty
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientIModularAuthMiddlewareWithMetadata adds a type that implements IModularAuthMiddleware
+func AddTransientIModularAuthMiddlewareWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientIModularAuthMiddlewareByFunc adds a type by a custom func
 func AddTransientIModularAuthMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientIModularAuthMiddlewareByFuncWithMetadata adds a type by a custom func
+func AddTransientIModularAuthMiddlewareByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIModularAuthMiddleware adds a type that implements IModularAuthMiddleware
@@ -49,10 +79,22 @@ func AddScopedIModularAuthMiddleware(builder *di.Builder, implType reflect.Type,
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedIModularAuthMiddlewareWithMetadata adds a type that implements IModularAuthMiddleware
+func AddScopedIModularAuthMiddlewareWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedIModularAuthMiddlewareByFunc adds a type by a custom func
 func AddScopedIModularAuthMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedIModularAuthMiddlewareByFuncWithMetadata adds a type by a custom func
+func AddScopedIModularAuthMiddlewareByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllIModularAuthMiddleware removes all IModularAuthMiddleware from the DI
@@ -82,6 +124,18 @@ func SafeGetIModularAuthMiddlewareFromContainer(ctn di.Container) (IModularAuthM
 		return nil, err
 	}
 	return obj.(IModularAuthMiddleware), nil
+}
+
+// GetIModularAuthMiddlewareDefinition returns that last definition registered that this container can provide
+func GetIModularAuthMiddlewareDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeIModularAuthMiddleware)
+	return def
+}
+
+// GetIModularAuthMiddlewareDefinitions returns all definitions that this container can provide
+func GetIModularAuthMiddlewareDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeIModularAuthMiddleware)
+	return defs
 }
 
 // SafeGetManyIModularAuthMiddlewareFromContainer trys to get the object by type, will not panic, returns nil and error

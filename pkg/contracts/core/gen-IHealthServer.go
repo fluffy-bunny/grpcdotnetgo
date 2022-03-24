@@ -16,7 +16,13 @@ var ReflectTypeIHealthServer = di.GetInterfaceReflectType((*IHealthServer)(nil))
 // AddSingletonIHealthServer adds a type that implements IHealthServer
 func AddSingletonIHealthServer(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonIHealthServerWithMetadata adds a type that implements IHealthServer
+func AddSingletonIHealthServerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIHealthServerByObj adds a prebuilt obj
@@ -25,10 +31,22 @@ func AddSingletonIHealthServerByObj(builder *di.Builder, obj interface{}, implem
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonIHealthServerByObjWithMetadata adds a prebuilt obj
+func AddSingletonIHealthServerByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonIHealthServerByFunc adds a type by a custom func
 func AddSingletonIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonIHealthServerByFuncWithMetadata adds a type by a custom func
+func AddSingletonIHealthServerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIHealthServer adds a type that implements IHealthServer
@@ -37,10 +55,22 @@ func AddTransientIHealthServer(builder *di.Builder, implType reflect.Type, imple
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientIHealthServerWithMetadata adds a type that implements IHealthServer
+func AddTransientIHealthServerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientIHealthServerByFunc adds a type by a custom func
 func AddTransientIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientIHealthServerByFuncWithMetadata adds a type by a custom func
+func AddTransientIHealthServerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIHealthServer adds a type that implements IHealthServer
@@ -49,10 +79,22 @@ func AddScopedIHealthServer(builder *di.Builder, implType reflect.Type, implemen
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedIHealthServerWithMetadata adds a type that implements IHealthServer
+func AddScopedIHealthServerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedIHealthServerByFunc adds a type by a custom func
 func AddScopedIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedIHealthServerByFuncWithMetadata adds a type by a custom func
+func AddScopedIHealthServerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllIHealthServer removes all IHealthServer from the DI
@@ -82,6 +124,18 @@ func SafeGetIHealthServerFromContainer(ctn di.Container) (IHealthServer, error) 
 		return nil, err
 	}
 	return obj.(IHealthServer), nil
+}
+
+// GetIHealthServerDefinition returns that last definition registered that this container can provide
+func GetIHealthServerDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeIHealthServer)
+	return def
+}
+
+// GetIHealthServerDefinitions returns all definitions that this container can provide
+func GetIHealthServerDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeIHealthServer)
+	return defs
 }
 
 // SafeGetManyIHealthServerFromContainer trys to get the object by type, will not panic, returns nil and error

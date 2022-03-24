@@ -16,7 +16,13 @@ var ReflectTypeIScoped = di.GetInterfaceReflectType((*IScoped)(nil))
 // AddSingletonIScoped adds a type that implements IScoped
 func AddSingletonIScoped(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonIScopedWithMetadata adds a type that implements IScoped
+func AddSingletonIScopedWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIScopedByObj adds a prebuilt obj
@@ -25,10 +31,22 @@ func AddSingletonIScopedByObj(builder *di.Builder, obj interface{}, implementedT
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonIScopedByObjWithMetadata adds a prebuilt obj
+func AddSingletonIScopedByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonIScopedByFunc adds a type by a custom func
 func AddSingletonIScopedByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonIScopedByFuncWithMetadata adds a type by a custom func
+func AddSingletonIScopedByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIScoped adds a type that implements IScoped
@@ -37,10 +55,22 @@ func AddTransientIScoped(builder *di.Builder, implType reflect.Type, implemented
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientIScopedWithMetadata adds a type that implements IScoped
+func AddTransientIScopedWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientIScopedByFunc adds a type by a custom func
 func AddTransientIScopedByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientIScopedByFuncWithMetadata adds a type by a custom func
+func AddTransientIScopedByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIScoped adds a type that implements IScoped
@@ -49,10 +79,22 @@ func AddScopedIScoped(builder *di.Builder, implType reflect.Type, implementedTyp
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedIScopedWithMetadata adds a type that implements IScoped
+func AddScopedIScopedWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedIScopedByFunc adds a type by a custom func
 func AddScopedIScopedByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedIScopedByFuncWithMetadata adds a type by a custom func
+func AddScopedIScopedByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllIScoped removes all IScoped from the DI
@@ -82,6 +124,18 @@ func SafeGetIScopedFromContainer(ctn di.Container) (IScoped, error) {
 		return nil, err
 	}
 	return obj.(IScoped), nil
+}
+
+// GetIScopedDefinition returns that last definition registered that this container can provide
+func GetIScopedDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeIScoped)
+	return def
+}
+
+// GetIScopedDefinitions returns all definitions that this container can provide
+func GetIScopedDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeIScoped)
+	return defs
 }
 
 // SafeGetManyIScopedFromContainer trys to get the object by type, will not panic, returns nil and error

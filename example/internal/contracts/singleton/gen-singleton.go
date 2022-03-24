@@ -16,7 +16,13 @@ var ReflectTypeISingleton = di.GetInterfaceReflectType((*ISingleton)(nil))
 // AddSingletonISingleton adds a type that implements ISingleton
 func AddSingletonISingleton(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonISingletonWithMetadata adds a type that implements ISingleton
+func AddSingletonISingletonWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonISingletonByObj adds a prebuilt obj
@@ -25,10 +31,22 @@ func AddSingletonISingletonByObj(builder *di.Builder, obj interface{}, implement
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonISingletonByObjWithMetadata adds a prebuilt obj
+func AddSingletonISingletonByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonISingletonByFunc adds a type by a custom func
 func AddSingletonISingletonByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonISingletonByFuncWithMetadata adds a type by a custom func
+func AddSingletonISingletonByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientISingleton adds a type that implements ISingleton
@@ -37,10 +55,22 @@ func AddTransientISingleton(builder *di.Builder, implType reflect.Type, implemen
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientISingletonWithMetadata adds a type that implements ISingleton
+func AddTransientISingletonWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientISingletonByFunc adds a type by a custom func
 func AddTransientISingletonByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientISingletonByFuncWithMetadata adds a type by a custom func
+func AddTransientISingletonByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedISingleton adds a type that implements ISingleton
@@ -49,10 +79,22 @@ func AddScopedISingleton(builder *di.Builder, implType reflect.Type, implemented
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedISingletonWithMetadata adds a type that implements ISingleton
+func AddScopedISingletonWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedISingletonByFunc adds a type by a custom func
 func AddScopedISingletonByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedISingletonByFuncWithMetadata adds a type by a custom func
+func AddScopedISingletonByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllISingleton removes all ISingleton from the DI
@@ -82,6 +124,18 @@ func SafeGetISingletonFromContainer(ctn di.Container) (ISingleton, error) {
 		return nil, err
 	}
 	return obj.(ISingleton), nil
+}
+
+// GetISingletonDefinition returns that last definition registered that this container can provide
+func GetISingletonDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeISingleton)
+	return def
+}
+
+// GetISingletonDefinitions returns all definitions that this container can provide
+func GetISingletonDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeISingleton)
+	return defs
 }
 
 // SafeGetManyISingletonFromContainer trys to get the object by type, will not panic, returns nil and error

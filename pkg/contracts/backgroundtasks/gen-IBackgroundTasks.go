@@ -16,7 +16,13 @@ var ReflectTypeIBackgroundTasks = di.GetInterfaceReflectType((*IBackgroundTasks)
 // AddSingletonIBackgroundTasks adds a type that implements IBackgroundTasks
 func AddSingletonIBackgroundTasks(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonIBackgroundTasksWithMetadata adds a type that implements IBackgroundTasks
+func AddSingletonIBackgroundTasksWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIBackgroundTasksByObj adds a prebuilt obj
@@ -25,10 +31,22 @@ func AddSingletonIBackgroundTasksByObj(builder *di.Builder, obj interface{}, imp
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonIBackgroundTasksByObjWithMetadata adds a prebuilt obj
+func AddSingletonIBackgroundTasksByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonIBackgroundTasksByFunc adds a type by a custom func
 func AddSingletonIBackgroundTasksByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonIBackgroundTasksByFuncWithMetadata adds a type by a custom func
+func AddSingletonIBackgroundTasksByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIBackgroundTasks adds a type that implements IBackgroundTasks
@@ -37,10 +55,22 @@ func AddTransientIBackgroundTasks(builder *di.Builder, implType reflect.Type, im
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientIBackgroundTasksWithMetadata adds a type that implements IBackgroundTasks
+func AddTransientIBackgroundTasksWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientIBackgroundTasksByFunc adds a type by a custom func
 func AddTransientIBackgroundTasksByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientIBackgroundTasksByFuncWithMetadata adds a type by a custom func
+func AddTransientIBackgroundTasksByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIBackgroundTasks adds a type that implements IBackgroundTasks
@@ -49,10 +79,22 @@ func AddScopedIBackgroundTasks(builder *di.Builder, implType reflect.Type, imple
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedIBackgroundTasksWithMetadata adds a type that implements IBackgroundTasks
+func AddScopedIBackgroundTasksWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedIBackgroundTasksByFunc adds a type by a custom func
 func AddScopedIBackgroundTasksByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedIBackgroundTasksByFuncWithMetadata adds a type by a custom func
+func AddScopedIBackgroundTasksByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIBackgroundTasks)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllIBackgroundTasks removes all IBackgroundTasks from the DI
@@ -82,6 +124,18 @@ func SafeGetIBackgroundTasksFromContainer(ctn di.Container) (IBackgroundTasks, e
 		return nil, err
 	}
 	return obj.(IBackgroundTasks), nil
+}
+
+// GetIBackgroundTasksDefinition returns that last definition registered that this container can provide
+func GetIBackgroundTasksDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeIBackgroundTasks)
+	return def
+}
+
+// GetIBackgroundTasksDefinitions returns all definitions that this container can provide
+func GetIBackgroundTasksDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeIBackgroundTasks)
+	return defs
 }
 
 // SafeGetManyIBackgroundTasksFromContainer trys to get the object by type, will not panic, returns nil and error

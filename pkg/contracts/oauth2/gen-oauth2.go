@@ -16,7 +16,13 @@ var ReflectTypeIOauth2 = di.GetInterfaceReflectType((*IOauth2)(nil))
 // AddSingletonIOauth2 adds a type that implements IOauth2
 func AddSingletonIOauth2(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonIOauth2WithMetadata adds a type that implements IOauth2
+func AddSingletonIOauth2WithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIOauth2ByObj adds a prebuilt obj
@@ -25,10 +31,22 @@ func AddSingletonIOauth2ByObj(builder *di.Builder, obj interface{}, implementedT
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonIOauth2ByObjWithMetadata adds a prebuilt obj
+func AddSingletonIOauth2ByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonIOauth2ByFunc adds a type by a custom func
 func AddSingletonIOauth2ByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonIOauth2ByFuncWithMetadata adds a type by a custom func
+func AddSingletonIOauth2ByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIOauth2 adds a type that implements IOauth2
@@ -37,10 +55,22 @@ func AddTransientIOauth2(builder *di.Builder, implType reflect.Type, implemented
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientIOauth2WithMetadata adds a type that implements IOauth2
+func AddTransientIOauth2WithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientIOauth2ByFunc adds a type by a custom func
 func AddTransientIOauth2ByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientIOauth2ByFuncWithMetadata adds a type by a custom func
+func AddTransientIOauth2ByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIOauth2 adds a type that implements IOauth2
@@ -49,10 +79,22 @@ func AddScopedIOauth2(builder *di.Builder, implType reflect.Type, implementedTyp
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedIOauth2WithMetadata adds a type that implements IOauth2
+func AddScopedIOauth2WithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedIOauth2ByFunc adds a type by a custom func
 func AddScopedIOauth2ByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedIOauth2ByFuncWithMetadata adds a type by a custom func
+func AddScopedIOauth2ByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllIOauth2 removes all IOauth2 from the DI
@@ -82,6 +124,18 @@ func SafeGetIOauth2FromContainer(ctn di.Container) (IOauth2, error) {
 		return nil, err
 	}
 	return obj.(IOauth2), nil
+}
+
+// GetIOauth2Definition returns that last definition registered that this container can provide
+func GetIOauth2Definition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeIOauth2)
+	return def
+}
+
+// GetIOauth2Definitions returns all definitions that this container can provide
+func GetIOauth2Definitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeIOauth2)
+	return defs
 }
 
 // SafeGetManyIOauth2FromContainer trys to get the object by type, will not panic, returns nil and error

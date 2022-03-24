@@ -16,7 +16,13 @@ var ReflectTypeILogger = di.GetInterfaceReflectType((*ILogger)(nil))
 // AddSingletonILogger adds a type that implements ILogger
 func AddSingletonILogger(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeILogger)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonILoggerWithMetadata adds a type that implements ILogger
+func AddSingletonILoggerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeILogger)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonILoggerByObj adds a prebuilt obj
@@ -25,10 +31,22 @@ func AddSingletonILoggerByObj(builder *di.Builder, obj interface{}, implementedT
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonILoggerByObjWithMetadata adds a prebuilt obj
+func AddSingletonILoggerByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeILogger)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonILoggerByFunc adds a type by a custom func
 func AddSingletonILoggerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeILogger)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonILoggerByFuncWithMetadata adds a type by a custom func
+func AddSingletonILoggerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeILogger)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientILogger adds a type that implements ILogger
@@ -37,10 +55,22 @@ func AddTransientILogger(builder *di.Builder, implType reflect.Type, implemented
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientILoggerWithMetadata adds a type that implements ILogger
+func AddTransientILoggerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeILogger)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientILoggerByFunc adds a type by a custom func
 func AddTransientILoggerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeILogger)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientILoggerByFuncWithMetadata adds a type by a custom func
+func AddTransientILoggerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeILogger)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedILogger adds a type that implements ILogger
@@ -49,10 +79,22 @@ func AddScopedILogger(builder *di.Builder, implType reflect.Type, implementedTyp
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedILoggerWithMetadata adds a type that implements ILogger
+func AddScopedILoggerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeILogger)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedILoggerByFunc adds a type by a custom func
 func AddScopedILoggerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeILogger)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedILoggerByFuncWithMetadata adds a type by a custom func
+func AddScopedILoggerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeILogger)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllILogger removes all ILogger from the DI
@@ -84,6 +126,18 @@ func SafeGetILoggerFromContainer(ctn di.Container) (ILogger, error) {
 	return obj.(ILogger), nil
 }
 
+// GetILoggerDefinition returns that last definition registered that this container can provide
+func GetILoggerDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeILogger)
+	return def
+}
+
+// GetILoggerDefinitions returns all definitions that this container can provide
+func GetILoggerDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeILogger)
+	return defs
+}
+
 // SafeGetManyILoggerFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetManyILoggerFromContainer(ctn di.Container) ([]ILogger, error) {
 	objs, err := ctn.SafeGetManyByType(ReflectTypeILogger)
@@ -103,7 +157,13 @@ var ReflectTypeISingletonLogger = di.GetInterfaceReflectType((*ISingletonLogger)
 // AddSingletonISingletonLogger adds a type that implements ISingletonLogger
 func AddSingletonISingletonLogger(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
-	di.AddSingletonWithImplementedTypes(builder, implType, implementedTypes...)
+	di.AddSingleton(builder, implType, implementedTypes...)
+}
+
+// AddSingletonISingletonLoggerWithMetadata adds a type that implements ISingletonLogger
+func AddSingletonISingletonLoggerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonISingletonLoggerByObj adds a prebuilt obj
@@ -112,10 +172,22 @@ func AddSingletonISingletonLoggerByObj(builder *di.Builder, obj interface{}, imp
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
+// AddSingletonISingletonLoggerByObjWithMetadata adds a prebuilt obj
+func AddSingletonISingletonLoggerByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
+}
+
 // AddSingletonISingletonLoggerByFunc adds a type by a custom func
 func AddSingletonISingletonLoggerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonISingletonLoggerByFuncWithMetadata adds a type by a custom func
+func AddSingletonISingletonLoggerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientISingletonLogger adds a type that implements ISingletonLogger
@@ -124,10 +196,22 @@ func AddTransientISingletonLogger(builder *di.Builder, implType reflect.Type, im
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddTransientISingletonLoggerWithMetadata adds a type that implements ISingletonLogger
+func AddTransientISingletonLoggerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddTransientISingletonLoggerByFunc adds a type by a custom func
 func AddTransientISingletonLoggerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientISingletonLoggerByFuncWithMetadata adds a type by a custom func
+func AddTransientISingletonLoggerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedISingletonLogger adds a type that implements ISingletonLogger
@@ -136,10 +220,22 @@ func AddScopedISingletonLogger(builder *di.Builder, implType reflect.Type, imple
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
+// AddScopedISingletonLoggerWithMetadata adds a type that implements ISingletonLogger
+func AddScopedISingletonLoggerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
 // AddScopedISingletonLoggerByFunc adds a type by a custom func
 func AddScopedISingletonLoggerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedISingletonLoggerByFuncWithMetadata adds a type by a custom func
+func AddScopedISingletonLoggerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeISingletonLogger)
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllISingletonLogger removes all ISingletonLogger from the DI
@@ -169,6 +265,18 @@ func SafeGetISingletonLoggerFromContainer(ctn di.Container) (ISingletonLogger, e
 		return nil, err
 	}
 	return obj.(ISingletonLogger), nil
+}
+
+// GetISingletonLoggerDefinition returns that last definition registered that this container can provide
+func GetISingletonLoggerDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeISingletonLogger)
+	return def
+}
+
+// GetISingletonLoggerDefinitions returns all definitions that this container can provide
+func GetISingletonLoggerDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeISingletonLogger)
+	return defs
 }
 
 // SafeGetManyISingletonLoggerFromContainer trys to get the object by type, will not panic, returns nil and error
