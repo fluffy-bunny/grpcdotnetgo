@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
-func validate(logEvent *zerolog.Event, claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
+func Validate(logEvent *zerolog.Event, claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
 	if !validateAND(claimsConfig, claimsPrincipal) {
 		logEvent.Msg("AND validation failed")
 		return false
@@ -27,7 +27,7 @@ func validate(logEvent *zerolog.Event, claimsConfig *middleware_oidc.ClaimsConfi
 		return false
 	}
 	if claimsConfig.Child != nil {
-		return validate(logEvent, claimsConfig.Child, claimsPrincipal)
+		return Validate(logEvent, claimsConfig.Child, claimsPrincipal)
 	}
 	return true
 }
@@ -104,7 +104,7 @@ func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypoint
 				Logger()
 		}
 
-		debugEvent := subLogger.Debug().Str("FullMethod", info.FullMethod)
+		debugEvent := subLogger.Debug()
 		debugEvent.Msg("FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption Enter")
 		defer debugEvent.Msg("FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption Exit")
 		if requestContainer != nil {
@@ -119,7 +119,7 @@ func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypoint
 				debugEvent.Msg("FullMethod not found in entrypoint claims map")
 				return permissionDeniedFunc()
 			}
-			if !validate(debugEvent, elem.ClaimsConfig, claimsPrincipal) {
+			if !Validate(debugEvent, elem.ClaimsConfig, claimsPrincipal) {
 				debugEvent.Msg("ClaimsConfig validation failed")
 				return permissionDeniedFunc()
 			}
