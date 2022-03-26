@@ -86,8 +86,9 @@ func (s *ClaimsConfig) WithGrpcEntrypointPermissionsClaimFactsMapAND(claimFacts 
 
 // EntryPointConfig ...
 type EntryPointConfig struct {
-	FullMethodName string        `mapstructure:"FULL_METHOD_NAME"`
-	ClaimsConfig   *ClaimsConfig `mapstructure:"CLAIMS_CONFIG"`
+	FullMethodName string                 `mapstructure:"FULL_METHOD_NAME"`
+	ClaimsConfig   *ClaimsConfig          `mapstructure:"CLAIMS_CONFIG"`
+	MetaData       map[string]interface{} `mapstructure:"META_DATA"`
 }
 
 // OIDCConfig  env:OIDC_CONFIG

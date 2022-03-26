@@ -17,6 +17,16 @@ func NewEntryPointClaimsBuilder() *EntryPointClaimsBuilder {
 	}
 }
 
+// AddMetaData ...
+func (s *EntryPointClaimsBuilder) AddMetaData(fullMethodName string, metaData map[string]interface{}) *EntryPointClaimsBuilder {
+	entry, ok := s.GrpcEntrypointClaimsMap[fullMethodName]
+	if !ok {
+		panic("EntryPointClaimsBuilder.AddMetaData: entry not found, it must be created before metadata can be added")
+	}
+	entry.MetaData = metaData
+	return s
+}
+
 // WithGrpcEntrypointPermissionsClaimsMapOpen helper to add a single entrypoint config
 func (s *EntryPointClaimsBuilder) WithGrpcEntrypointPermissionsClaimsMapOpen(fullMethodName string) *EntryPointClaimsBuilder {
 	s.ensureEntry(fullMethodName)
