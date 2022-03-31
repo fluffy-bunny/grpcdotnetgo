@@ -11,7 +11,6 @@ import (
 	contracts_container "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/container"
 	contracts_handler "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/handler"
 	contracts_session "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/session"
-	core_contracts_session "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/session"
 	echo_contracts_startup "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/startup"
 	middleware_container "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/middleware/container"
 	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/middleware/logger"
@@ -36,6 +35,7 @@ import (
 )
 
 type (
+	// Runtime ...
 	Runtime struct {
 		Startup       echo_contracts_startup.IStartup
 		Container     di.Container
@@ -45,12 +45,15 @@ type (
 	}
 )
 
+// New creates a new runtime
 func New(startup echo_contracts_startup.IStartup) *Runtime {
 	return &Runtime{
 		Startup:    startup,
 		instanceID: uuid.New().String(),
 	}
 }
+
+// GetContainer returns the container
 func (s *Runtime) GetContainer() di.Container {
 	return s.Container
 }
@@ -86,6 +89,7 @@ func (s *Runtime) phase1() error {
 	}
 	return nil
 }
+
 func (s *Runtime) phase2() error {
 	builder, _ := di.NewBuilder(di.App, di.Request, "transient")
 	err := s.addDefaultServices(builder)
@@ -114,7 +118,7 @@ func (s *Runtime) phase3() error {
 	s.e.Use(middleware_logger.EnsureContextLogger(s.Container))
 	s.e.Use(middleware_logger.EnsureContextLoggerCorrelation(s.Container))
 	s.e.Use(middleware_container.EnsureScopedContainer(s.Container))
-	sessionStore := core_contracts_session.GetGetSessionStoreFromContainer(s.Container)
+	sessionStore := contracts_session.GetGetSessionStoreFromContainer(s.Container)
 	s.e.Use(session.Middleware(sessionStore()))
 	mainSession := contracts_session.GetGetSessionFromContainer(s.Container)
 	s.e.Use(core_middleware_session.EnsureSlidingSession(s.Container, mainSession))
@@ -232,6 +236,5 @@ func (s *Runtime) addDefaultServices(builder *di.Builder) error {
 	services_logger.AddILogger(builder)
 	services_core_claimsprincipal.AddScopedIClaimsPrincipal(builder)
 	services_handler.AddSingletonIHandlerFactory(builder)
-
 	return nil
 }
