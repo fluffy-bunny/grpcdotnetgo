@@ -1,33 +1,29 @@
 package runtime
 
 import (
-	contracts_container "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/container"
-	contracts_handler "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/handler"
-	services_contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/services/contextaccessor"
-	services_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/services/logger"
-
 	"fmt"
 	"net/http"
 	"os"
 	"strings"
 
-	echo_contracts_startup "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/startup"
-
-	"github.com/jedib0t/go-pretty/v6/table"
-
-	services_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/timeutils"
-
-	core_middleware_session "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/middleware/session"
-
-	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/middleware/logger"
-
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core"
+	contracts_container "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/container"
+	contracts_handler "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/handler"
 	contracts_session "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/session"
+	echo_contracts_startup "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/startup"
 	middleware_container "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/middleware/container"
+	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/middleware/logger"
+	core_middleware_session "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/middleware/session"
+	services_contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/services/contextaccessor"
 	services_cookies "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/services/cookies"
+	services_handler "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/services/handler"
+	services_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/services/logger"
 	core_echo_templates "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/templates"
+	services_core_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
+	services_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/timeutils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/google/uuid"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -87,7 +83,7 @@ func (s *Runtime) Run() error {
 		zerolog.SetGlobalLevel(zerolog.TraceLevel)
 	}
 	builder, _ := di.NewBuilder(di.App, di.Request, "transient")
-	err = s.AddDefaultServices(builder)
+	err = s.addDefaultServices(builder)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to add default services")
 	}
@@ -176,13 +172,16 @@ func (s *Runtime) Run() error {
 	}
 	return err
 }
-func (s *Runtime) AddDefaultServices(builder *di.Builder) error {
+
+func (s *Runtime) addDefaultServices(builder *di.Builder) error {
 	contracts_container.AddContainerAccessorFunc(builder, s.GetContainer)
 	services_timeutils.AddTimeNow(builder)
 	services_timeutils.AddTimeParse(builder)
 	services_cookies.AddSingletonISecureCookie(builder)
 	services_contextaccessor.AddScopedIEchoContextAccessor(builder)
 	services_logger.AddILogger(builder)
+	services_core_claimsprincipal.AddScopedIClaimsPrincipal(builder)
+	services_handler.AddSingletonIHandlerFactory(builder)
 
 	return nil
 }
