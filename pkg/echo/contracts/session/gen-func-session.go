@@ -59,3 +59,53 @@ func SafeGetManyGetSessionFromContainer(ctn di.Container) ([]GetSession, error) 
 	}
 	return results, nil
 }
+
+// ReflectTypeGetSessionStore used when your service claims to implement GetSessionStore
+var ReflectTypeGetSessionStore = reflect.TypeOf(GetSessionStore(nil))
+
+// AddSingletonGetSessionStoreFunc adds a func to the DI
+func AddGetSessionStoreFunc(builder *di.Builder, fnc GetSessionStore) {
+	di.AddFunc(builder, fnc)
+}
+
+// RemoveAllGetSessionStoreFunc removes all GetSessionStore functions from the DI
+func RemoveAllGetSessionStoreFunc(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeGetSessionStore)
+}
+
+// GetGetSessionStoreFromContainer alternative to SafeGetGetSessionStoreFromContainer but panics of object is not present
+func GetGetSessionStoreFromContainer(ctn di.Container) GetSessionStore {
+	return ctn.GetByType(ReflectTypeGetSessionStore).(GetSessionStore)
+}
+
+// GetManyGetSessionStoreFromContainer alternative to SafeGetManyGetSessionStoreFromContainer but panics of object is not present
+func GetManyGetSessionStoreFromContainer(ctn di.Container) []GetSessionStore {
+	objs := ctn.GetManyByType(ReflectTypeGetSessionStore)
+	var results []GetSessionStore
+	for _, obj := range objs {
+		results = append(results, obj.(GetSessionStore))
+	}
+	return results
+}
+
+// SafeGetGetSessionStoreFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetGetSessionStoreFromContainer(ctn di.Container) (GetSessionStore, error) {
+	obj, err := ctn.SafeGetByType(ReflectTypeGetSessionStore)
+	if err != nil {
+		return nil, err
+	}
+	return obj.(GetSessionStore), nil
+}
+
+// SafeGetManyGetSessionStoreFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyGetSessionStoreFromContainer(ctn di.Container) ([]GetSessionStore, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeGetSessionStore)
+	if err != nil {
+		return nil, err
+	}
+	var results []GetSessionStore
+	for _, obj := range objs {
+		results = append(results, obj.(GetSessionStore))
+	}
+	return results, nil
+}

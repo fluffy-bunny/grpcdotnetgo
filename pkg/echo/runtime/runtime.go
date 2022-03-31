@@ -6,10 +6,12 @@ import (
 	"os"
 	"strings"
 
+	core_contracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core"
 	contracts_container "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/container"
 	contracts_handler "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/handler"
 	contracts_session "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/session"
+	core_contracts_session "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/session"
 	echo_contracts_startup "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/startup"
 	middleware_container "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/middleware/container"
 	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/middleware/logger"
@@ -35,10 +37,11 @@ import (
 
 type (
 	Runtime struct {
-		Startup    echo_contracts_startup.IStartup
-		Container  di.Container
-		e          *echo.Echo
-		instanceID string
+		Startup       echo_contracts_startup.IStartup
+		Container     di.Container
+		e             *echo.Echo
+		instanceID    string
+		configOptions *core_contracts.ConfigOptions
 	}
 )
 
@@ -51,22 +54,21 @@ func New(startup echo_contracts_startup.IStartup) *Runtime {
 func (s *Runtime) GetContainer() di.Container {
 	return s.Container
 }
-func (s *Runtime) Run() error {
-	startupOptions := s.Startup.GetOptions()
-	configOptions := s.Startup.GetConfigOptions()
-	err := core.LoadConfig(configOptions)
+func (s *Runtime) phase1() error {
+	s.configOptions = s.Startup.GetConfigOptions()
+	err := core.LoadConfig(s.configOptions)
 	if err != nil {
 		return err
 	}
 
-	if configOptions.PrettyLog {
+	if s.configOptions.PrettyLog {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}
 
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	switch strings.ToLower(configOptions.LogLevel) {
+	switch strings.ToLower(s.configOptions.LogLevel) {
 	case "debug":
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	case "info":
@@ -82,17 +84,25 @@ func (s *Runtime) Run() error {
 	case "trace":
 		zerolog.SetGlobalLevel(zerolog.TraceLevel)
 	}
+	return nil
+}
+func (s *Runtime) phase2() error {
 	builder, _ := di.NewBuilder(di.App, di.Request, "transient")
-	err = s.addDefaultServices(builder)
+	err := s.addDefaultServices(builder)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to add default services")
+		return err
 	}
 	err = s.Startup.ConfigureServices(builder)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to configure services")
+		return err
 	}
 	s.Container = builder.Build()
 	s.Startup.SetContainer(s.Container)
+	return nil
+}
+func (s *Runtime) phase3() error {
 	s.e = echo.New()
 	//use our own zerolog logger
 	s.e.Logger = lecho.New(os.Stdout)
@@ -104,11 +114,12 @@ func (s *Runtime) Run() error {
 	s.e.Use(middleware_logger.EnsureContextLogger(s.Container))
 	s.e.Use(middleware_logger.EnsureContextLoggerCorrelation(s.Container))
 	s.e.Use(middleware_container.EnsureScopedContainer(s.Container))
-	s.e.Use(session.Middleware(s.Startup.GetSessionStore()))
+	sessionStore := core_contracts_session.GetGetSessionStoreFromContainer(s.Container)
+	s.e.Use(session.Middleware(sessionStore()))
 	mainSession := contracts_session.GetGetSessionFromContainer(s.Container)
 	s.e.Use(core_middleware_session.EnsureSlidingSession(s.Container, mainSession))
 
-	if configOptions.ApplicationEnvironment == "Development" {
+	if s.configOptions.ApplicationEnvironment == "Development" {
 		// this wipes out the session if we have a mismatch
 		s.e.Use(core_middleware_session.EnsureDevelopmentSession(s.Container, mainSession, s.instanceID))
 	}
@@ -154,22 +165,61 @@ func (s *Runtime) Run() error {
 		path, _ := metaData["path"].(string)
 
 		t.AppendRow([]interface{}{verbBldr.String(), string(path)})
-
 	}
 	t.Render()
+	return nil
+}
+func (s *Runtime) finalPhase() error {
 	// Finally start the server
 	//----------------------------------------------------------------------------------
-	port := s.Startup.GetPort()
-	address := fmt.Sprintf(":%v", port)
+	startupOptions := s.Startup.GetOptions()
+
+	address := fmt.Sprintf(":%v", startupOptions.Port)
 	if startupOptions != nil && startupOptions.Listener != nil {
 		// if we are here we are usually under test
 		s.e.Listener = startupOptions.Listener
 	}
 
-	err = s.e.Start(address)
+	err := s.e.Start(address)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to start server")
 	}
+	return err
+}
+
+// Run ...
+func (s *Runtime) Run() error {
+	// Phase 1
+	// Load config
+	// Setup Logger
+	err := s.phase1()
+	if err != nil {
+		log.Fatal().Err(err).Msg("phase1")
+	}
+	// Phase 2
+	// Setup our DI Container
+	// Configure services
+	err = s.phase2()
+	if err != nil {
+		log.Fatal().Err(err).Msg("phase2")
+	}
+
+	// Phase 2
+	// Setup Echo
+	// Configure middlewares
+	err = s.phase3()
+	if err != nil {
+		log.Fatal().Err(err).Msg("phase3")
+	}
+
+	// Phase 2
+	// Setup Echo
+	// Configure middlewares
+	err = s.finalPhase()
+	if err != nil {
+		log.Fatal().Err(err).Msg("finalPhase")
+	}
+
 	return err
 }
 
