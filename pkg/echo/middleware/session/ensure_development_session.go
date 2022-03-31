@@ -9,8 +9,7 @@ import (
 
 // EnsureDevelopmentSession is a middleware that ensures that the session is
 // wiped out when the app restarts
-func EnsureDevelopmentSession(ctn di.Container, appInstanceID string) echo.MiddlewareFunc {
-	getSession := contracts_session.GetGetSessionFromContainer(ctn)
+func EnsureDevelopmentSession(_ di.Container, getSession contracts_session.GetSession, appInstanceID string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			sess := getSession(c)
