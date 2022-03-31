@@ -17,7 +17,7 @@ func AddCronOidcJobProvider(builder *di.Builder) {
 
 	backgroundtasksContracts.AddSingletonIJobsProviderByFunc(builder,
 		reflect.TypeOf(&service{}), func(ctn di.Container) (interface{}, error) {
-			obj := &service{
+			obj := &serviceJobProvider{
 				OIDCConfigAccessor: middleware_oidc.GetOIDCConfigAccessorFromContainer(ctn),
 				Storage:            GetOidcBackgroundStorageFromContainer(ctn),
 				Logger:             contracts_logger.GetILoggerFromContainer(ctn),

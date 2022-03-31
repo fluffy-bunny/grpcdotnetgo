@@ -39,7 +39,7 @@ func (s *oidcBackgroundStorage) AtomicGet() *middleware_oidc.DiscoveryDocument {
 //------------------------------------------
 type oidcDiscoveryJob struct {
 	Authority    string
-	DiscoveryUrl *url.URL
+	DiscoveryURL *url.URL
 	Storage      IOidcBackgroundStorage
 }
 
@@ -56,15 +56,15 @@ func newOidcDiscoveryJob(authority string, storage IOidcBackgroundStorage) *oidc
 
 	return &oidcDiscoveryJob{
 		Authority:    authority,
-		DiscoveryUrl: discoveryURL,
+		DiscoveryURL: discoveryURL,
 		Storage:      storage,
 	}
 }
 func (j *oidcDiscoveryJob) Run() {
-	dicoDocument := middleware_oidc.NewDiscoveryDocument(*j.DiscoveryUrl)
+	dicoDocument := middleware_oidc.NewDiscoveryDocument(*j.DiscoveryURL)
 	err := dicoDocument.Initialize()
 	if err != nil {
-		log.Error().Err(err).Msgf("error fetching disco: %v", j.DiscoveryUrl.String())
+		log.Error().Err(err).Msgf("error fetching disco: %v", j.DiscoveryURL.String())
 	} else {
 		j.Storage.AtomicStore(dicoDocument)
 		log.Info().Interface("disco", dicoDocument).Send()
@@ -73,19 +73,19 @@ func (j *oidcDiscoveryJob) Run() {
 
 // Job Provider
 //------------------------------------------
-type service struct {
+type serviceJobProvider struct {
 	Logger             contracts_logger.ILogger `inject:""`
 	OIDCConfigAccessor middleware_oidc.IOIDCConfigAccessor
 	Storage            IOidcBackgroundStorage
 }
 
-func (s *service) GetOneTimeJobs() backgroundtasksContracts.OneTimeJobs {
+func (s *serviceJobProvider) GetOneTimeJobs() backgroundtasksContracts.OneTimeJobs {
 	config := s.OIDCConfigAccessor.GetOIDCConfig()
 	oidcJob := newOidcDiscoveryJob(config.GetAuthority(), s.Storage)
 	onetimeJob := servicesBackgroundtasks.NewOneTimeJob(oidcJob, time.Millisecond)
 	return servicesBackgroundtasks.NewOneTimeJobs(onetimeJob)
 }
-func (s *service) GetScheduledJobs() backgroundtasksContracts.ScheduledJobs {
+func (s *serviceJobProvider) GetScheduledJobs() backgroundtasksContracts.ScheduledJobs {
 	config := s.OIDCConfigAccessor.GetOIDCConfig()
 	oidcJob := newOidcDiscoveryJob(config.GetAuthority(), s.Storage)
 	cronJob := servicesBackgroundtasks.NewScheduledJob(oidcJob, config.GetCronRefreshSchedule())
