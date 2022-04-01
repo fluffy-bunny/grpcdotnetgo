@@ -132,8 +132,8 @@ func (s *Runtime) phase3() error {
 	app.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 		TokenLookup:    "header:X-Csrf-Token,form:csrf",
 		CookiePath:     "/",
-		CookieSecure:   true,
-		CookieHTTPOnly: true,
+		CookieSecure:   false,
+		CookieHTTPOnly: false,
 		CookieSameSite: http.SameSiteStrictMode,
 		Skipper: func(c echo.Context) bool {
 			// Dont do a CSRF check for calls that have an Authorization header
