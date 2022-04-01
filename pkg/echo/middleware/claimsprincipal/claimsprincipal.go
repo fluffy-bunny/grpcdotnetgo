@@ -28,7 +28,7 @@ func recursiveAddClaim(claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincip
 
 // DevelopmentMiddlewareUsingClaimsMap use this in development if you are making an api only service
 // it literally just adds the claims to the principal that the api demands it has to be authorized.
-func DevelopmentMiddlewareUsingClaimsMap(entrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig, enableZeroTrust bool) echo.MiddlewareFunc {
+func DevelopmentMiddlewareUsingClaimsMap(entrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			scopedContainer := c.Get(wellknown.SCOPED_CONTAINER_KEY).(di.Container)
@@ -42,6 +42,7 @@ func DevelopmentMiddlewareUsingClaimsMap(entrypointClaimsMap map[string]*middlew
 	}
 }
 
+// OnUnauthorizedAction ...
 type OnUnauthorizedAction int64
 
 const (
@@ -49,15 +50,16 @@ const (
 	OnUnauthorizedAction_Redirect                         = 1
 )
 
+// EntryPointConfigEx ...
 type EntryPointConfigEx struct {
 	middleware_oidc.EntryPointConfig
 	OnUnauthorizedAction OnUnauthorizedAction
 }
 
+// FinalAuthVerificationMiddlewareUsingClaimsMap ...
 func FinalAuthVerificationMiddlewareUsingClaimsMap(entrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig, enableZeroTrust bool) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-
 			path := c.Path()
 			subLogger := log.With().
 				Bool("enableZeroTrust", enableZeroTrust).
