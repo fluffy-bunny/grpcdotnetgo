@@ -22,6 +22,7 @@ import (
 	core_echo_templates "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/templates"
 	services_core_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	services_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/timeutils"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/google/uuid"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -134,6 +135,14 @@ func (s *Runtime) phase3() error {
 		CookieSecure:   true,
 		CookieHTTPOnly: true,
 		CookieSameSite: http.SameSiteStrictMode,
+		Skipper: func(c echo.Context) bool {
+			// Dont do a CSRF check for calls that have an Authorization header
+			authorizationHeader := c.Request().Header.Get("Authorization")
+			if !utils.IsEmptyOrNil(authorizationHeader) {
+				return true
+			}
+			return false
+		},
 	}))
 
 	// we have all our required upfront middleware running
