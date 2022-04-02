@@ -3,6 +3,7 @@ package cookies
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -13,6 +14,7 @@ import (
 	contracts_cookies "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/cookies"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/gorilla/securecookie"
+	"github.com/rs/xid"
 	"github.com/rs/zerolog/log"
 )
 
@@ -24,8 +26,9 @@ type (
 	}
 
 	chunkMetaData struct {
-		NumberOfChunks int    `json:"numberOfChunks"`
-		Value          string `json:"value"`
+		NumberOfChunks int    `json:"noc"`
+		Value          string `json:"v"`
+		Binding        string `json:"b"`
 	}
 )
 
@@ -88,7 +91,7 @@ func (s *service) _setCookieValue(name string, value string, expires time.Time) 
 }
 
 func (s *service) SetCookieValue(name string, value string, expires time.Time) error {
-
+	binding := xid.New().String()
 	var chunks []string
 	chunkSize := 1024
 	if len(value) > chunkSize {
@@ -98,6 +101,7 @@ func (s *service) SetCookieValue(name string, value string, expires time.Time) e
 		}
 		jsonMD, _ := json.Marshal(&chunkMetaData{
 			NumberOfChunks: len(chunks),
+			Binding:        binding,
 		})
 		var cookieNames = []string{}
 		var onError = func() {
@@ -113,7 +117,7 @@ func (s *service) SetCookieValue(name string, value string, expires time.Time) e
 		cookieNames = append(cookieNames, name)
 		for i, chunk := range chunks {
 			chunkName := fmt.Sprintf("%s_%d", name, i)
-			err := s._setCookieValue(chunkName, chunk, expires)
+			err := s._setCookieValue(chunkName, fmt.Sprintf("%s|%s", binding, chunk), expires)
 			if err != nil {
 				onError()
 				return err
@@ -164,7 +168,19 @@ func (s *service) GetCookieValue(name string) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		sbOri.WriteString(value.Value)
+		bindingIndex := strings.Index(value.Value, "|")
+		if bindingIndex == -1 {
+			// WTF: someone is gaming us
+			s.DeleteCookie(name)
+			return "", errors.New("invalid chunk binding")
+		}
+		storedBinding := value.Value[:bindingIndex]
+		if storedBinding != metaData.Binding {
+			// WTF: someone is gaming us
+			s.DeleteCookie(name)
+			return "", errors.New("invalid chunk binding")
+		}
+		sbOri.WriteString(value.Value[bindingIndex+1:])
 	}
 	ori := sbOri.String()
 	return ori, nil
