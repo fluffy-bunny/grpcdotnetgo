@@ -2,8 +2,6 @@ package cookies
 
 import (
 	"time"
-
-	"github.com/labstack/echo/v4"
 )
 
 //go:generate genny -pkg $GOPACKAGE -in=../../../../genny/sarulabsdi/interface-types.go -out=gen-$GOFILE      gen "InterfaceType=ISecureCookie"
@@ -21,9 +19,9 @@ type (
 	SecureCookieConfigAccessor func() *SecureCookieConfig
 	// ISecureCookie ...
 	ISecureCookie interface {
-		SetCookieValue(c echo.Context, name string, value string, expires time.Time) error
-		GetCookieValue(c echo.Context, name string) (string, error)
-		DeleteCookie(c echo.Context, name string) error
-		RefreshCookie(c echo.Context, name string, durration time.Duration) error
+		SetCookieValue(name string, value string, expires time.Time) error
+		GetCookieValue(name string) (string, error)
+		DeleteCookie(name string) error
+		RefreshCookie(name string, durration time.Duration) error
 	}
 )
