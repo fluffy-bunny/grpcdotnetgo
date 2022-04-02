@@ -233,7 +233,7 @@ func (s *Runtime) addDefaultServices(builder *di.Builder) error {
 	contracts_container.AddContainerAccessorFunc(builder, s.GetContainer)
 	services_timeutils.AddTimeNow(builder)
 	services_timeutils.AddTimeParse(builder)
-	services_cookies.AddSingletonISecureCookie(builder)
+	services_cookies.AddScopedISecureCookie(builder)
 	services_contextaccessor.AddScopedIEchoContextAccessor(builder)
 	services_logger.AddILogger(builder)
 	services_core_claimsprincipal.AddScopedIClaimsPrincipal(builder)

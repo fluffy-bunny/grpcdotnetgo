@@ -9,7 +9,6 @@ import (
 	time "time"
 
 	gomock "github.com/golang/mock/gomock"
-	echo "github.com/labstack/echo/v4"
 )
 
 // MockISecureCookie is a mock of ISecureCookie interface.
@@ -36,58 +35,58 @@ func (m *MockISecureCookie) EXPECT() *MockISecureCookieMockRecorder {
 }
 
 // DeleteCookie mocks base method.
-func (m *MockISecureCookie) DeleteCookie(arg0 echo.Context, arg1 string) error {
+func (m *MockISecureCookie) DeleteCookie(arg0 string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteCookie", arg0, arg1)
+	ret := m.ctrl.Call(m, "DeleteCookie", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteCookie indicates an expected call of DeleteCookie.
-func (mr *MockISecureCookieMockRecorder) DeleteCookie(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockISecureCookieMockRecorder) DeleteCookie(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCookie", reflect.TypeOf((*MockISecureCookie)(nil).DeleteCookie), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCookie", reflect.TypeOf((*MockISecureCookie)(nil).DeleteCookie), arg0)
 }
 
 // GetCookieValue mocks base method.
-func (m *MockISecureCookie) GetCookieValue(arg0 echo.Context, arg1 string) (string, error) {
+func (m *MockISecureCookie) GetCookieValue(arg0 string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCookieValue", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetCookieValue", arg0)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetCookieValue indicates an expected call of GetCookieValue.
-func (mr *MockISecureCookieMockRecorder) GetCookieValue(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockISecureCookieMockRecorder) GetCookieValue(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCookieValue", reflect.TypeOf((*MockISecureCookie)(nil).GetCookieValue), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCookieValue", reflect.TypeOf((*MockISecureCookie)(nil).GetCookieValue), arg0)
 }
 
 // RefreshCookie mocks base method.
-func (m *MockISecureCookie) RefreshCookie(arg0 echo.Context, arg1 string, arg2 time.Duration) error {
+func (m *MockISecureCookie) RefreshCookie(arg0 string, arg1 time.Duration) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RefreshCookie", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "RefreshCookie", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // RefreshCookie indicates an expected call of RefreshCookie.
-func (mr *MockISecureCookieMockRecorder) RefreshCookie(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockISecureCookieMockRecorder) RefreshCookie(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshCookie", reflect.TypeOf((*MockISecureCookie)(nil).RefreshCookie), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshCookie", reflect.TypeOf((*MockISecureCookie)(nil).RefreshCookie), arg0, arg1)
 }
 
 // SetCookieValue mocks base method.
-func (m *MockISecureCookie) SetCookieValue(arg0 echo.Context, arg1, arg2 string, arg3 time.Time) error {
+func (m *MockISecureCookie) SetCookieValue(arg0, arg1 string, arg2 time.Time) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetCookieValue", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "SetCookieValue", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // SetCookieValue indicates an expected call of SetCookieValue.
-func (mr *MockISecureCookieMockRecorder) SetCookieValue(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+func (mr *MockISecureCookieMockRecorder) SetCookieValue(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetCookieValue", reflect.TypeOf((*MockISecureCookie)(nil).SetCookieValue), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetCookieValue", reflect.TypeOf((*MockISecureCookie)(nil).SetCookieValue), arg0, arg1, arg2)
 }
