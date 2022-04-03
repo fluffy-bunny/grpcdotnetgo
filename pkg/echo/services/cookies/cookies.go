@@ -26,8 +26,7 @@ type (
 	}
 
 	chunkMetaData struct {
-		NumberOfChunks int    `json:"noc"`
-		Value          string `json:"v"`
+		NumberOfChunks int    `json:"n"`
 		Binding        string `json:"b"`
 	}
 )
@@ -207,28 +206,36 @@ func (s *service) _delete(name string) error {
 }
 func (s *service) DeleteCookie(name string) error {
 	c := s.EchoContextAccessor.GetContext()
-	cookie := s.newCookie(name, "")
-
 	cookie, err := c.Cookie(name)
 	if err != nil {
 		return err
 	}
-	s._delete(name) // delete the main cookie no matter what
+	s._delete(name) // no matter what, delete the main cookie
 	var value = &valueContainer{}
 
 	err = s.secureCookie.Decode(name, cookie.Value, value)
 	if err != nil {
 		return err
 	}
-	var metaData = &chunkMetaData{}
-	err = json.Unmarshal([]byte(value.Value), &metaData)
-	if err != nil {
+	cookieTypedIndex := strings.Index(value.Value, "|")
+	if cookieTypedIndex == -1 {
 		return err
 	}
+	cookieType := value.Value[:cookieTypedIndex]
 
-	for i := 0; i < metaData.NumberOfChunks; i++ {
-		chunkName := fmt.Sprintf("%s_%d", name, i)
-		s._delete(chunkName)
+	if cookieType == "_chunked" {
+		metaDataPart := value.Value[cookieTypedIndex+1:]
+
+		var metaData = &chunkMetaData{}
+		err = json.Unmarshal([]byte(metaDataPart), &metaData)
+		if err != nil {
+			return err
+		}
+
+		for i := 0; i < metaData.NumberOfChunks; i++ {
+			chunkName := fmt.Sprintf("%s_%d", name, i)
+			s._delete(chunkName)
+		}
 	}
 
 	return nil
