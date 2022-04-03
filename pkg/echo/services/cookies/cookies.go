@@ -26,8 +26,7 @@ type (
 	}
 
 	chunkMetaData struct {
-		NumberOfChunks int    `json:"noc"`
-		Value          string `json:"v"`
+		NumberOfChunks int    `json:"n"`
 		Binding        string `json:"b"`
 	}
 )
@@ -94,46 +93,37 @@ func (s *service) SetCookieValue(name string, value string, expires time.Time) e
 	binding := xid.New().String()
 	var chunks []string
 	chunkSize := 1024
-	if len(value) > chunkSize {
-		for i := 0; i < len(value); i += chunkSize {
-			chunk := value[i:min(i+chunkSize, len(value))]
-			chunks = append(chunks, chunk)
-		}
-		jsonMD, _ := json.Marshal(&chunkMetaData{
-			NumberOfChunks: len(chunks),
-			Binding:        binding,
-		})
-		var cookieNames = []string{}
-		var onError = func() {
-			for _, n := range cookieNames {
-				s.DeleteCookie(n)
-			}
-		}
 
-		err := s._setCookieValue(name, string(jsonMD), expires) // store the number of chunks in the main cookie
-		if err != nil {
-			return err
-		}
-		cookieNames = append(cookieNames, name)
-		for i, chunk := range chunks {
-			chunkName := fmt.Sprintf("%s_%d", name, i)
-			err := s._setCookieValue(chunkName, fmt.Sprintf("%s|%s", binding, chunk), expires)
-			if err != nil {
-				onError()
-				return err
-			}
-			cookieNames = append(cookieNames, chunkName)
-		}
-	} else {
-		jsonMD, _ := json.Marshal(&chunkMetaData{
-			NumberOfChunks: 0,
-			Value:          string(value),
-		})
-		err := s._setCookieValue(name, string(jsonMD), expires) // store the number of chunks in the main cookie
-		if err != nil {
-			return err
+	for i := 0; i < len(value); i += chunkSize {
+		chunk := value[i:min(i+chunkSize, len(value))]
+		chunks = append(chunks, chunk)
+	}
+	jsonMD, _ := json.Marshal(&chunkMetaData{
+		NumberOfChunks: len(chunks),
+		Binding:        binding,
+	})
+	var cookieNames = []string{}
+	var onError = func() {
+		for _, n := range cookieNames {
+			s.DeleteCookie(n)
 		}
 	}
+
+	err := s._setCookieValue(name, string(jsonMD), expires) // store the number of chunks in the main cookie
+	if err != nil {
+		return err
+	}
+	cookieNames = append(cookieNames, name)
+	for i, chunk := range chunks {
+		chunkName := fmt.Sprintf("%s_%d", name, i)
+		err := s._setCookieValue(chunkName, fmt.Sprintf("%s|%s", binding, chunk), expires)
+		if err != nil {
+			onError()
+			return err
+		}
+		cookieNames = append(cookieNames, chunkName)
+	}
+
 	return nil
 }
 func (s *service) GetCookieValue(name string) (string, error) {
