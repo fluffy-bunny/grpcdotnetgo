@@ -26,7 +26,8 @@ type (
 	}
 
 	chunkMetaData struct {
-		NumberOfChunks int    `json:"n"`
+		NumberOfChunks int    `json:"noc"`
+		Value          string `json:"v"`
 		Binding        string `json:"b"`
 	}
 )
@@ -93,37 +94,43 @@ func (s *service) SetCookieValue(name string, value string, expires time.Time) e
 	binding := xid.New().String()
 	var chunks []string
 	chunkSize := 1024
-
-	for i := 0; i < len(value); i += chunkSize {
-		chunk := value[i:min(i+chunkSize, len(value))]
-		chunks = append(chunks, chunk)
-	}
-	jsonMD, _ := json.Marshal(&chunkMetaData{
-		NumberOfChunks: len(chunks),
-		Binding:        binding,
-	})
-	var cookieNames = []string{}
-	var onError = func() {
-		for _, n := range cookieNames {
-			s.DeleteCookie(n)
+	if len(value) > chunkSize {
+		for i := 0; i < len(value); i += chunkSize {
+			chunk := value[i:min(i+chunkSize, len(value))]
+			chunks = append(chunks, chunk)
 		}
-	}
+		jsonMD, _ := json.Marshal(&chunkMetaData{
+			NumberOfChunks: len(chunks),
+			Binding:        binding,
+		})
+		var cookieNames = []string{}
+		var onError = func() {
+			for _, n := range cookieNames {
+				s.DeleteCookie(n)
+			}
+		}
 
-	err := s._setCookieValue(name, string(jsonMD), expires) // store the number of chunks in the main cookie
-	if err != nil {
-		return err
-	}
-	cookieNames = append(cookieNames, name)
-	for i, chunk := range chunks {
-		chunkName := fmt.Sprintf("%s_%d", name, i)
-		err := s._setCookieValue(chunkName, fmt.Sprintf("%s|%s", binding, chunk), expires)
+		err := s._setCookieValue(name, fmt.Sprintf("_chunked|%s", string(jsonMD)), expires) // store the number of chunks in the main cookie
 		if err != nil {
-			onError()
 			return err
 		}
-		cookieNames = append(cookieNames, chunkName)
+		cookieNames = append(cookieNames, name)
+		for i, chunk := range chunks {
+			chunkName := fmt.Sprintf("%s_%d", name, i)
+			err := s._setCookieValue(chunkName, fmt.Sprintf("%s|%s", binding, chunk), expires)
+			if err != nil {
+				onError()
+				return err
+			}
+			cookieNames = append(cookieNames, chunkName)
+		}
+	} else {
+		// put our | so that we don't accidently read someone else's | in the cookie
+		err := s._setCookieValue(name, fmt.Sprintf("|%s", value), expires) // store the number of chunks in the main cookie
+		if err != nil {
+			return err
+		}
 	}
-
 	return nil
 }
 func (s *service) GetCookieValue(name string) (string, error) {
@@ -138,42 +145,57 @@ func (s *service) GetCookieValue(name string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var metaData = &chunkMetaData{}
-	err = json.Unmarshal([]byte(value.Value), &metaData)
-	if err != nil {
-		return "", err
+	cookieTypedIndex := strings.Index(value.Value, "|")
+	if cookieTypedIndex == -1 {
+		// WTF: someone is gaming us
+		s.DeleteCookie(name)
+		return "", errors.New("invalid chunk binding")
 	}
-	if metaData.NumberOfChunks == 0 {
-		return value.Value, nil
-	}
-	sbOri := strings.Builder{}
-	for i := 0; i < metaData.NumberOfChunks; i++ {
-		chunkName := fmt.Sprintf("%s_%d", name, i)
-		chunkCookie, err := c.Cookie(chunkName)
+	cookieType := value.Value[:cookieTypedIndex]
+
+	if cookieType == "_chunked" {
+		metaDataPart := value.Value[cookieTypedIndex+1:]
+
+		var metaData = &chunkMetaData{}
+		err = json.Unmarshal([]byte(metaDataPart), &metaData)
 		if err != nil {
 			return "", err
 		}
-		var value = &valueContainer{}
-		err = s.secureCookie.Decode(chunkName, chunkCookie.Value, value)
-		if err != nil {
-			return "", err
+		sbOri := strings.Builder{}
+		for i := 0; i < metaData.NumberOfChunks; i++ {
+			chunkName := fmt.Sprintf("%s_%d", name, i)
+			chunkCookie, err := c.Cookie(chunkName)
+			if err != nil {
+				return "", err
+			}
+			var value = &valueContainer{}
+			err = s.secureCookie.Decode(chunkName, chunkCookie.Value, value)
+			if err != nil {
+				return "", err
+			}
+			bindingIndex := strings.Index(value.Value, "|")
+			if bindingIndex == -1 {
+				// WTF: someone is gaming us
+				s.DeleteCookie(name)
+				return "", errors.New("invalid chunk binding")
+			}
+			storedBinding := value.Value[:bindingIndex]
+			if storedBinding != metaData.Binding {
+				// WTF: someone is gaming us
+				s.DeleteCookie(name)
+				return "", errors.New("invalid chunk binding")
+			}
+			sbOri.WriteString(value.Value[bindingIndex+1:])
+
 		}
-		bindingIndex := strings.Index(value.Value, "|")
-		if bindingIndex == -1 {
-			// WTF: someone is gaming us
-			s.DeleteCookie(name)
-			return "", errors.New("invalid chunk binding")
-		}
-		storedBinding := value.Value[:bindingIndex]
-		if storedBinding != metaData.Binding {
-			// WTF: someone is gaming us
-			s.DeleteCookie(name)
-			return "", errors.New("invalid chunk binding")
-		}
-		sbOri.WriteString(value.Value[bindingIndex+1:])
+
+		ori := sbOri.String()
+		return ori, nil
+	} else {
+		valuePart := value.Value[cookieTypedIndex+1:]
+		return valuePart, nil
 	}
-	ori := sbOri.String()
-	return ori, nil
+
 }
 func (s *service) _delete(name string) error {
 	c := s.EchoContextAccessor.GetContext()
