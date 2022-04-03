@@ -252,27 +252,38 @@ func (s *service) RefreshCookie(name string, duration time.Duration) error {
 	if err != nil {
 		return err
 	}
+	s._delete(name) // no matter what, delete the main cookie
 	var value = &valueContainer{}
 
 	err = s.secureCookie.Decode(name, cookie.Value, value)
 	if err != nil {
 		return err
 	}
-	var metaData = &chunkMetaData{}
-	err = json.Unmarshal([]byte(value.Value), &metaData)
-	if err != nil {
+	cookieTypedIndex := strings.Index(value.Value, "|")
+	if cookieTypedIndex == -1 {
 		return err
 	}
+	cookieType := value.Value[:cookieTypedIndex]
 
-	s._refresh(cookie, duration)
-	for i := 0; i < metaData.NumberOfChunks; i++ {
-		chunkName := fmt.Sprintf("%s_%d", name, i)
-		chunkCookie, err := c.Cookie(chunkName)
+	if cookieType == "_chunked" {
+		metaDataPart := value.Value[cookieTypedIndex+1:]
+
+		var metaData = &chunkMetaData{}
+		err = json.Unmarshal([]byte(metaDataPart), &metaData)
 		if err != nil {
 			return err
 		}
-		s._refresh(chunkCookie, duration)
+
+		for i := 0; i < metaData.NumberOfChunks; i++ {
+			chunkName := fmt.Sprintf("%s_%d", name, i)
+			chunkCookie, err := c.Cookie(chunkName)
+			if err != nil {
+				return err
+			}
+			s._refresh(chunkCookie, duration)
+		}
 	}
+	s._refresh(cookie, duration) // refresh the main one last
 
 	return nil
 }
