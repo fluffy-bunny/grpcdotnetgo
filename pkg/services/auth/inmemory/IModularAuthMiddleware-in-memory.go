@@ -6,7 +6,6 @@ import (
 	contracts_auth "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/auth"
 	coreUtilsTestsAuth "github.com/fluffy-bunny/grpcdotnetgo/pkg/utils/tests/auth"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
 
@@ -22,7 +21,6 @@ func assertImplementation() {
 
 // AddSingletonIModularAuthMiddleware ...
 func AddSingletonIModularAuthMiddleware(builder *di.Builder, claimsmap coreUtilsTestsAuth.EntryPointToClaimsMap) {
-	log.Info().Msg("IoC: AddSingletonIModularAuthMiddleware")
 	contracts_auth.AddSingletonIModularAuthMiddlewareByFunc(builder,
 		reflect.TypeOf(&service{}),
 		func(ctn di.Container) (interface{}, error) {

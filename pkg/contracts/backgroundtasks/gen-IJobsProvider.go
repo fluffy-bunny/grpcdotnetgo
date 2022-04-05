@@ -6,8 +6,10 @@ package backgroundtasks
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIJobsProvider used when your service claims to implement IJobsProvider
@@ -16,84 +18,189 @@ var ReflectTypeIJobsProvider = di.GetInterfaceReflectType((*IJobsProvider)(nil))
 // AddSingletonIJobsProvider adds a type that implements IJobsProvider
 func AddSingletonIJobsProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("SINGLETON", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIJobsProviderWithMetadata adds a type that implements IJobsProvider
 func AddSingletonIJobsProviderWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("SINGLETON", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIJobsProviderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIJobsProviderByObj adds a prebuilt obj
 func AddSingletonIJobsProviderByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("SINGLETON", reflect.TypeOf(obj), _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIJobsProviderByObjWithMetadata adds a prebuilt obj
 func AddSingletonIJobsProviderByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("SINGLETON", reflect.TypeOf(obj), _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIJobsProviderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIJobsProviderByFunc adds a type by a custom func
 func AddSingletonIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("SINGLETON", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIJobsProviderByFuncWithMetadata adds a type by a custom func
 func AddSingletonIJobsProviderByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("SINGLETON", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIJobsProviderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIJobsProvider adds a type that implements IJobsProvider
 func AddTransientIJobsProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("TRANSIENT", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIJobsProviderWithMetadata adds a type that implements IJobsProvider
 func AddTransientIJobsProviderWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("TRANSIENT", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIJobsProviderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIJobsProviderByFunc adds a type by a custom func
 func AddTransientIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("TRANSIENT", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIJobsProviderByFuncWithMetadata adds a type by a custom func
 func AddTransientIJobsProviderByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("TRANSIENT", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIJobsProviderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIJobsProvider adds a type that implements IJobsProvider
 func AddScopedIJobsProvider(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("SCOPED", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIJobsProviderWithMetadata adds a type that implements IJobsProvider
 func AddScopedIJobsProviderWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("SCOPED", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIJobsProviderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIJobsProviderByFunc adds a type by a custom func
 func AddScopedIJobsProviderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("SCOPED", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIJobsProviderByFuncWithMetadata adds a type by a custom func
 func AddScopedIJobsProviderByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIJobsProvider)
+	_logAddIJobsProvider("SCOPED", implType, _getImplementedIJobsProviderNames(implementedTypes...),
+		_logIJobsProviderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIJobsProviderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -149,4 +256,33 @@ func SafeGetManyIJobsProviderFromContainer(ctn di.Container) ([]IJobsProvider, e
 		results = append(results, obj.(IJobsProvider))
 	}
 	return results, nil
+}
+
+type _logIJobsProviderExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIJobsProvider(scopeType string, implType reflect.Type, interfaces string, extra ..._logIJobsProviderExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIJobsProviderNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

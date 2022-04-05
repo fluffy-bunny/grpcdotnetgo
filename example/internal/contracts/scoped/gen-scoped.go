@@ -6,8 +6,10 @@ package scoped
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIScoped used when your service claims to implement IScoped
@@ -16,84 +18,189 @@ var ReflectTypeIScoped = di.GetInterfaceReflectType((*IScoped)(nil))
 // AddSingletonIScoped adds a type that implements IScoped
 func AddSingletonIScoped(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("SINGLETON", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIScopedWithMetadata adds a type that implements IScoped
 func AddSingletonIScopedWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("SINGLETON", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIScopedExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIScopedByObj adds a prebuilt obj
 func AddSingletonIScopedByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("SINGLETON", reflect.TypeOf(obj), _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIScopedByObjWithMetadata adds a prebuilt obj
 func AddSingletonIScopedByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("SINGLETON", reflect.TypeOf(obj), _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIScopedExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIScopedByFunc adds a type by a custom func
 func AddSingletonIScopedByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("SINGLETON", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIScopedByFuncWithMetadata adds a type by a custom func
 func AddSingletonIScopedByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("SINGLETON", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIScopedExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIScoped adds a type that implements IScoped
 func AddTransientIScoped(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("TRANSIENT", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIScopedWithMetadata adds a type that implements IScoped
 func AddTransientIScopedWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("TRANSIENT", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIScopedExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIScopedByFunc adds a type by a custom func
 func AddTransientIScopedByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("TRANSIENT", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIScopedByFuncWithMetadata adds a type by a custom func
 func AddTransientIScopedByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("TRANSIENT", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIScopedExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIScoped adds a type that implements IScoped
 func AddScopedIScoped(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("SCOPED", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIScopedWithMetadata adds a type that implements IScoped
 func AddScopedIScopedWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("SCOPED", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIScopedExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIScopedByFunc adds a type by a custom func
 func AddScopedIScopedByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("SCOPED", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIScopedByFuncWithMetadata adds a type by a custom func
 func AddScopedIScopedByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIScoped)
+	_logAddIScoped("SCOPED", implType, _getImplementedIScopedNames(implementedTypes...),
+		_logIScopedExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIScopedExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -149,4 +256,33 @@ func SafeGetManyIScopedFromContainer(ctn di.Container) ([]IScoped, error) {
 		results = append(results, obj.(IScoped))
 	}
 	return results, nil
+}
+
+type _logIScopedExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIScoped(scopeType string, implType reflect.Type, interfaces string, extra ..._logIScopedExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIScopedNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

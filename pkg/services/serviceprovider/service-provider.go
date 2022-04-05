@@ -5,7 +5,6 @@ import (
 
 	contracts_serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/serviceprovider"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 )
 
 type serviceScoped struct {
@@ -17,14 +16,11 @@ type serviceSingleton struct {
 
 // AddScopedIServiceProvider adds service to the DI container
 func AddScopedIServiceProvider(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddScopedIServiceProvider")
 	contracts_serviceprovider.AddScopedIServiceProvider(builder, reflect.TypeOf(&serviceScoped{}))
 }
 
 // AddSingletonISingletonServiceProvider adds service to the DI container
 func AddSingletonISingletonServiceProvider(builder *di.Builder) {
-	log.Info().Msg("IoC: AddSingletonIServiceProvider")
 	contracts_serviceprovider.AddSingletonISingletonServiceProvider(builder, reflect.TypeOf(&serviceSingleton{}))
 }
 

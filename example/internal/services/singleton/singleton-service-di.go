@@ -5,7 +5,6 @@ import (
 
 	contracts_singleton "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/singleton"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -14,7 +13,5 @@ var (
 
 // AddSingletonISingleton adds service to the DI container
 func AddSingletonISingleton(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddSingletonISingleton")
 	contracts_singleton.AddSingletonISingleton(builder, rtGetType)
 }

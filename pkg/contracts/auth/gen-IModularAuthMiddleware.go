@@ -6,8 +6,10 @@ package auth
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIModularAuthMiddleware used when your service claims to implement IModularAuthMiddleware
@@ -16,84 +18,189 @@ var ReflectTypeIModularAuthMiddleware = di.GetInterfaceReflectType((*IModularAut
 // AddSingletonIModularAuthMiddleware adds a type that implements IModularAuthMiddleware
 func AddSingletonIModularAuthMiddleware(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("SINGLETON", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIModularAuthMiddlewareWithMetadata adds a type that implements IModularAuthMiddleware
 func AddSingletonIModularAuthMiddlewareWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("SINGLETON", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIModularAuthMiddlewareByObj adds a prebuilt obj
 func AddSingletonIModularAuthMiddlewareByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("SINGLETON", reflect.TypeOf(obj), _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIModularAuthMiddlewareByObjWithMetadata adds a prebuilt obj
 func AddSingletonIModularAuthMiddlewareByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("SINGLETON", reflect.TypeOf(obj), _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIModularAuthMiddlewareByFunc adds a type by a custom func
 func AddSingletonIModularAuthMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("SINGLETON", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIModularAuthMiddlewareByFuncWithMetadata adds a type by a custom func
 func AddSingletonIModularAuthMiddlewareByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("SINGLETON", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIModularAuthMiddleware adds a type that implements IModularAuthMiddleware
 func AddTransientIModularAuthMiddleware(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("TRANSIENT", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIModularAuthMiddlewareWithMetadata adds a type that implements IModularAuthMiddleware
 func AddTransientIModularAuthMiddlewareWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("TRANSIENT", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIModularAuthMiddlewareByFunc adds a type by a custom func
 func AddTransientIModularAuthMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("TRANSIENT", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIModularAuthMiddlewareByFuncWithMetadata adds a type by a custom func
 func AddTransientIModularAuthMiddlewareByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("TRANSIENT", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIModularAuthMiddleware adds a type that implements IModularAuthMiddleware
 func AddScopedIModularAuthMiddleware(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("SCOPED", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIModularAuthMiddlewareWithMetadata adds a type that implements IModularAuthMiddleware
 func AddScopedIModularAuthMiddlewareWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("SCOPED", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIModularAuthMiddlewareByFunc adds a type by a custom func
 func AddScopedIModularAuthMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("SCOPED", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIModularAuthMiddlewareByFuncWithMetadata adds a type by a custom func
 func AddScopedIModularAuthMiddlewareByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIModularAuthMiddleware)
+	_logAddIModularAuthMiddleware("SCOPED", implType, _getImplementedIModularAuthMiddlewareNames(implementedTypes...),
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIModularAuthMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -149,4 +256,33 @@ func SafeGetManyIModularAuthMiddlewareFromContainer(ctn di.Container) ([]IModula
 		results = append(results, obj.(IModularAuthMiddleware))
 	}
 	return results, nil
+}
+
+type _logIModularAuthMiddlewareExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIModularAuthMiddleware(scopeType string, implType reflect.Type, interfaces string, extra ..._logIModularAuthMiddlewareExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIModularAuthMiddlewareNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

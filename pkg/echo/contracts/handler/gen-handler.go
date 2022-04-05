@@ -6,8 +6,10 @@ package handler
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIHandler used when your service claims to implement IHandler
@@ -16,84 +18,189 @@ var ReflectTypeIHandler = di.GetInterfaceReflectType((*IHandler)(nil))
 // AddSingletonIHandler adds a type that implements IHandler
 func AddSingletonIHandler(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("SINGLETON", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIHandlerWithMetadata adds a type that implements IHandler
 func AddSingletonIHandlerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("SINGLETON", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIHandlerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIHandlerByObj adds a prebuilt obj
 func AddSingletonIHandlerByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("SINGLETON", reflect.TypeOf(obj), _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIHandlerByObjWithMetadata adds a prebuilt obj
 func AddSingletonIHandlerByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("SINGLETON", reflect.TypeOf(obj), _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIHandlerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIHandlerByFunc adds a type by a custom func
 func AddSingletonIHandlerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("SINGLETON", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIHandlerByFuncWithMetadata adds a type by a custom func
 func AddSingletonIHandlerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("SINGLETON", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIHandlerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIHandler adds a type that implements IHandler
 func AddTransientIHandler(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("TRANSIENT", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIHandlerWithMetadata adds a type that implements IHandler
 func AddTransientIHandlerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("TRANSIENT", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIHandlerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIHandlerByFunc adds a type by a custom func
 func AddTransientIHandlerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("TRANSIENT", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIHandlerByFuncWithMetadata adds a type by a custom func
 func AddTransientIHandlerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("TRANSIENT", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIHandlerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIHandler adds a type that implements IHandler
 func AddScopedIHandler(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("SCOPED", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIHandlerWithMetadata adds a type that implements IHandler
 func AddScopedIHandlerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("SCOPED", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIHandlerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIHandlerByFunc adds a type by a custom func
 func AddScopedIHandlerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("SCOPED", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIHandlerByFuncWithMetadata adds a type by a custom func
 func AddScopedIHandlerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandler)
+	_logAddIHandler("SCOPED", implType, _getImplementedIHandlerNames(implementedTypes...),
+		_logIHandlerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIHandlerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -151,90 +258,224 @@ func SafeGetManyIHandlerFromContainer(ctn di.Container) ([]IHandler, error) {
 	return results, nil
 }
 
+type _logIHandlerExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIHandler(scopeType string, implType reflect.Type, interfaces string, extra ..._logIHandlerExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIHandlerNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
+}
+
 // ReflectTypeIHandlerFactory used when your service claims to implement IHandlerFactory
 var ReflectTypeIHandlerFactory = di.GetInterfaceReflectType((*IHandlerFactory)(nil))
 
 // AddSingletonIHandlerFactory adds a type that implements IHandlerFactory
 func AddSingletonIHandlerFactory(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("SINGLETON", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIHandlerFactoryWithMetadata adds a type that implements IHandlerFactory
 func AddSingletonIHandlerFactoryWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("SINGLETON", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIHandlerFactoryExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIHandlerFactoryByObj adds a prebuilt obj
 func AddSingletonIHandlerFactoryByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("SINGLETON", reflect.TypeOf(obj), _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIHandlerFactoryByObjWithMetadata adds a prebuilt obj
 func AddSingletonIHandlerFactoryByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("SINGLETON", reflect.TypeOf(obj), _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIHandlerFactoryExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIHandlerFactoryByFunc adds a type by a custom func
 func AddSingletonIHandlerFactoryByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("SINGLETON", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIHandlerFactoryByFuncWithMetadata adds a type by a custom func
 func AddSingletonIHandlerFactoryByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("SINGLETON", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIHandlerFactoryExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIHandlerFactory adds a type that implements IHandlerFactory
 func AddTransientIHandlerFactory(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("TRANSIENT", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIHandlerFactoryWithMetadata adds a type that implements IHandlerFactory
 func AddTransientIHandlerFactoryWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("TRANSIENT", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIHandlerFactoryExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIHandlerFactoryByFunc adds a type by a custom func
 func AddTransientIHandlerFactoryByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("TRANSIENT", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIHandlerFactoryByFuncWithMetadata adds a type by a custom func
 func AddTransientIHandlerFactoryByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("TRANSIENT", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIHandlerFactoryExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIHandlerFactory adds a type that implements IHandlerFactory
 func AddScopedIHandlerFactory(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("SCOPED", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIHandlerFactoryWithMetadata adds a type that implements IHandlerFactory
 func AddScopedIHandlerFactoryWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("SCOPED", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIHandlerFactoryExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIHandlerFactoryByFunc adds a type by a custom func
 func AddScopedIHandlerFactoryByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("SCOPED", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIHandlerFactoryByFuncWithMetadata adds a type by a custom func
 func AddScopedIHandlerFactoryByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHandlerFactory)
+	_logAddIHandlerFactory("SCOPED", implType, _getImplementedIHandlerFactoryNames(implementedTypes...),
+		_logIHandlerFactoryExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIHandlerFactoryExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -290,4 +531,33 @@ func SafeGetManyIHandlerFactoryFromContainer(ctn di.Container) ([]IHandlerFactor
 		results = append(results, obj.(IHandlerFactory))
 	}
 	return results, nil
+}
+
+type _logIHandlerFactoryExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIHandlerFactory(scopeType string, implType reflect.Type, interfaces string, extra ..._logIHandlerFactoryExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIHandlerFactoryNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

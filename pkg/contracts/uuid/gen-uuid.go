@@ -6,8 +6,10 @@ package uuid
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIKSUID used when your service claims to implement IKSUID
@@ -16,84 +18,189 @@ var ReflectTypeIKSUID = di.GetInterfaceReflectType((*IKSUID)(nil))
 // AddSingletonIKSUID adds a type that implements IKSUID
 func AddSingletonIKSUID(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("SINGLETON", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIKSUIDWithMetadata adds a type that implements IKSUID
 func AddSingletonIKSUIDWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("SINGLETON", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIKSUIDExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIKSUIDByObj adds a prebuilt obj
 func AddSingletonIKSUIDByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("SINGLETON", reflect.TypeOf(obj), _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIKSUIDByObjWithMetadata adds a prebuilt obj
 func AddSingletonIKSUIDByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("SINGLETON", reflect.TypeOf(obj), _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIKSUIDExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIKSUIDByFunc adds a type by a custom func
 func AddSingletonIKSUIDByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("SINGLETON", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIKSUIDByFuncWithMetadata adds a type by a custom func
 func AddSingletonIKSUIDByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("SINGLETON", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIKSUIDExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIKSUID adds a type that implements IKSUID
 func AddTransientIKSUID(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("TRANSIENT", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIKSUIDWithMetadata adds a type that implements IKSUID
 func AddTransientIKSUIDWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("TRANSIENT", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIKSUIDExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIKSUIDByFunc adds a type by a custom func
 func AddTransientIKSUIDByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("TRANSIENT", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIKSUIDByFuncWithMetadata adds a type by a custom func
 func AddTransientIKSUIDByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("TRANSIENT", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIKSUIDExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIKSUID adds a type that implements IKSUID
 func AddScopedIKSUID(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("SCOPED", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIKSUIDWithMetadata adds a type that implements IKSUID
 func AddScopedIKSUIDWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("SCOPED", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIKSUIDExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIKSUIDByFunc adds a type by a custom func
 func AddScopedIKSUIDByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("SCOPED", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIKSUIDByFuncWithMetadata adds a type by a custom func
 func AddScopedIKSUIDByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIKSUID)
+	_logAddIKSUID("SCOPED", implType, _getImplementedIKSUIDNames(implementedTypes...),
+		_logIKSUIDExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIKSUIDExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -149,4 +256,33 @@ func SafeGetManyIKSUIDFromContainer(ctn di.Container) ([]IKSUID, error) {
 		results = append(results, obj.(IKSUID))
 	}
 	return results, nil
+}
+
+type _logIKSUIDExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIKSUID(scopeType string, implType reflect.Type, interfaces string, extra ..._logIKSUIDExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIKSUIDNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

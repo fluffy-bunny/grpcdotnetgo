@@ -6,8 +6,10 @@ package core
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIHealthServer used when your service claims to implement IHealthServer
@@ -16,84 +18,189 @@ var ReflectTypeIHealthServer = di.GetInterfaceReflectType((*IHealthServer)(nil))
 // AddSingletonIHealthServer adds a type that implements IHealthServer
 func AddSingletonIHealthServer(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("SINGLETON", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIHealthServerWithMetadata adds a type that implements IHealthServer
 func AddSingletonIHealthServerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("SINGLETON", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIHealthServerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIHealthServerByObj adds a prebuilt obj
 func AddSingletonIHealthServerByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("SINGLETON", reflect.TypeOf(obj), _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIHealthServerByObjWithMetadata adds a prebuilt obj
 func AddSingletonIHealthServerByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("SINGLETON", reflect.TypeOf(obj), _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIHealthServerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIHealthServerByFunc adds a type by a custom func
 func AddSingletonIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("SINGLETON", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIHealthServerByFuncWithMetadata adds a type by a custom func
 func AddSingletonIHealthServerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("SINGLETON", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIHealthServerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIHealthServer adds a type that implements IHealthServer
 func AddTransientIHealthServer(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("TRANSIENT", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIHealthServerWithMetadata adds a type that implements IHealthServer
 func AddTransientIHealthServerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("TRANSIENT", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIHealthServerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIHealthServerByFunc adds a type by a custom func
 func AddTransientIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("TRANSIENT", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIHealthServerByFuncWithMetadata adds a type by a custom func
 func AddTransientIHealthServerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("TRANSIENT", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIHealthServerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIHealthServer adds a type that implements IHealthServer
 func AddScopedIHealthServer(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("SCOPED", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIHealthServerWithMetadata adds a type that implements IHealthServer
 func AddScopedIHealthServerWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("SCOPED", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIHealthServerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIHealthServerByFunc adds a type by a custom func
 func AddScopedIHealthServerByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("SCOPED", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIHealthServerByFuncWithMetadata adds a type by a custom func
 func AddScopedIHealthServerByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIHealthServer)
+	_logAddIHealthServer("SCOPED", implType, _getImplementedIHealthServerNames(implementedTypes...),
+		_logIHealthServerExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIHealthServerExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -149,4 +256,33 @@ func SafeGetManyIHealthServerFromContainer(ctn di.Container) ([]IHealthServer, e
 		results = append(results, obj.(IHealthServer))
 	}
 	return results, nil
+}
+
+type _logIHealthServerExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIHealthServer(scopeType string, implType reflect.Type, interfaces string, extra ..._logIHealthServerExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIHealthServerNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

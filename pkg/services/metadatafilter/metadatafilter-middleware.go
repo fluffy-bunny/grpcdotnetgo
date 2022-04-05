@@ -8,7 +8,6 @@ import (
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/gods/sets/hashset"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
-	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
 
@@ -23,7 +22,6 @@ type (
 func AddSingletonIMetadataFilterMiddleware(builder *di.Builder,
 	allowedGlobal *hashset.StringSet,
 	allowedByEntryPoint map[string]*hashset.StringSet) {
-	log.Info().Msg("IoC: AddSingletonIMetadataFilterMiddleware")
 	contractsmetadatafilter.AddSingletonIMetadataFilterMiddlewareByFunc(builder, reflect.TypeOf(&metadataFilterMiddleware{}),
 		func(ctn di.Container) (interface{}, error) {
 			return &metadataFilterMiddleware{

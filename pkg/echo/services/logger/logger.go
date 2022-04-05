@@ -44,15 +44,12 @@ func AddSingletonILogger(builder *di.Builder) {
 			Logger: &logger,
 		}, nil
 	}
-	log.Info().Msg("DI: ISingletonLogger - singleton")
 	contracts_logger.AddSingletonISingletonLoggerByFunc(builder, reflect.TypeOf(&service{}), bldFunc)
-	log.Info().Msg("DI: ILogger - singleton")
 	contracts_logger.AddSingletonILoggerByFunc(builder, reflect.TypeOf(&service{}), bldFunc)
 }
 
 // AddScopedILogger ...
 func AddScopedILogger(builder *di.Builder) {
-	log.Info().Msg("DI: ILogger - SCOPED")
 	contracts_logger.AddScopedILogger(builder, reflect.TypeOf(&serviceScoped{}))
 }
 

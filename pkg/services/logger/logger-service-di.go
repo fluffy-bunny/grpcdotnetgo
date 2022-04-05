@@ -12,8 +12,6 @@ import (
 
 // AddScopedILogger adds service to the DI container
 func AddScopedILogger(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddScopedLogger")
 	contracts_logger.AddScopedILoggerByFunc(builder, reflect.TypeOf(&loggerService{}),
 		func(ctn di.Container) (interface{}, error) {
 			request := contracts_request.GetIRequestFromContainer(ctn)
@@ -27,8 +25,6 @@ func AddScopedILogger(builder *di.Builder) {
 
 // AddSingletonILogger adds service to the DI container
 func AddSingletonILogger(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddSingletonILogger")
 	bldFunc := func(ctn di.Container) (interface{}, error) {
 		logger := log.With().Logger()
 		return &loggerService{

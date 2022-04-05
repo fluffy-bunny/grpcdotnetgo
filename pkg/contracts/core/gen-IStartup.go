@@ -6,8 +6,10 @@ package core
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeICoreConfig used when your service claims to implement ICoreConfig
@@ -16,84 +18,189 @@ var ReflectTypeICoreConfig = di.GetInterfaceReflectType((*ICoreConfig)(nil))
 // AddSingletonICoreConfig adds a type that implements ICoreConfig
 func AddSingletonICoreConfig(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("SINGLETON", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonICoreConfigWithMetadata adds a type that implements ICoreConfig
 func AddSingletonICoreConfigWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("SINGLETON", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logICoreConfigExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonICoreConfigByObj adds a prebuilt obj
 func AddSingletonICoreConfigByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("SINGLETON", reflect.TypeOf(obj), _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonICoreConfigByObjWithMetadata adds a prebuilt obj
 func AddSingletonICoreConfigByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("SINGLETON", reflect.TypeOf(obj), _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logICoreConfigExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonICoreConfigByFunc adds a type by a custom func
 func AddSingletonICoreConfigByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("SINGLETON", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonICoreConfigByFuncWithMetadata adds a type by a custom func
 func AddSingletonICoreConfigByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("SINGLETON", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logICoreConfigExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientICoreConfig adds a type that implements ICoreConfig
 func AddTransientICoreConfig(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("TRANSIENT", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientICoreConfigWithMetadata adds a type that implements ICoreConfig
 func AddTransientICoreConfigWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("TRANSIENT", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logICoreConfigExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientICoreConfigByFunc adds a type by a custom func
 func AddTransientICoreConfigByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("TRANSIENT", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientICoreConfigByFuncWithMetadata adds a type by a custom func
 func AddTransientICoreConfigByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("TRANSIENT", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logICoreConfigExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedICoreConfig adds a type that implements ICoreConfig
 func AddScopedICoreConfig(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("SCOPED", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedICoreConfigWithMetadata adds a type that implements ICoreConfig
 func AddScopedICoreConfigWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("SCOPED", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logICoreConfigExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedICoreConfigByFunc adds a type by a custom func
 func AddScopedICoreConfigByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("SCOPED", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedICoreConfigByFuncWithMetadata adds a type by a custom func
 func AddScopedICoreConfigByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICoreConfig)
+	_logAddICoreConfig("SCOPED", implType, _getImplementedICoreConfigNames(implementedTypes...),
+		_logICoreConfigExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logICoreConfigExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -151,90 +258,224 @@ func SafeGetManyICoreConfigFromContainer(ctn di.Container) ([]ICoreConfig, error
 	return results, nil
 }
 
+type _logICoreConfigExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddICoreConfig(scopeType string, implType reflect.Type, interfaces string, extra ..._logICoreConfigExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedICoreConfigNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
+}
+
 // ReflectTypeIStartup used when your service claims to implement IStartup
 var ReflectTypeIStartup = di.GetInterfaceReflectType((*IStartup)(nil))
 
 // AddSingletonIStartup adds a type that implements IStartup
 func AddSingletonIStartup(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("SINGLETON", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIStartupWithMetadata adds a type that implements IStartup
 func AddSingletonIStartupWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("SINGLETON", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIStartupExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIStartupByObj adds a prebuilt obj
 func AddSingletonIStartupByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("SINGLETON", reflect.TypeOf(obj), _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIStartupByObjWithMetadata adds a prebuilt obj
 func AddSingletonIStartupByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("SINGLETON", reflect.TypeOf(obj), _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIStartupExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIStartupByFunc adds a type by a custom func
 func AddSingletonIStartupByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("SINGLETON", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIStartupByFuncWithMetadata adds a type by a custom func
 func AddSingletonIStartupByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("SINGLETON", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIStartupExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIStartup adds a type that implements IStartup
 func AddTransientIStartup(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("TRANSIENT", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIStartupWithMetadata adds a type that implements IStartup
 func AddTransientIStartupWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("TRANSIENT", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIStartupExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIStartupByFunc adds a type by a custom func
 func AddTransientIStartupByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("TRANSIENT", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIStartupByFuncWithMetadata adds a type by a custom func
 func AddTransientIStartupByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("TRANSIENT", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIStartupExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIStartup adds a type that implements IStartup
 func AddScopedIStartup(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("SCOPED", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIStartupWithMetadata adds a type that implements IStartup
 func AddScopedIStartupWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("SCOPED", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIStartupExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIStartupByFunc adds a type by a custom func
 func AddScopedIStartupByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("SCOPED", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIStartupByFuncWithMetadata adds a type by a custom func
 func AddScopedIStartupByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIStartup)
+	_logAddIStartup("SCOPED", implType, _getImplementedIStartupNames(implementedTypes...),
+		_logIStartupExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIStartupExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -292,90 +533,224 @@ func SafeGetManyIStartupFromContainer(ctn di.Container) ([]IStartup, error) {
 	return results, nil
 }
 
+type _logIStartupExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIStartup(scopeType string, implType reflect.Type, interfaces string, extra ..._logIStartupExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIStartupNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
+}
+
 // ReflectTypeIUnaryServerInterceptorBuilder used when your service claims to implement IUnaryServerInterceptorBuilder
 var ReflectTypeIUnaryServerInterceptorBuilder = di.GetInterfaceReflectType((*IUnaryServerInterceptorBuilder)(nil))
 
 // AddSingletonIUnaryServerInterceptorBuilder adds a type that implements IUnaryServerInterceptorBuilder
 func AddSingletonIUnaryServerInterceptorBuilder(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("SINGLETON", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIUnaryServerInterceptorBuilderWithMetadata adds a type that implements IUnaryServerInterceptorBuilder
 func AddSingletonIUnaryServerInterceptorBuilderWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("SINGLETON", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIUnaryServerInterceptorBuilderByObj adds a prebuilt obj
 func AddSingletonIUnaryServerInterceptorBuilderByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("SINGLETON", reflect.TypeOf(obj), _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIUnaryServerInterceptorBuilderByObjWithMetadata adds a prebuilt obj
 func AddSingletonIUnaryServerInterceptorBuilderByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("SINGLETON", reflect.TypeOf(obj), _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIUnaryServerInterceptorBuilderByFunc adds a type by a custom func
 func AddSingletonIUnaryServerInterceptorBuilderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("SINGLETON", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIUnaryServerInterceptorBuilderByFuncWithMetadata adds a type by a custom func
 func AddSingletonIUnaryServerInterceptorBuilderByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("SINGLETON", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIUnaryServerInterceptorBuilder adds a type that implements IUnaryServerInterceptorBuilder
 func AddTransientIUnaryServerInterceptorBuilder(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("TRANSIENT", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIUnaryServerInterceptorBuilderWithMetadata adds a type that implements IUnaryServerInterceptorBuilder
 func AddTransientIUnaryServerInterceptorBuilderWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("TRANSIENT", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIUnaryServerInterceptorBuilderByFunc adds a type by a custom func
 func AddTransientIUnaryServerInterceptorBuilderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("TRANSIENT", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIUnaryServerInterceptorBuilderByFuncWithMetadata adds a type by a custom func
 func AddTransientIUnaryServerInterceptorBuilderByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("TRANSIENT", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIUnaryServerInterceptorBuilder adds a type that implements IUnaryServerInterceptorBuilder
 func AddScopedIUnaryServerInterceptorBuilder(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("SCOPED", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIUnaryServerInterceptorBuilderWithMetadata adds a type that implements IUnaryServerInterceptorBuilder
 func AddScopedIUnaryServerInterceptorBuilderWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("SCOPED", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIUnaryServerInterceptorBuilderByFunc adds a type by a custom func
 func AddScopedIUnaryServerInterceptorBuilderByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("SCOPED", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIUnaryServerInterceptorBuilderByFuncWithMetadata adds a type by a custom func
 func AddScopedIUnaryServerInterceptorBuilderByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIUnaryServerInterceptorBuilder)
+	_logAddIUnaryServerInterceptorBuilder("SCOPED", implType, _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes...),
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIUnaryServerInterceptorBuilderExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -431,4 +806,33 @@ func SafeGetManyIUnaryServerInterceptorBuilderFromContainer(ctn di.Container) ([
 		results = append(results, obj.(IUnaryServerInterceptorBuilder))
 	}
 	return results, nil
+}
+
+type _logIUnaryServerInterceptorBuilderExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIUnaryServerInterceptorBuilder(scopeType string, implType reflect.Type, interfaces string, extra ..._logIUnaryServerInterceptorBuilderExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIUnaryServerInterceptorBuilderNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

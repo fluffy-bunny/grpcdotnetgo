@@ -6,8 +6,10 @@ package cookies
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeISecureCookie used when your service claims to implement ISecureCookie
@@ -16,84 +18,189 @@ var ReflectTypeISecureCookie = di.GetInterfaceReflectType((*ISecureCookie)(nil))
 // AddSingletonISecureCookie adds a type that implements ISecureCookie
 func AddSingletonISecureCookie(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("SINGLETON", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonISecureCookieWithMetadata adds a type that implements ISecureCookie
 func AddSingletonISecureCookieWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("SINGLETON", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logISecureCookieExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonISecureCookieByObj adds a prebuilt obj
 func AddSingletonISecureCookieByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("SINGLETON", reflect.TypeOf(obj), _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonISecureCookieByObjWithMetadata adds a prebuilt obj
 func AddSingletonISecureCookieByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("SINGLETON", reflect.TypeOf(obj), _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logISecureCookieExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonISecureCookieByFunc adds a type by a custom func
 func AddSingletonISecureCookieByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("SINGLETON", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonISecureCookieByFuncWithMetadata adds a type by a custom func
 func AddSingletonISecureCookieByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("SINGLETON", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logISecureCookieExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientISecureCookie adds a type that implements ISecureCookie
 func AddTransientISecureCookie(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("TRANSIENT", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientISecureCookieWithMetadata adds a type that implements ISecureCookie
 func AddTransientISecureCookieWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("TRANSIENT", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logISecureCookieExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientISecureCookieByFunc adds a type by a custom func
 func AddTransientISecureCookieByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("TRANSIENT", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientISecureCookieByFuncWithMetadata adds a type by a custom func
 func AddTransientISecureCookieByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("TRANSIENT", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logISecureCookieExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedISecureCookie adds a type that implements ISecureCookie
 func AddScopedISecureCookie(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("SCOPED", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedISecureCookieWithMetadata adds a type that implements ISecureCookie
 func AddScopedISecureCookieWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("SCOPED", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logISecureCookieExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedISecureCookieByFunc adds a type by a custom func
 func AddScopedISecureCookieByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("SCOPED", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedISecureCookieByFuncWithMetadata adds a type by a custom func
 func AddScopedISecureCookieByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISecureCookie)
+	_logAddISecureCookie("SCOPED", implType, _getImplementedISecureCookieNames(implementedTypes...),
+		_logISecureCookieExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logISecureCookieExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -149,4 +256,33 @@ func SafeGetManyISecureCookieFromContainer(ctn di.Container) ([]ISecureCookie, e
 		results = append(results, obj.(ISecureCookie))
 	}
 	return results, nil
+}
+
+type _logISecureCookieExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddISecureCookie(scopeType string, implType reflect.Type, interfaces string, extra ..._logISecureCookieExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedISecureCookieNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

@@ -6,7 +6,6 @@ import (
 
 	contractsmetadatafilter "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/metadatafilter"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
 
@@ -17,8 +16,6 @@ type (
 
 // AddSingletonIMetadataFilterMiddlewareNil adds service to the DI container
 func AddSingletonIMetadataFilterMiddlewareNil(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddSingletonIMetadataFilterMiddlewareNil")
 	contractsmetadatafilter.AddSingletonIMetadataFilterMiddleware(builder, reflect.TypeOf(&nilMetadataFilterMiddleware{}))
 }
 

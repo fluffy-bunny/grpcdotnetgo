@@ -17,9 +17,6 @@ func GetMockOIDCServiceFromContainer(ctn di.Container) interface{} {
 
 // AddMockOIDCService adds service to the DI container
 func AddMockOIDCService(builder *di.Builder) {
-	log.Info().
-		Str("serviceName", diServiceName).
-		Msg("IoC: AddMockOIDCService")
 	builder.Add(di.Def{
 		Name:  diServiceName,
 		Scope: di.App,

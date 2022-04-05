@@ -6,7 +6,6 @@ import (
 
 	contracts_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/timeutils"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 )
 
 type (
@@ -17,8 +16,6 @@ type (
 
 // AddSingletonITimeUtils ...
 func AddSingletonITimeUtils(builder *di.Builder) {
-	log.Info().Msg("IoC: AddSingletonITimeUtils")
-
 	contracts_timeutils.AddSingletonITimeUtils(builder, reflect.TypeOf(&serviceTimeUtils{}))
 }
 

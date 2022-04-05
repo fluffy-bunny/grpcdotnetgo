@@ -10,7 +10,6 @@ import (
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/robfig/cron/v3"
-	"github.com/rs/zerolog/log"
 )
 
 // NewScheduledJob ...
@@ -50,7 +49,6 @@ func assertImplementation() {
 
 // AddSingletonBackgroundTasks ...
 func AddSingletonBackgroundTasks(builder *di.Builder) {
-	log.Info().Msg("DI: AddSingletonBackgroundTasks")
 	contracts_backgroundtasks.AddSingletonIBackgroundTasks(builder, reflect.TypeOf(&serviceBackgroundTasks{}))
 }
 

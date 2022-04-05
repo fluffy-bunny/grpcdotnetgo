@@ -83,8 +83,6 @@ func (s *Service) Close() {
 
 // AddScopedIGreeterService adds service to the DI container
 func AddScopedIGreeterService(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddScopedIGreeterService")
 	pb.AddScopedIGreeterService(builder, reflect.TypeOf(&Service{}))
 }
 ```

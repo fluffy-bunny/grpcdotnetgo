@@ -6,8 +6,10 @@ package contextaccessor
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIInternalEchoContextAccessor used when your service claims to implement IInternalEchoContextAccessor
@@ -16,84 +18,189 @@ var ReflectTypeIInternalEchoContextAccessor = di.GetInterfaceReflectType((*IInte
 // AddSingletonIInternalEchoContextAccessor adds a type that implements IInternalEchoContextAccessor
 func AddSingletonIInternalEchoContextAccessor(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("SINGLETON", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIInternalEchoContextAccessorWithMetadata adds a type that implements IInternalEchoContextAccessor
 func AddSingletonIInternalEchoContextAccessorWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("SINGLETON", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIInternalEchoContextAccessorByObj adds a prebuilt obj
 func AddSingletonIInternalEchoContextAccessorByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("SINGLETON", reflect.TypeOf(obj), _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIInternalEchoContextAccessorByObjWithMetadata adds a prebuilt obj
 func AddSingletonIInternalEchoContextAccessorByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("SINGLETON", reflect.TypeOf(obj), _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIInternalEchoContextAccessorByFunc adds a type by a custom func
 func AddSingletonIInternalEchoContextAccessorByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("SINGLETON", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIInternalEchoContextAccessorByFuncWithMetadata adds a type by a custom func
 func AddSingletonIInternalEchoContextAccessorByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("SINGLETON", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIInternalEchoContextAccessor adds a type that implements IInternalEchoContextAccessor
 func AddTransientIInternalEchoContextAccessor(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("TRANSIENT", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIInternalEchoContextAccessorWithMetadata adds a type that implements IInternalEchoContextAccessor
 func AddTransientIInternalEchoContextAccessorWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("TRANSIENT", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIInternalEchoContextAccessorByFunc adds a type by a custom func
 func AddTransientIInternalEchoContextAccessorByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("TRANSIENT", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIInternalEchoContextAccessorByFuncWithMetadata adds a type by a custom func
 func AddTransientIInternalEchoContextAccessorByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("TRANSIENT", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIInternalEchoContextAccessor adds a type that implements IInternalEchoContextAccessor
 func AddScopedIInternalEchoContextAccessor(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("SCOPED", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIInternalEchoContextAccessorWithMetadata adds a type that implements IInternalEchoContextAccessor
 func AddScopedIInternalEchoContextAccessorWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("SCOPED", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIInternalEchoContextAccessorByFunc adds a type by a custom func
 func AddScopedIInternalEchoContextAccessorByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("SCOPED", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIInternalEchoContextAccessorByFuncWithMetadata adds a type by a custom func
 func AddScopedIInternalEchoContextAccessorByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIInternalEchoContextAccessor)
+	_logAddIInternalEchoContextAccessor("SCOPED", implType, _getImplementedIInternalEchoContextAccessorNames(implementedTypes...),
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIInternalEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -151,90 +258,224 @@ func SafeGetManyIInternalEchoContextAccessorFromContainer(ctn di.Container) ([]I
 	return results, nil
 }
 
+type _logIInternalEchoContextAccessorExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIInternalEchoContextAccessor(scopeType string, implType reflect.Type, interfaces string, extra ..._logIInternalEchoContextAccessorExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIInternalEchoContextAccessorNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
+}
+
 // ReflectTypeIEchoContextAccessor used when your service claims to implement IEchoContextAccessor
 var ReflectTypeIEchoContextAccessor = di.GetInterfaceReflectType((*IEchoContextAccessor)(nil))
 
 // AddSingletonIEchoContextAccessor adds a type that implements IEchoContextAccessor
 func AddSingletonIEchoContextAccessor(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("SINGLETON", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIEchoContextAccessorWithMetadata adds a type that implements IEchoContextAccessor
 func AddSingletonIEchoContextAccessorWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("SINGLETON", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIEchoContextAccessorByObj adds a prebuilt obj
 func AddSingletonIEchoContextAccessorByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("SINGLETON", reflect.TypeOf(obj), _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIEchoContextAccessorByObjWithMetadata adds a prebuilt obj
 func AddSingletonIEchoContextAccessorByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("SINGLETON", reflect.TypeOf(obj), _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIEchoContextAccessorByFunc adds a type by a custom func
 func AddSingletonIEchoContextAccessorByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("SINGLETON", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIEchoContextAccessorByFuncWithMetadata adds a type by a custom func
 func AddSingletonIEchoContextAccessorByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("SINGLETON", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIEchoContextAccessor adds a type that implements IEchoContextAccessor
 func AddTransientIEchoContextAccessor(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("TRANSIENT", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIEchoContextAccessorWithMetadata adds a type that implements IEchoContextAccessor
 func AddTransientIEchoContextAccessorWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("TRANSIENT", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIEchoContextAccessorByFunc adds a type by a custom func
 func AddTransientIEchoContextAccessorByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("TRANSIENT", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIEchoContextAccessorByFuncWithMetadata adds a type by a custom func
 func AddTransientIEchoContextAccessorByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("TRANSIENT", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIEchoContextAccessor adds a type that implements IEchoContextAccessor
 func AddScopedIEchoContextAccessor(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("SCOPED", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIEchoContextAccessorWithMetadata adds a type that implements IEchoContextAccessor
 func AddScopedIEchoContextAccessorWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("SCOPED", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIEchoContextAccessorByFunc adds a type by a custom func
 func AddScopedIEchoContextAccessorByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("SCOPED", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIEchoContextAccessorByFuncWithMetadata adds a type by a custom func
 func AddScopedIEchoContextAccessorByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIEchoContextAccessor)
+	_logAddIEchoContextAccessor("SCOPED", implType, _getImplementedIEchoContextAccessorNames(implementedTypes...),
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIEchoContextAccessorExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -290,4 +531,33 @@ func SafeGetManyIEchoContextAccessorFromContainer(ctn di.Container) ([]IEchoCont
 		results = append(results, obj.(IEchoContextAccessor))
 	}
 	return results, nil
+}
+
+type _logIEchoContextAccessorExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIEchoContextAccessor(scopeType string, implType reflect.Type, interfaces string, extra ..._logIEchoContextAccessorExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIEchoContextAccessorNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

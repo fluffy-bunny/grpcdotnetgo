@@ -6,8 +6,10 @@ package timeutils
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeITimeUtils used when your service claims to implement ITimeUtils
@@ -16,84 +18,189 @@ var ReflectTypeITimeUtils = di.GetInterfaceReflectType((*ITimeUtils)(nil))
 // AddSingletonITimeUtils adds a type that implements ITimeUtils
 func AddSingletonITimeUtils(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("SINGLETON", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonITimeUtilsWithMetadata adds a type that implements ITimeUtils
 func AddSingletonITimeUtilsWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("SINGLETON", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logITimeUtilsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonITimeUtilsByObj adds a prebuilt obj
 func AddSingletonITimeUtilsByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("SINGLETON", reflect.TypeOf(obj), _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonITimeUtilsByObjWithMetadata adds a prebuilt obj
 func AddSingletonITimeUtilsByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("SINGLETON", reflect.TypeOf(obj), _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logITimeUtilsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonITimeUtilsByFunc adds a type by a custom func
 func AddSingletonITimeUtilsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("SINGLETON", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonITimeUtilsByFuncWithMetadata adds a type by a custom func
 func AddSingletonITimeUtilsByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("SINGLETON", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logITimeUtilsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientITimeUtils adds a type that implements ITimeUtils
 func AddTransientITimeUtils(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("TRANSIENT", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientITimeUtilsWithMetadata adds a type that implements ITimeUtils
 func AddTransientITimeUtilsWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("TRANSIENT", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logITimeUtilsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientITimeUtilsByFunc adds a type by a custom func
 func AddTransientITimeUtilsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("TRANSIENT", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientITimeUtilsByFuncWithMetadata adds a type by a custom func
 func AddTransientITimeUtilsByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("TRANSIENT", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logITimeUtilsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedITimeUtils adds a type that implements ITimeUtils
 func AddScopedITimeUtils(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("SCOPED", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedITimeUtilsWithMetadata adds a type that implements ITimeUtils
 func AddScopedITimeUtilsWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("SCOPED", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logITimeUtilsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedITimeUtilsByFunc adds a type by a custom func
 func AddScopedITimeUtilsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("SCOPED", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedITimeUtilsByFuncWithMetadata adds a type by a custom func
 func AddScopedITimeUtilsByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITimeUtils)
+	_logAddITimeUtils("SCOPED", implType, _getImplementedITimeUtilsNames(implementedTypes...),
+		_logITimeUtilsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logITimeUtilsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -151,90 +258,224 @@ func SafeGetManyITimeUtilsFromContainer(ctn di.Container) ([]ITimeUtils, error) 
 	return results, nil
 }
 
+type _logITimeUtilsExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddITimeUtils(scopeType string, implType reflect.Type, interfaces string, extra ..._logITimeUtilsExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedITimeUtilsNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
+}
+
 // ReflectTypeITime used when your service claims to implement ITime
 var ReflectTypeITime = di.GetInterfaceReflectType((*ITime)(nil))
 
 // AddSingletonITime adds a type that implements ITime
 func AddSingletonITime(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("SINGLETON", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonITimeWithMetadata adds a type that implements ITime
 func AddSingletonITimeWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("SINGLETON", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logITimeExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonITimeByObj adds a prebuilt obj
 func AddSingletonITimeByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("SINGLETON", reflect.TypeOf(obj), _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonITimeByObjWithMetadata adds a prebuilt obj
 func AddSingletonITimeByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("SINGLETON", reflect.TypeOf(obj), _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logITimeExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonITimeByFunc adds a type by a custom func
 func AddSingletonITimeByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("SINGLETON", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonITimeByFuncWithMetadata adds a type by a custom func
 func AddSingletonITimeByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("SINGLETON", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logITimeExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientITime adds a type that implements ITime
 func AddTransientITime(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("TRANSIENT", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientITimeWithMetadata adds a type that implements ITime
 func AddTransientITimeWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("TRANSIENT", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logITimeExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientITimeByFunc adds a type by a custom func
 func AddTransientITimeByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("TRANSIENT", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientITimeByFuncWithMetadata adds a type by a custom func
 func AddTransientITimeByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("TRANSIENT", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logITimeExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedITime adds a type that implements ITime
 func AddScopedITime(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("SCOPED", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedITimeWithMetadata adds a type that implements ITime
 func AddScopedITimeWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("SCOPED", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logITimeExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedITimeByFunc adds a type by a custom func
 func AddScopedITimeByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("SCOPED", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedITimeByFuncWithMetadata adds a type by a custom func
 func AddScopedITimeByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITime)
+	_logAddITime("SCOPED", implType, _getImplementedITimeNames(implementedTypes...),
+		_logITimeExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logITimeExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -290,4 +531,33 @@ func SafeGetManyITimeFromContainer(ctn di.Container) ([]ITime, error) {
 		results = append(results, obj.(ITime))
 	}
 	return results, nil
+}
+
+type _logITimeExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddITime(scopeType string, implType reflect.Type, interfaces string, extra ..._logITimeExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedITimeNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

@@ -6,8 +6,10 @@ package request
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIRequest used when your service claims to implement IRequest
@@ -16,84 +18,189 @@ var ReflectTypeIRequest = di.GetInterfaceReflectType((*IRequest)(nil))
 // AddSingletonIRequest adds a type that implements IRequest
 func AddSingletonIRequest(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("SINGLETON", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIRequestWithMetadata adds a type that implements IRequest
 func AddSingletonIRequestWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("SINGLETON", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIRequestExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIRequestByObj adds a prebuilt obj
 func AddSingletonIRequestByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("SINGLETON", reflect.TypeOf(obj), _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIRequestByObjWithMetadata adds a prebuilt obj
 func AddSingletonIRequestByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("SINGLETON", reflect.TypeOf(obj), _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIRequestExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIRequestByFunc adds a type by a custom func
 func AddSingletonIRequestByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("SINGLETON", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIRequestByFuncWithMetadata adds a type by a custom func
 func AddSingletonIRequestByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("SINGLETON", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIRequestExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIRequest adds a type that implements IRequest
 func AddTransientIRequest(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("TRANSIENT", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIRequestWithMetadata adds a type that implements IRequest
 func AddTransientIRequestWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("TRANSIENT", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIRequestExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIRequestByFunc adds a type by a custom func
 func AddTransientIRequestByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("TRANSIENT", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIRequestByFuncWithMetadata adds a type by a custom func
 func AddTransientIRequestByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("TRANSIENT", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIRequestExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIRequest adds a type that implements IRequest
 func AddScopedIRequest(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("SCOPED", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIRequestWithMetadata adds a type that implements IRequest
 func AddScopedIRequestWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("SCOPED", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIRequestExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIRequestByFunc adds a type by a custom func
 func AddScopedIRequestByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("SCOPED", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIRequestByFuncWithMetadata adds a type by a custom func
 func AddScopedIRequestByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIRequest)
+	_logAddIRequest("SCOPED", implType, _getImplementedIRequestNames(implementedTypes...),
+		_logIRequestExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIRequestExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -151,90 +258,224 @@ func SafeGetManyIRequestFromContainer(ctn di.Container) ([]IRequest, error) {
 	return results, nil
 }
 
+type _logIRequestExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIRequest(scopeType string, implType reflect.Type, interfaces string, extra ..._logIRequestExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIRequestNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
+}
+
 // ReflectTypeIItems used when your service claims to implement IItems
 var ReflectTypeIItems = di.GetInterfaceReflectType((*IItems)(nil))
 
 // AddSingletonIItems adds a type that implements IItems
 func AddSingletonIItems(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("SINGLETON", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIItemsWithMetadata adds a type that implements IItems
 func AddSingletonIItemsWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("SINGLETON", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIItemsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIItemsByObj adds a prebuilt obj
 func AddSingletonIItemsByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("SINGLETON", reflect.TypeOf(obj), _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIItemsByObjWithMetadata adds a prebuilt obj
 func AddSingletonIItemsByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("SINGLETON", reflect.TypeOf(obj), _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIItemsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIItemsByFunc adds a type by a custom func
 func AddSingletonIItemsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("SINGLETON", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIItemsByFuncWithMetadata adds a type by a custom func
 func AddSingletonIItemsByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("SINGLETON", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIItemsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIItems adds a type that implements IItems
 func AddTransientIItems(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("TRANSIENT", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIItemsWithMetadata adds a type that implements IItems
 func AddTransientIItemsWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("TRANSIENT", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIItemsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIItemsByFunc adds a type by a custom func
 func AddTransientIItemsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("TRANSIENT", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIItemsByFuncWithMetadata adds a type by a custom func
 func AddTransientIItemsByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("TRANSIENT", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIItemsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIItems adds a type that implements IItems
 func AddScopedIItems(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("SCOPED", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIItemsWithMetadata adds a type that implements IItems
 func AddScopedIItemsWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("SCOPED", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIItemsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIItemsByFunc adds a type by a custom func
 func AddScopedIItemsByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("SCOPED", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIItemsByFuncWithMetadata adds a type by a custom func
 func AddScopedIItemsByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIItems)
+	_logAddIItems("SCOPED", implType, _getImplementedIItemsNames(implementedTypes...),
+		_logIItemsExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIItemsExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -290,4 +531,33 @@ func SafeGetManyIItemsFromContainer(ctn di.Container) ([]IItems, error) {
 		results = append(results, obj.(IItems))
 	}
 	return results, nil
+}
+
+type _logIItemsExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIItems(scopeType string, implType reflect.Type, interfaces string, extra ..._logIItemsExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIItemsNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

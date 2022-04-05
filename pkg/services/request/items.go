@@ -5,7 +5,6 @@ import (
 
 	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 )
 
 type serviceItems struct {
@@ -18,8 +17,6 @@ func (s *serviceItems) Ctor() {
 
 // AddScopedIItems adds service to the DI container
 func AddScopedIItems(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddScopedIItems")
 	contracts_request.AddScopedIItems(builder, reflect.TypeOf(&serviceItems{}))
 }
 func (s *serviceItems) Set(key string, value interface{}) {

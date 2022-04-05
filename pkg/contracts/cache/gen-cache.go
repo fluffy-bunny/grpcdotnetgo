@@ -6,8 +6,10 @@ package cache
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeICache used when your service claims to implement ICache
@@ -16,84 +18,189 @@ var ReflectTypeICache = di.GetInterfaceReflectType((*ICache)(nil))
 // AddSingletonICache adds a type that implements ICache
 func AddSingletonICache(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("SINGLETON", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonICacheWithMetadata adds a type that implements ICache
 func AddSingletonICacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("SINGLETON", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logICacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonICacheByObj adds a prebuilt obj
 func AddSingletonICacheByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("SINGLETON", reflect.TypeOf(obj), _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonICacheByObjWithMetadata adds a prebuilt obj
 func AddSingletonICacheByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("SINGLETON", reflect.TypeOf(obj), _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logICacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonICacheByFunc adds a type by a custom func
 func AddSingletonICacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("SINGLETON", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonICacheByFuncWithMetadata adds a type by a custom func
 func AddSingletonICacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("SINGLETON", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logICacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientICache adds a type that implements ICache
 func AddTransientICache(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("TRANSIENT", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientICacheWithMetadata adds a type that implements ICache
 func AddTransientICacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("TRANSIENT", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logICacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientICacheByFunc adds a type by a custom func
 func AddTransientICacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("TRANSIENT", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientICacheByFuncWithMetadata adds a type by a custom func
 func AddTransientICacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("TRANSIENT", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logICacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedICache adds a type that implements ICache
 func AddScopedICache(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("SCOPED", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedICacheWithMetadata adds a type that implements ICache
 func AddScopedICacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("SCOPED", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logICacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedICacheByFunc adds a type by a custom func
 func AddScopedICacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("SCOPED", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedICacheByFuncWithMetadata adds a type by a custom func
 func AddScopedICacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeICache)
+	_logAddICache("SCOPED", implType, _getImplementedICacheNames(implementedTypes...),
+		_logICacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logICacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -151,90 +258,224 @@ func SafeGetManyICacheFromContainer(ctn di.Container) ([]ICache, error) {
 	return results, nil
 }
 
+type _logICacheExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddICache(scopeType string, implType reflect.Type, interfaces string, extra ..._logICacheExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedICacheNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
+}
+
 // ReflectTypeIMemoryCache used when your service claims to implement IMemoryCache
 var ReflectTypeIMemoryCache = di.GetInterfaceReflectType((*IMemoryCache)(nil))
 
 // AddSingletonIMemoryCache adds a type that implements IMemoryCache
 func AddSingletonIMemoryCache(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("SINGLETON", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIMemoryCacheWithMetadata adds a type that implements IMemoryCache
 func AddSingletonIMemoryCacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("SINGLETON", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIMemoryCacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIMemoryCacheByObj adds a prebuilt obj
 func AddSingletonIMemoryCacheByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("SINGLETON", reflect.TypeOf(obj), _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIMemoryCacheByObjWithMetadata adds a prebuilt obj
 func AddSingletonIMemoryCacheByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("SINGLETON", reflect.TypeOf(obj), _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIMemoryCacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIMemoryCacheByFunc adds a type by a custom func
 func AddSingletonIMemoryCacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("SINGLETON", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIMemoryCacheByFuncWithMetadata adds a type by a custom func
 func AddSingletonIMemoryCacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("SINGLETON", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIMemoryCacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIMemoryCache adds a type that implements IMemoryCache
 func AddTransientIMemoryCache(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("TRANSIENT", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIMemoryCacheWithMetadata adds a type that implements IMemoryCache
 func AddTransientIMemoryCacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("TRANSIENT", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIMemoryCacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIMemoryCacheByFunc adds a type by a custom func
 func AddTransientIMemoryCacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("TRANSIENT", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIMemoryCacheByFuncWithMetadata adds a type by a custom func
 func AddTransientIMemoryCacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("TRANSIENT", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIMemoryCacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIMemoryCache adds a type that implements IMemoryCache
 func AddScopedIMemoryCache(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("SCOPED", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIMemoryCacheWithMetadata adds a type that implements IMemoryCache
 func AddScopedIMemoryCacheWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("SCOPED", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIMemoryCacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIMemoryCacheByFunc adds a type by a custom func
 func AddScopedIMemoryCacheByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("SCOPED", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIMemoryCacheByFuncWithMetadata adds a type by a custom func
 func AddScopedIMemoryCacheByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMemoryCache)
+	_logAddIMemoryCache("SCOPED", implType, _getImplementedIMemoryCacheNames(implementedTypes...),
+		_logIMemoryCacheExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIMemoryCacheExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -290,4 +531,33 @@ func SafeGetManyIMemoryCacheFromContainer(ctn di.Container) ([]IMemoryCache, err
 		results = append(results, obj.(IMemoryCache))
 	}
 	return results, nil
+}
+
+type _logIMemoryCacheExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIMemoryCache(scopeType string, implType reflect.Type, interfaces string, extra ..._logIMemoryCacheExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIMemoryCacheNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

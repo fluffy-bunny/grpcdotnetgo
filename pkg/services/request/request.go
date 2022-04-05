@@ -10,7 +10,6 @@ import (
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
-	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
 
@@ -25,8 +24,6 @@ type serviceRequest struct {
 
 // AddScopedIRequest adds service to the DI container
 func AddScopedIRequest(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddScopedIRequest")
 	contracts_request.AddScopedIRequest(builder, reflect.TypeOf(&serviceRequest{}))
 }
 func (s *serviceRequest) GetUnaryServerInfo() *grpc.UnaryServerInfo {

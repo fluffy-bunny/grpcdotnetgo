@@ -7,7 +7,6 @@ import (
 	ttlcache "github.com/ReneKroon/ttlcache/v2"
 	contracts_cache "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/cache"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 )
 
 type (
@@ -30,7 +29,6 @@ func (s *service) Ctor() {
 
 // AddSingletonIMemoryCache adds service to the DI container
 func AddSingletonIMemoryCache(builder *di.Builder) {
-	log.Info().Msg("IoC: AddSingletonIMemoryCache")
 	contracts_cache.AddSingletonIMemoryCache(builder, ReflectTypeService)
 }
 

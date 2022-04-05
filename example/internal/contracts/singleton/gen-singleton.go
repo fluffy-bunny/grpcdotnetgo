@@ -6,8 +6,10 @@ package singleton
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeISingleton used when your service claims to implement ISingleton
@@ -16,84 +18,189 @@ var ReflectTypeISingleton = di.GetInterfaceReflectType((*ISingleton)(nil))
 // AddSingletonISingleton adds a type that implements ISingleton
 func AddSingletonISingleton(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("SINGLETON", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonISingletonWithMetadata adds a type that implements ISingleton
 func AddSingletonISingletonWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("SINGLETON", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logISingletonExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonISingletonByObj adds a prebuilt obj
 func AddSingletonISingletonByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("SINGLETON", reflect.TypeOf(obj), _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonISingletonByObjWithMetadata adds a prebuilt obj
 func AddSingletonISingletonByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("SINGLETON", reflect.TypeOf(obj), _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logISingletonExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonISingletonByFunc adds a type by a custom func
 func AddSingletonISingletonByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("SINGLETON", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonISingletonByFuncWithMetadata adds a type by a custom func
 func AddSingletonISingletonByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("SINGLETON", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logISingletonExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientISingleton adds a type that implements ISingleton
 func AddTransientISingleton(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("TRANSIENT", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientISingletonWithMetadata adds a type that implements ISingleton
 func AddTransientISingletonWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("TRANSIENT", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logISingletonExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientISingletonByFunc adds a type by a custom func
 func AddTransientISingletonByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("TRANSIENT", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientISingletonByFuncWithMetadata adds a type by a custom func
 func AddTransientISingletonByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("TRANSIENT", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logISingletonExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedISingleton adds a type that implements ISingleton
 func AddScopedISingleton(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("SCOPED", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedISingletonWithMetadata adds a type that implements ISingleton
 func AddScopedISingletonWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("SCOPED", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logISingletonExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedISingletonByFunc adds a type by a custom func
 func AddScopedISingletonByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("SCOPED", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedISingletonByFuncWithMetadata adds a type by a custom func
 func AddScopedISingletonByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeISingleton)
+	_logAddISingleton("SCOPED", implType, _getImplementedISingletonNames(implementedTypes...),
+		_logISingletonExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logISingletonExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -149,4 +256,33 @@ func SafeGetManyISingletonFromContainer(ctn di.Container) ([]ISingleton, error) 
 		results = append(results, obj.(ISingleton))
 	}
 	return results, nil
+}
+
+type _logISingletonExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddISingleton(scopeType string, implType reflect.Type, interfaces string, extra ..._logISingletonExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedISingletonNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

@@ -6,8 +6,10 @@ package transient
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeITransient used when your service claims to implement ITransient
@@ -16,84 +18,189 @@ var ReflectTypeITransient = di.GetInterfaceReflectType((*ITransient)(nil))
 // AddSingletonITransient adds a type that implements ITransient
 func AddSingletonITransient(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("SINGLETON", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonITransientWithMetadata adds a type that implements ITransient
 func AddSingletonITransientWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("SINGLETON", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logITransientExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonITransientByObj adds a prebuilt obj
 func AddSingletonITransientByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("SINGLETON", reflect.TypeOf(obj), _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonITransientByObjWithMetadata adds a prebuilt obj
 func AddSingletonITransientByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("SINGLETON", reflect.TypeOf(obj), _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logITransientExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonITransientByFunc adds a type by a custom func
 func AddSingletonITransientByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("SINGLETON", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonITransientByFuncWithMetadata adds a type by a custom func
 func AddSingletonITransientByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("SINGLETON", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logITransientExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientITransient adds a type that implements ITransient
 func AddTransientITransient(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("TRANSIENT", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientITransientWithMetadata adds a type that implements ITransient
 func AddTransientITransientWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("TRANSIENT", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logITransientExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientITransientByFunc adds a type by a custom func
 func AddTransientITransientByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("TRANSIENT", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientITransientByFuncWithMetadata adds a type by a custom func
 func AddTransientITransientByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("TRANSIENT", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logITransientExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedITransient adds a type that implements ITransient
 func AddScopedITransient(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("SCOPED", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedITransientWithMetadata adds a type that implements ITransient
 func AddScopedITransientWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("SCOPED", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logITransientExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedITransientByFunc adds a type by a custom func
 func AddScopedITransientByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("SCOPED", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedITransientByFuncWithMetadata adds a type by a custom func
 func AddScopedITransientByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeITransient)
+	_logAddITransient("SCOPED", implType, _getImplementedITransientNames(implementedTypes...),
+		_logITransientExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logITransientExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -149,4 +256,33 @@ func SafeGetManyITransientFromContainer(ctn di.Container) ([]ITransient, error) 
 		results = append(results, obj.(ITransient))
 	}
 	return results, nil
+}
+
+type _logITransientExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddITransient(scopeType string, implType reflect.Type, interfaces string, extra ..._logITransientExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedITransientNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

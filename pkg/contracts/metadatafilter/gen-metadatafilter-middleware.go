@@ -6,8 +6,10 @@ package metadatafilter
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIMetadataFilterMiddleware used when your service claims to implement IMetadataFilterMiddleware
@@ -16,84 +18,189 @@ var ReflectTypeIMetadataFilterMiddleware = di.GetInterfaceReflectType((*IMetadat
 // AddSingletonIMetadataFilterMiddleware adds a type that implements IMetadataFilterMiddleware
 func AddSingletonIMetadataFilterMiddleware(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("SINGLETON", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIMetadataFilterMiddlewareWithMetadata adds a type that implements IMetadataFilterMiddleware
 func AddSingletonIMetadataFilterMiddlewareWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("SINGLETON", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIMetadataFilterMiddlewareByObj adds a prebuilt obj
 func AddSingletonIMetadataFilterMiddlewareByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("SINGLETON", reflect.TypeOf(obj), _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIMetadataFilterMiddlewareByObjWithMetadata adds a prebuilt obj
 func AddSingletonIMetadataFilterMiddlewareByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("SINGLETON", reflect.TypeOf(obj), _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIMetadataFilterMiddlewareByFunc adds a type by a custom func
 func AddSingletonIMetadataFilterMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("SINGLETON", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIMetadataFilterMiddlewareByFuncWithMetadata adds a type by a custom func
 func AddSingletonIMetadataFilterMiddlewareByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("SINGLETON", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIMetadataFilterMiddleware adds a type that implements IMetadataFilterMiddleware
 func AddTransientIMetadataFilterMiddleware(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("TRANSIENT", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIMetadataFilterMiddlewareWithMetadata adds a type that implements IMetadataFilterMiddleware
 func AddTransientIMetadataFilterMiddlewareWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("TRANSIENT", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIMetadataFilterMiddlewareByFunc adds a type by a custom func
 func AddTransientIMetadataFilterMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("TRANSIENT", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIMetadataFilterMiddlewareByFuncWithMetadata adds a type by a custom func
 func AddTransientIMetadataFilterMiddlewareByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("TRANSIENT", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIMetadataFilterMiddleware adds a type that implements IMetadataFilterMiddleware
 func AddScopedIMetadataFilterMiddleware(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("SCOPED", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIMetadataFilterMiddlewareWithMetadata adds a type that implements IMetadataFilterMiddleware
 func AddScopedIMetadataFilterMiddlewareWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("SCOPED", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIMetadataFilterMiddlewareByFunc adds a type by a custom func
 func AddScopedIMetadataFilterMiddlewareByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("SCOPED", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIMetadataFilterMiddlewareByFuncWithMetadata adds a type by a custom func
 func AddScopedIMetadataFilterMiddlewareByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIMetadataFilterMiddleware)
+	_logAddIMetadataFilterMiddleware("SCOPED", implType, _getImplementedIMetadataFilterMiddlewareNames(implementedTypes...),
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIMetadataFilterMiddlewareExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -149,4 +256,33 @@ func SafeGetManyIMetadataFilterMiddlewareFromContainer(ctn di.Container) ([]IMet
 		results = append(results, obj.(IMetadataFilterMiddleware))
 	}
 	return results, nil
+}
+
+type _logIMetadataFilterMiddlewareExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIMetadataFilterMiddleware(scopeType string, implType reflect.Type, interfaces string, extra ..._logIMetadataFilterMiddlewareExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIMetadataFilterMiddlewareNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

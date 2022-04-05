@@ -7,14 +7,10 @@ import (
 	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 )
 
 // AddCronOidcJobProvider adds service to the DI container
 func AddCronOidcJobProvider(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: AddCronOidcJobProvider")
-
 	backgroundtasksContracts.AddSingletonIJobsProviderByFunc(builder,
 		reflect.TypeOf(&service{}), func(ctn di.Container) (interface{}, error) {
 			obj := &serviceJobProvider{
@@ -36,8 +32,6 @@ func GetOidcBackgroundStorageFromContainer(ctn di.Container) IOidcBackgroundStor
 
 // addOidcBackgroundStorage adds service to the DI container
 func addOidcBackgroundStorage(builder *di.Builder) {
-	log.Info().
-		Msg("IoC: addOidcBackgroundStorage")
 	types := di.NewTypeSet()
 	types.Add(TypeIOidcBackgroundStorage)
 

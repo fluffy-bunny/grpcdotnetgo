@@ -6,8 +6,10 @@ package claimsprincipal
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIClaimsPrincipal used when your service claims to implement IClaimsPrincipal
@@ -16,84 +18,189 @@ var ReflectTypeIClaimsPrincipal = di.GetInterfaceReflectType((*IClaimsPrincipal)
 // AddSingletonIClaimsPrincipal adds a type that implements IClaimsPrincipal
 func AddSingletonIClaimsPrincipal(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("SINGLETON", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
 // AddSingletonIClaimsPrincipalWithMetadata adds a type that implements IClaimsPrincipal
 func AddSingletonIClaimsPrincipalWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("SINGLETON", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddSingletonIClaimsPrincipalByObj adds a prebuilt obj
 func AddSingletonIClaimsPrincipalByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("SINGLETON", reflect.TypeOf(obj), _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
 // AddSingletonIClaimsPrincipalByObjWithMetadata adds a prebuilt obj
 func AddSingletonIClaimsPrincipalByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("SINGLETON", reflect.TypeOf(obj), _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIClaimsPrincipalByFunc adds a type by a custom func
 func AddSingletonIClaimsPrincipalByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("SINGLETON", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddSingletonIClaimsPrincipalByFuncWithMetadata adds a type by a custom func
 func AddSingletonIClaimsPrincipalByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("SINGLETON", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIClaimsPrincipal adds a type that implements IClaimsPrincipal
 func AddTransientIClaimsPrincipal(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("TRANSIENT", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddTransientIClaimsPrincipalWithMetadata adds a type that implements IClaimsPrincipal
 func AddTransientIClaimsPrincipalWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("TRANSIENT", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIClaimsPrincipalByFunc adds a type by a custom func
 func AddTransientIClaimsPrincipalByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("TRANSIENT", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddTransientIClaimsPrincipalByFuncWithMetadata adds a type by a custom func
 func AddTransientIClaimsPrincipalByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("TRANSIENT", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIClaimsPrincipal adds a type that implements IClaimsPrincipal
 func AddScopedIClaimsPrincipal(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("SCOPED", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
 // AddScopedIClaimsPrincipalWithMetadata adds a type that implements IClaimsPrincipal
 func AddScopedIClaimsPrincipalWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("SCOPED", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIClaimsPrincipalByFunc adds a type by a custom func
 func AddScopedIClaimsPrincipalByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("SCOPED", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
 // AddScopedIClaimsPrincipalByFuncWithMetadata adds a type by a custom func
 func AddScopedIClaimsPrincipalByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
 	implementedTypes = append(implementedTypes, ReflectTypeIClaimsPrincipal)
+	_logAddIClaimsPrincipal("SCOPED", implType, _getImplementedIClaimsPrincipalNames(implementedTypes...),
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIClaimsPrincipalExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
@@ -149,4 +256,33 @@ func SafeGetManyIClaimsPrincipalFromContainer(ctn di.Container) ([]IClaimsPrinci
 		results = append(results, obj.(IClaimsPrincipal))
 	}
 	return results, nil
+}
+
+type _logIClaimsPrincipalExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIClaimsPrincipal(scopeType string, implType reflect.Type, interfaces string, extra ..._logIClaimsPrincipalExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIClaimsPrincipalNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }

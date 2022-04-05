@@ -6,7 +6,6 @@ import (
 	contracts_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/timeutils"
 	contracts_uuid "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/uuid"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 	"github.com/segmentio/ksuid"
 )
 
@@ -23,6 +22,5 @@ func (s *serviceKSUID) UUID() string {
 
 // AddSingletonIKSUID ...
 func AddSingletonIKSUID(builder *di.Builder) {
-	log.Info().Msg("IoC: AddSingletonIKSUID")
 	contracts_uuid.AddSingletonIKSUID(builder, reflect.TypeOf(&serviceKSUID{}))
 }
