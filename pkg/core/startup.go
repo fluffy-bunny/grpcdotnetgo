@@ -162,7 +162,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 	prettyLogValue := os.Getenv("PRETTY_LOG")
 	if len(prettyLogValue) != 0 {
 		b, err := strconv.ParseBool(prettyLogValue)
-		if err != nil {
+		if err == nil {
 			prettyLog = b
 		}
 	}
