@@ -11,7 +11,6 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
 )
 
@@ -33,7 +32,6 @@ var reflectType = reflect.TypeOf((*service)(nil))
 
 // AddSingletonIOIDCAuthenticator registers the *service as a singleton.
 func AddSingletonIOIDCAuthenticator(builder *di.Builder) {
-	log.Info().Str("DI", "IOIDCAuthenticator").Send()
 	contracts_oidc.AddSingletonIOIDCAuthenticator(builder, reflectType)
 }
 func (s *service) Ctor() {
