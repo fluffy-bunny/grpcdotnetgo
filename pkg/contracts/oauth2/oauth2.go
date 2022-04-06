@@ -1,9 +1,23 @@
 package oauth2
 
-//go:generate genny   -pkg $GOPACKAGE        -in=../../../genny/sarulabsdi/interface-types.go -out=gen-$GOFILE gen "InterfaceType=IOauth2"
+import (
+	"context"
 
-//go:generate mockgen -package=$GOPACKAGE -destination=../../mocks/$GOPACKAGE/mock_$GOFILE   github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/$GOPACKAGE IOauth2
+	"golang.org/x/oauth2"
+)
 
-// IOauth2 contract
-type IOauth2 interface {
-}
+//go:generate genny -pkg $GOPACKAGE -in=../../../genny/sarulabsdi/interface-types.go -out=gen-$GOFILE gen "InterfaceType=IOAuth2Authenticator"
+//go:generate genny -pkg $GOPACKAGE -in=../../../genny/sarulabsdi/func-types.go -out=gen-func-$GOFILE gen "FuncType=GetOAuth2AuthenticatorConfig"
+
+//go:generate mockgen -package=$GOPACKAGE -destination=../../mocks/$GOPACKAGE/mock_$GOFILE   github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/$GOPACKAGE IOAuth2Authenticator
+
+type (
+
+	// IOAuth2Authenticator ...
+	IOAuth2Authenticator interface {
+		AuthCodeURL(state string, opts ...oauth2.AuthCodeOption) string
+		Exchange(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error)
+	}
+	// GetOAuth2AuthenticatorConfig ...
+	GetOAuth2AuthenticatorConfig func() *oauth2.Config
+)

@@ -12,55 +12,55 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// ReflectTypeIOauth2 used when your service claims to implement IOauth2
-var ReflectTypeIOauth2 = di.GetInterfaceReflectType((*IOauth2)(nil))
+// ReflectTypeIOAuth2Authenticator used when your service claims to implement IOAuth2Authenticator
+var ReflectTypeIOAuth2Authenticator = di.GetInterfaceReflectType((*IOAuth2Authenticator)(nil))
 
-// AddSingletonIOauth2 adds a type that implements IOauth2
-func AddSingletonIOauth2(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("SINGLETON", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddSingletonIOAuth2Authenticator adds a type that implements IOAuth2Authenticator
+func AddSingletonIOAuth2Authenticator(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("SINGLETON", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "type",
 		})
 	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
-// AddSingletonIOauth2WithMetadata adds a type that implements IOauth2
-func AddSingletonIOauth2WithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("SINGLETON", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddSingletonIOAuth2AuthenticatorWithMetadata adds a type that implements IOAuth2Authenticator
+func AddSingletonIOAuth2AuthenticatorWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("SINGLETON", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "type",
 		},
-		_logIOauth2Extra{
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-M",
 			Value: metaData,
 		})
 	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
-// AddSingletonIOauth2ByObj adds a prebuilt obj
-func AddSingletonIOauth2ByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("SINGLETON", reflect.TypeOf(obj), _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddSingletonIOAuth2AuthenticatorByObj adds a prebuilt obj
+func AddSingletonIOAuth2AuthenticatorByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("SINGLETON", reflect.TypeOf(obj), _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "obj",
 		})
 	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
 }
 
-// AddSingletonIOauth2ByObjWithMetadata adds a prebuilt obj
-func AddSingletonIOauth2ByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("SINGLETON", reflect.TypeOf(obj), _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddSingletonIOAuth2AuthenticatorByObjWithMetadata adds a prebuilt obj
+func AddSingletonIOAuth2AuthenticatorByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("SINGLETON", reflect.TypeOf(obj), _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "obj",
 		},
-		_logIOauth2Extra{
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-M",
 			Value: metaData,
 		})
@@ -68,26 +68,26 @@ func AddSingletonIOauth2ByObjWithMetadata(builder *di.Builder, obj interface{}, 
 	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
-// AddSingletonIOauth2ByFunc adds a type by a custom func
-func AddSingletonIOauth2ByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("SINGLETON", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddSingletonIOAuth2AuthenticatorByFunc adds a type by a custom func
+func AddSingletonIOAuth2AuthenticatorByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("SINGLETON", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "func",
 		})
 	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
-// AddSingletonIOauth2ByFuncWithMetadata adds a type by a custom func
-func AddSingletonIOauth2ByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("SINGLETON", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddSingletonIOAuth2AuthenticatorByFuncWithMetadata adds a type by a custom func
+func AddSingletonIOAuth2AuthenticatorByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("SINGLETON", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "func",
 		},
-		_logIOauth2Extra{
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-M",
 			Value: metaData,
 		})
@@ -95,11 +95,11 @@ func AddSingletonIOauth2ByFuncWithMetadata(builder *di.Builder, implType reflect
 	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
-// AddTransientIOauth2 adds a type that implements IOauth2
-func AddTransientIOauth2(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("TRANSIENT", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddTransientIOAuth2Authenticator adds a type that implements IOAuth2Authenticator
+func AddTransientIOAuth2Authenticator(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("TRANSIENT", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "type",
 		})
@@ -107,15 +107,15 @@ func AddTransientIOauth2(builder *di.Builder, implType reflect.Type, implemented
 	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddTransientIOauth2WithMetadata adds a type that implements IOauth2
-func AddTransientIOauth2WithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("TRANSIENT", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddTransientIOAuth2AuthenticatorWithMetadata adds a type that implements IOAuth2Authenticator
+func AddTransientIOAuth2AuthenticatorWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("TRANSIENT", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "type",
 		},
-		_logIOauth2Extra{
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-M",
 			Value: metaData,
 		})
@@ -123,11 +123,11 @@ func AddTransientIOauth2WithMetadata(builder *di.Builder, implType reflect.Type,
 	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
-// AddTransientIOauth2ByFunc adds a type by a custom func
-func AddTransientIOauth2ByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("TRANSIENT", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddTransientIOAuth2AuthenticatorByFunc adds a type by a custom func
+func AddTransientIOAuth2AuthenticatorByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("TRANSIENT", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "func",
 		})
@@ -135,15 +135,15 @@ func AddTransientIOauth2ByFunc(builder *di.Builder, implType reflect.Type, build
 	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
-// AddTransientIOauth2ByFuncWithMetadata adds a type by a custom func
-func AddTransientIOauth2ByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("TRANSIENT", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddTransientIOAuth2AuthenticatorByFuncWithMetadata adds a type by a custom func
+func AddTransientIOAuth2AuthenticatorByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("TRANSIENT", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "func",
 		},
-		_logIOauth2Extra{
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-M",
 			Value: metaData,
 		})
@@ -151,52 +151,52 @@ func AddTransientIOauth2ByFuncWithMetadata(builder *di.Builder, implType reflect
 	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
-// AddScopedIOauth2 adds a type that implements IOauth2
-func AddScopedIOauth2(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("SCOPED", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddScopedIOAuth2Authenticator adds a type that implements IOAuth2Authenticator
+func AddScopedIOAuth2Authenticator(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("SCOPED", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "type",
 		})
 	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
 }
 
-// AddScopedIOauth2WithMetadata adds a type that implements IOauth2
-func AddScopedIOauth2WithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("SCOPED", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddScopedIOAuth2AuthenticatorWithMetadata adds a type that implements IOAuth2Authenticator
+func AddScopedIOAuth2AuthenticatorWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("SCOPED", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "type",
 		},
-		_logIOauth2Extra{
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-M",
 			Value: metaData,
 		})
 	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
-// AddScopedIOauth2ByFunc adds a type by a custom func
-func AddScopedIOauth2ByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("SCOPED", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddScopedIOAuth2AuthenticatorByFunc adds a type by a custom func
+func AddScopedIOAuth2AuthenticatorByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("SCOPED", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "func",
 		})
 	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
 }
 
-// AddScopedIOauth2ByFuncWithMetadata adds a type by a custom func
-func AddScopedIOauth2ByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
-	implementedTypes = append(implementedTypes, ReflectTypeIOauth2)
-	_logAddIOauth2("SCOPED", implType, _getImplementedIOauth2Names(implementedTypes...),
-		_logIOauth2Extra{
+// AddScopedIOAuth2AuthenticatorByFuncWithMetadata adds a type by a custom func
+func AddScopedIOAuth2AuthenticatorByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIOAuth2Authenticator)
+	_logAddIOAuth2Authenticator("SCOPED", implType, _getImplementedIOAuth2AuthenticatorNames(implementedTypes...),
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-BY",
 			Value: "func",
 		},
-		_logIOauth2Extra{
+		_logIOAuth2AuthenticatorExtra{
 			Name:  "DI-M",
 			Value: metaData,
 		})
@@ -204,66 +204,66 @@ func AddScopedIOauth2ByFuncWithMetadata(builder *di.Builder, implType reflect.Ty
 	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
-// RemoveAllIOauth2 removes all IOauth2 from the DI
-func RemoveAllIOauth2(builder *di.Builder) {
-	builder.RemoveAllByType(ReflectTypeIOauth2)
+// RemoveAllIOAuth2Authenticator removes all IOAuth2Authenticator from the DI
+func RemoveAllIOAuth2Authenticator(builder *di.Builder) {
+	builder.RemoveAllByType(ReflectTypeIOAuth2Authenticator)
 }
 
-// GetIOauth2FromContainer alternative to SafeGetIOauth2FromContainer but panics of object is not present
-func GetIOauth2FromContainer(ctn di.Container) IOauth2 {
-	return ctn.GetByType(ReflectTypeIOauth2).(IOauth2)
+// GetIOAuth2AuthenticatorFromContainer alternative to SafeGetIOAuth2AuthenticatorFromContainer but panics of object is not present
+func GetIOAuth2AuthenticatorFromContainer(ctn di.Container) IOAuth2Authenticator {
+	return ctn.GetByType(ReflectTypeIOAuth2Authenticator).(IOAuth2Authenticator)
 }
 
-// GetManyIOauth2FromContainer alternative to SafeGetManyIOauth2FromContainer but panics of object is not present
-func GetManyIOauth2FromContainer(ctn di.Container) []IOauth2 {
-	objs := ctn.GetManyByType(ReflectTypeIOauth2)
-	var results []IOauth2
+// GetManyIOAuth2AuthenticatorFromContainer alternative to SafeGetManyIOAuth2AuthenticatorFromContainer but panics of object is not present
+func GetManyIOAuth2AuthenticatorFromContainer(ctn di.Container) []IOAuth2Authenticator {
+	objs := ctn.GetManyByType(ReflectTypeIOAuth2Authenticator)
+	var results []IOAuth2Authenticator
 	for _, obj := range objs {
-		results = append(results, obj.(IOauth2))
+		results = append(results, obj.(IOAuth2Authenticator))
 	}
 	return results
 }
 
-// SafeGetIOauth2FromContainer trys to get the object by type, will not panic, returns nil and error
-func SafeGetIOauth2FromContainer(ctn di.Container) (IOauth2, error) {
-	obj, err := ctn.SafeGetByType(ReflectTypeIOauth2)
+// SafeGetIOAuth2AuthenticatorFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetIOAuth2AuthenticatorFromContainer(ctn di.Container) (IOAuth2Authenticator, error) {
+	obj, err := ctn.SafeGetByType(ReflectTypeIOAuth2Authenticator)
 	if err != nil {
 		return nil, err
 	}
-	return obj.(IOauth2), nil
+	return obj.(IOAuth2Authenticator), nil
 }
 
-// GetIOauth2Definition returns that last definition registered that this container can provide
-func GetIOauth2Definition(ctn di.Container) *di.Def {
-	def := ctn.GetDefinitionByType(ReflectTypeIOauth2)
+// GetIOAuth2AuthenticatorDefinition returns that last definition registered that this container can provide
+func GetIOAuth2AuthenticatorDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeIOAuth2Authenticator)
 	return def
 }
 
-// GetIOauth2Definitions returns all definitions that this container can provide
-func GetIOauth2Definitions(ctn di.Container) []*di.Def {
-	defs := ctn.GetDefinitionsByType(ReflectTypeIOauth2)
+// GetIOAuth2AuthenticatorDefinitions returns all definitions that this container can provide
+func GetIOAuth2AuthenticatorDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeIOAuth2Authenticator)
 	return defs
 }
 
-// SafeGetManyIOauth2FromContainer trys to get the object by type, will not panic, returns nil and error
-func SafeGetManyIOauth2FromContainer(ctn di.Container) ([]IOauth2, error) {
-	objs, err := ctn.SafeGetManyByType(ReflectTypeIOauth2)
+// SafeGetManyIOAuth2AuthenticatorFromContainer trys to get the object by type, will not panic, returns nil and error
+func SafeGetManyIOAuth2AuthenticatorFromContainer(ctn di.Container) ([]IOAuth2Authenticator, error) {
+	objs, err := ctn.SafeGetManyByType(ReflectTypeIOAuth2Authenticator)
 	if err != nil {
 		return nil, err
 	}
-	var results []IOauth2
+	var results []IOAuth2Authenticator
 	for _, obj := range objs {
-		results = append(results, obj.(IOauth2))
+		results = append(results, obj.(IOAuth2Authenticator))
 	}
 	return results, nil
 }
 
-type _logIOauth2Extra struct {
+type _logIOAuth2AuthenticatorExtra struct {
 	Name  string
 	Value interface{}
 }
 
-func _logAddIOauth2(scopeType string, implType reflect.Type, interfaces string, extra ..._logIOauth2Extra) {
+func _logAddIOAuth2Authenticator(scopeType string, implType reflect.Type, interfaces string, extra ..._logIOAuth2AuthenticatorExtra) {
 	infoEvent := log.Info().
 		Str("DI", scopeType).
 		Str("DI-I", interfaces).
@@ -276,7 +276,7 @@ func _logAddIOauth2(scopeType string, implType reflect.Type, interfaces string, 
 	infoEvent.Send()
 
 }
-func _getImplementedIOauth2Names(implementedTypes ...reflect.Type) string {
+func _getImplementedIOAuth2AuthenticatorNames(implementedTypes ...reflect.Type) string {
 	builder := strings.Builder{}
 	for idx, implementedType := range implementedTypes {
 		builder.WriteString(implementedType.Name())
