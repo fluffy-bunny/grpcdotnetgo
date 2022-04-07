@@ -1,6 +1,7 @@
 package github
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 
@@ -100,4 +101,8 @@ func (s *service) GetUser(token *oauth2.Token) (*contracts_oauth2_github.User, e
 		ID:       githubResponse.ID,
 		Emails:   emails,
 	}, nil
+}
+func (s *service) GetTokenSource(ctx context.Context, token *oauth2.Token) oauth2.TokenSource {
+	ts := s.Config.TokenSource(ctx, token)
+	return ts
 }

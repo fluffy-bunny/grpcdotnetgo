@@ -73,3 +73,17 @@ func (mr *MockIOAuth2AuthenticatorMockRecorder) Exchange(arg0, arg1 interface{},
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exchange", reflect.TypeOf((*MockIOAuth2Authenticator)(nil).Exchange), varargs...)
 }
+
+// GetTokenSource mocks base method.
+func (m *MockIOAuth2Authenticator) GetTokenSource(arg0 context.Context, arg1 *oauth2.Token) oauth2.TokenSource {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTokenSource", arg0, arg1)
+	ret0, _ := ret[0].(oauth2.TokenSource)
+	return ret0
+}
+
+// GetTokenSource indicates an expected call of GetTokenSource.
+func (mr *MockIOAuth2AuthenticatorMockRecorder) GetTokenSource(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTokenSource", reflect.TypeOf((*MockIOAuth2Authenticator)(nil).GetTokenSource), arg0, arg1)
+}

@@ -75,6 +75,20 @@ func (mr *MockIGithubOAuth2AuthenticatorMockRecorder) Exchange(arg0, arg1 interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exchange", reflect.TypeOf((*MockIGithubOAuth2Authenticator)(nil).Exchange), varargs...)
 }
 
+// GetTokenSource mocks base method.
+func (m *MockIGithubOAuth2Authenticator) GetTokenSource(arg0 context.Context, arg1 *oauth2.Token) oauth2.TokenSource {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTokenSource", arg0, arg1)
+	ret0, _ := ret[0].(oauth2.TokenSource)
+	return ret0
+}
+
+// GetTokenSource indicates an expected call of GetTokenSource.
+func (mr *MockIGithubOAuth2AuthenticatorMockRecorder) GetTokenSource(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTokenSource", reflect.TypeOf((*MockIGithubOAuth2Authenticator)(nil).GetTokenSource), arg0, arg1)
+}
+
 // GetUser mocks base method.
 func (m *MockIGithubOAuth2Authenticator) GetUser(arg0 *oauth2.Token) (*github.User, error) {
 	m.ctrl.T.Helper()

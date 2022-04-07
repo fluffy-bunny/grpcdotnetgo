@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	auth_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/auth/oidc"
+	contracts_oauth2 "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/oauth2"
 	contracts_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/oidc"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -32,7 +33,7 @@ var reflectType = reflect.TypeOf((*service)(nil))
 
 // AddSingletonIOIDCAuthenticator registers the *service as a singleton.
 func AddSingletonIOIDCAuthenticator(builder *di.Builder) {
-	contracts_oidc.AddSingletonIOIDCAuthenticator(builder, reflectType)
+	contracts_oidc.AddSingletonIOIDCAuthenticator(builder, reflectType, contracts_oauth2.ReflectTypeIOAuth2Authenticator)
 }
 func (s *service) Ctor() {
 	config := s.GetOIDCAuthenticatorConfig()
