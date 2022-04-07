@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -40,7 +41,7 @@ type (
 	Runtime struct {
 		Startup       echo_contracts_startup.IStartup
 		Container     di.Container
-		e             *echo.Echo
+		echo          *echo.Echo
 		instanceID    string
 		configOptions *core_contracts.ConfigOptions
 	}
@@ -103,32 +104,52 @@ func (s *Runtime) phase2() error {
 		log.Error().Err(err).Msg("Failed to configure services")
 		return err
 	}
+	for _, hooks := range s.Startup.GetHooks() {
+		if hooks.PrebuildHook != nil {
+			err = hooks.PrebuildHook(builder)
+			if err != nil {
+				log.Error().Err(err).Msg("Failed to prebuild hook")
+				return err
+			}
+		}
+	}
 	s.Container = builder.Build()
+
+	for _, hooks := range s.Startup.GetHooks() {
+		if hooks.PostBuildHook != nil {
+			err = hooks.PostBuildHook(s.Container)
+			if err != nil {
+				log.Error().Err(err).Msg("Failed to postbuild hook")
+				return err
+			}
+		}
+	}
+
 	s.Startup.SetContainer(s.Container)
 	return nil
 }
 func (s *Runtime) phase3() error {
-	s.e = echo.New()
+	s.echo = echo.New()
 	//use our own zerolog logger
-	s.e.Logger = lecho.New(os.Stdout)
+	s.echo.Logger = lecho.New(os.Stdout)
 	//Set Renderer
-	s.e.Renderer = core_echo_templates.GetTemplateRender("./templates")
+	s.echo.Renderer = core_echo_templates.GetTemplateRender("./templates")
 
 	// MIDDELWARE
 	//-------------------------------------------------------
-	s.e.Use(middleware_logger.EnsureContextLogger(s.Container))
-	s.e.Use(middleware_logger.EnsureContextLoggerCorrelation(s.Container))
-	s.e.Use(middleware_container.EnsureScopedContainer(s.Container))
+	s.echo.Use(middleware_logger.EnsureContextLogger(s.Container))
+	s.echo.Use(middleware_logger.EnsureContextLoggerCorrelation(s.Container))
+	s.echo.Use(middleware_container.EnsureScopedContainer(s.Container))
 	sessionStore := contracts_session.GetGetSessionStoreFromContainer(s.Container)
-	s.e.Use(session.Middleware(sessionStore()))
+	s.echo.Use(session.Middleware(sessionStore()))
 	mainSession := contracts_session.GetGetSessionFromContainer(s.Container)
-	s.e.Use(core_middleware_session.EnsureSlidingSession(s.Container, mainSession))
+	s.echo.Use(core_middleware_session.EnsureSlidingSession(s.Container, mainSession))
 
 	if s.configOptions.ApplicationEnvironment == "Development" {
 		// this wipes out the session if we have a mismatch
-		s.e.Use(core_middleware_session.EnsureDevelopmentSession(s.Container, mainSession, s.instanceID))
+		s.echo.Use(core_middleware_session.EnsureDevelopmentSession(s.Container, mainSession, s.instanceID))
 	}
-	app := s.e.Group("")
+	app := s.echo.Group("")
 	app.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 		TokenLookup:    "header:X-Csrf-Token,form:csrf",
 		CookiePath:     "/",
@@ -140,12 +161,12 @@ func (s *Runtime) phase3() error {
 
 	// we have all our required upfront middleware running
 	// now we can add the optional startup ones.
-	s.Startup.Configure(s.e, s.Container)
+	s.Startup.Configure(s.echo, s.Container)
 
 	// our middleware that runs at the end
 	//-------------------------------------------------------
-	s.e.Use(middleware.Recover())
-	s.Startup.RegisterStaticRoutes(s.e)
+	s.echo.Use(middleware.Recover())
+	s.Startup.RegisterStaticRoutes(s.echo)
 
 	// register our handlers
 	handlerFactory := contracts_handler.GetIHandlerFactoryFromContainer(s.Container)
@@ -179,17 +200,28 @@ func (s *Runtime) finalPhase() error {
 	// Finally start the server
 	//----------------------------------------------------------------------------------
 	startupOptions := s.Startup.GetOptions()
-
-	address := fmt.Sprintf(":%v", startupOptions.Port)
-	if startupOptions != nil && startupOptions.Listener != nil {
-		// if we are here we are usually under test
-		s.e.Listener = startupOptions.Listener
+	if startupOptions == nil {
+		err := errors.New("Startup options are nil")
+		log.Error().Err(err).Msg("Failed to start server")
+		return err
 	}
+	address := fmt.Sprintf(":%v", startupOptions.Port)
 
-	err := s.e.Start(address)
+	for _, hooks := range s.Startup.GetHooks() {
+		if hooks.PreStartHook != nil {
+			err := hooks.PreStartHook(s.echo)
+			if err != nil {
+				log.Error().Err(err).Msg("Failed to prestart hook")
+				return err
+			}
+		}
+	}
+	log.Info().Msg("server starting up")
+	err := s.echo.Start(address)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to start server")
 	}
+	log.Info().Msg("server shutting down")
 	return err
 }
 
