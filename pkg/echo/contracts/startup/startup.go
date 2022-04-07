@@ -22,7 +22,7 @@ type (
 		// Config
 		// SetHooks lets us add services at that end of the main ConfigServices chain
 		// Typically used for unit testing where mocks are swapped in.
-		AddHooks(hooks *Hooks)
+		AddHooks(hooks ...*Hooks)
 		GetHooks() []*Hooks
 
 		GetContainer() di.Container
@@ -52,8 +52,8 @@ type (
 )
 
 // AddHooks setter
-func (s *CommonStartup) AddHooks(hooks *Hooks) {
-	s.hooks = append(s.hooks, hooks)
+func (s *CommonStartup) AddHooks(hooks ...*Hooks) {
+	s.hooks = append(s.hooks, hooks...)
 }
 
 // GetHooks getter

@@ -1,12 +1,17 @@
 package runtime
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
+	"time"
 
+	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
 	core_contracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core"
 	core_echo "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo"
@@ -30,6 +35,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/reugn/async"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
@@ -44,15 +50,34 @@ type (
 		echo          *echo.Echo
 		instanceID    string
 		configOptions *core_contracts.ConfigOptions
+		waitChannel   chan os.Signal
 	}
 )
 
 // New creates a new runtime
 func New(startup echo_contracts_startup.IStartup) *Runtime {
 	return &Runtime{
-		Startup:    startup,
-		instanceID: uuid.New().String(),
+		Startup:     startup,
+		instanceID:  uuid.New().String(),
+		waitChannel: make(chan os.Signal),
 	}
+}
+
+// Stop ...
+func (s *Runtime) Stop() {
+	s.waitChannel <- os.Interrupt
+}
+
+// Wait for someone to call stop
+func (s *Runtime) Wait() {
+	signal.Notify(
+		s.waitChannel,
+		os.Interrupt,
+		syscall.SIGINT,
+		syscall.SIGQUIT,
+		syscall.SIGTERM,
+	)
+	<-s.waitChannel
 }
 
 // GetContainer returns the container
@@ -216,12 +241,38 @@ func (s *Runtime) finalPhase() error {
 			}
 		}
 	}
-	log.Info().Msg("server starting up")
-	err := s.echo.Start(address)
-	if err != nil {
-		log.Error().Err(err).Msg("failed to start server")
+	future := grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise) {
+		var err error
+		defer func() {
+			promise.Success(&grpcdotnetgoasync.AsyncResponse{
+				Message: "End Serve - echo Server",
+				Error:   err,
+			})
+		}()
+		log.Info().Msg("server starting up")
+		err = s.echo.Start(address)
+		if err != nil && http.ErrServerClosed == err {
+			err = nil
+		}
+		if err != nil {
+			log.Error().Err(err).Msg("failed to start server")
+		}
+	})
+	// wait for an interupt to come in
+	s.Wait()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err := s.echo.Shutdown(ctx)
+
+	response, err := future.Get()
+	asyncResponse := response.(*grpcdotnetgoasync.AsyncResponse)
+	err = asyncResponse.Error
+	fmt.Println(asyncResponse.Message)
+	if asyncResponse.Error != nil {
+		fmt.Printf("Error: %v\n", err)
 	}
-	log.Info().Msg("server shutting down")
 	return err
 }
 
@@ -242,7 +293,7 @@ func (s *Runtime) Run() error {
 		log.Fatal().Err(err).Msg("phase2")
 	}
 
-	// Phase 2
+	// Phase 3
 	// Setup Echo
 	// Configure middlewares
 	err = s.phase3()
@@ -250,12 +301,12 @@ func (s *Runtime) Run() error {
 		log.Fatal().Err(err).Msg("phase3")
 	}
 
-	// Phase 2
+	// Final Phase
 	// Setup Echo
 	// Configure middlewares
 	err = s.finalPhase()
 	if err != nil {
-		log.Fatal().Err(err).Msg("finalPhase")
+		log.Error().Err(err).Msg("finalPhase")
 	}
 
 	return err
