@@ -158,7 +158,7 @@ func (s *Runtime) phase3() error {
 	//use our own zerolog logger
 	s.echo.Logger = lecho.New(os.Stdout)
 	//Set Renderer
-	s.echo.Renderer = core_echo_templates.GetTemplateRender("./templates")
+	s.echo.Renderer = core_echo_templates.GetTemplateRender("./static/templates")
 
 	// MIDDELWARE
 	//-------------------------------------------------------
