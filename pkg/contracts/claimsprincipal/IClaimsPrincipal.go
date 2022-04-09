@@ -6,8 +6,8 @@ package claimsprincipal
 
 // Claim type
 type Claim struct {
-	Type  string
-	Value string
+	Type  string `json:"type" mapstructure:"TYPE"`
+	Value string `json:"value" mapstructure:"VALUE"`
 }
 
 // IClaimsPrincipal interface
