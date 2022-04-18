@@ -264,6 +264,15 @@ func (s *Runtime) finalPhase() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	for _, hooks := range s.Startup.GetHooks() {
+		if hooks.PreShutdownHook != nil {
+			err := hooks.PreShutdownHook(s.echo)
+			if err != nil {
+				log.Error().Err(err).Msg("Failed to pre shutdown hook")
+			}
+		}
+	}
+
 	err := s.echo.Shutdown(ctx)
 
 	response, err := future.Get()

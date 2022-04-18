@@ -13,9 +13,10 @@ type (
 	}
 	// Hooks into the startup pipeline
 	Hooks struct {
-		PrebuildHook  func(builder *di.Builder) error
-		PostBuildHook func(container di.Container) error
-		PreStartHook  func(echo *echo.Echo) error
+		PrebuildHook    func(builder *di.Builder) error
+		PostBuildHook   func(container di.Container) error
+		PreStartHook    func(echo *echo.Echo) error
+		PreShutdownHook func(echo *echo.Echo) error
 	}
 	// IStartup for echo apps
 	IStartup interface {
