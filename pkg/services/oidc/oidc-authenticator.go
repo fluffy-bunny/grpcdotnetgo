@@ -38,12 +38,13 @@ func AddSingletonIOIDCAuthenticator(builder *di.Builder) {
 	contracts_oidc.AddSingletonIOIDCAuthenticator(builder, reflectType, contracts_oauth2.ReflectTypeIOAuth2Authenticator)
 }
 func (s *service) Ctor() {
+	s.Logger.Info().Msg("OIDC Authenticator created")
 	config := s.GetOIDCAuthenticatorConfig()
 	s.issuer = "https://" + config.Domain + "/"
-	s.Logger.Trace().Msgf("issuer: %s", s.issuer)
+	s.Logger.Info().Msgf("issuer: %s", s.issuer)
 	oidcProviderEx, err := auth_oidc.NewProvider(context.Background(), s.issuer)
 	if err != nil {
-		s.Logger.Fatal().Err(err).Msg("failed to create oidc provider")
+		s.Logger.Info().Err(err).Msg("failed to create oidc provider")
 		panic(err)
 	}
 	s.oidcProviderEx = oidcProviderEx
@@ -52,7 +53,7 @@ func (s *service) Ctor() {
 		s.issuer,
 	)
 	if err != nil {
-		s.Logger.Fatal().Err(err).Msg(" failed to create oidc provider")
+		s.Logger.Info().Err(err).Msg(" failed to create oidc provider")
 		panic(err)
 	}
 	s.Provider = provider
