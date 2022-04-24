@@ -7,9 +7,9 @@ import (
 	"reflect"
 
 	auth_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/auth/oidc"
-	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	contracts_oauth2 "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/oauth2"
 	contracts_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/oidc"
+	"github.com/rs/zerolog/log"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	di "github.com/fluffy-bunny/sarulabsdi"
@@ -20,7 +20,6 @@ type (
 	service struct {
 		*oidc.Provider
 		oauth2.Config
-		Logger                     contracts_logger.ILogger                  `inject:""`
 		GetOIDCAuthenticatorConfig contracts_oidc.GetOIDCAuthenticatorConfig `inject:""`
 		oidcProviderEx             *auth_oidc.Provider
 		issuer                     string
@@ -38,13 +37,13 @@ func AddSingletonIOIDCAuthenticator(builder *di.Builder) {
 	contracts_oidc.AddSingletonIOIDCAuthenticator(builder, reflectType, contracts_oauth2.ReflectTypeIOAuth2Authenticator)
 }
 func (s *service) Ctor() {
-	s.Logger.Info().Msg("OIDC Authenticator created")
+	log.Info().Msg("OIDC Authenticator created")
 	config := s.GetOIDCAuthenticatorConfig()
 	s.issuer = "https://" + config.Domain + "/"
-	s.Logger.Info().Msgf("issuer: %s", s.issuer)
+	log.Info().Msgf("issuer: %s", s.issuer)
 	oidcProviderEx, err := auth_oidc.NewProvider(context.Background(), s.issuer)
 	if err != nil {
-		s.Logger.Info().Err(err).Msg("failed to create oidc provider")
+		log.Info().Err(err).Msg("failed to create oidc provider")
 		panic(err)
 	}
 	s.oidcProviderEx = oidcProviderEx
@@ -53,7 +52,7 @@ func (s *service) Ctor() {
 		s.issuer,
 	)
 	if err != nil {
-		s.Logger.Info().Err(err).Msg(" failed to create oidc provider")
+		log.Info().Err(err).Msg(" failed to create oidc provider")
 		panic(err)
 	}
 	s.Provider = provider
