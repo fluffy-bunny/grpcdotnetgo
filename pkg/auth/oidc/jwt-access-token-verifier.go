@@ -9,6 +9,7 @@ import (
 	"time"
 
 	go_oidc "github.com/coreos/go-oidc/v3/oidc"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
 	jose_jwt "gopkg.in/square/go-jose.v2/jwt"
 )
@@ -121,33 +122,42 @@ type CustomClaims struct {
 	AnyJSONObjectClaim map[string]interface{} `json:"anyJSONObjectClaim"`
 }
 
+// Verify ...
 func (v *JWTAccessTokenVerifier) Verify(ctx context.Context, rawToken string) (*AccessToken, error) {
+	log.Trace().Msg("ENTER - JWTAccessTokenVerifier.Verify")
+	defer log.Trace().Msg("EXIT - JWTAccessTokenVerifier.Verify")
 	parsedJWT, err := jose_jwt.ParseSigned(rawToken)
 	if err != nil {
+		log.Trace().Err(err).Msg("Failed to parse JWT")
 		return nil, fmt.Errorf("oidc: malformed jwt: %v", err)
 	}
 	_, err = v.keySet.VerifySignature(ctx, rawToken)
 	if err != nil {
+		log.Trace().Err(err).Msg("failed to verify signature")
 		return nil, fmt.Errorf("failed to verify signature: %v", err)
 	}
 	resultCl := CustomClaims{}
 	rawCL := map[string]interface{}{}
 	err = parsedJWT.UnsafeClaimsWithoutVerification(&resultCl)
 	if err != nil {
+		log.Trace().Err(err).Msg("UnsafeClaimsWithoutVerification(&resultCl) failed to parse claims")
 		return nil, fmt.Errorf("oidc: malformed jwt: %v", err)
 	}
 	err = parsedJWT.UnsafeClaimsWithoutVerification(&rawCL)
 	if err != nil {
+		log.Trace().Err(err).Msg("UnsafeClaimsWithoutVerification(&rawCL) failed to parse claims")
 		return nil, fmt.Errorf("oidc: malformed jwt: %v", err)
 	}
 	// Throw out tokens with invalid claims before trying to verify the token. This lets
 	// us do cheap checks before possibly re-syncing keys.
 	payload, err := parseJWT(rawToken)
 	if err != nil {
+		log.Trace().Err(err).Msg("Failed to parse JWT")
 		return nil, fmt.Errorf("oidc: malformed jwt: %v", err)
 	}
 	var token accessToken
 	if err := json.Unmarshal(payload, &token); err != nil {
+		log.Trace().Err(err).Msg("Failed to unmarshal access token")
 		return nil, fmt.Errorf("oidc: failed to unmarshal claims: %v", err)
 	}
 
@@ -169,6 +179,7 @@ func (v *JWTAccessTokenVerifier) Verify(ctx context.Context, rawToken string) (*
 		//
 		// We will not add hooks to let other providers go off spec like this.
 		if !(v.issuer == issuerGoogleAccounts && t.Issuer == issuerGoogleAccountsNoScheme) {
+			log.Trace().Err(err).Msg("Issuer mismatch")
 			return nil, fmt.Errorf("oidc: id token issued by a different provider, expected %q got %q", v.issuer, t.Issuer)
 		}
 	}
@@ -179,6 +190,8 @@ func (v *JWTAccessTokenVerifier) Verify(ctx context.Context, rawToken string) (*
 	if !v.config.SkipClientIDCheck {
 		if v.config.ClientID != "" {
 			if !contains(t.Audience, v.config.ClientID) {
+				log.Trace().Err(err).Msg("ClientID mismatch")
+
 				return nil, fmt.Errorf("oidc: expected audience %q got %q", v.config.ClientID, t.Audience)
 			}
 		} else {
@@ -195,6 +208,8 @@ func (v *JWTAccessTokenVerifier) Verify(ctx context.Context, rawToken string) (*
 		nowTime := now()
 
 		if t.Expiry.Before(nowTime) {
+			log.Trace().Err(err).Msg("Token is expired")
+
 			return nil, fmt.Errorf("oidc: token is expired (Token Expiry: %v)", t.Expiry)
 		}
 
@@ -204,6 +219,7 @@ func (v *JWTAccessTokenVerifier) Verify(ctx context.Context, rawToken string) (*
 			leeway := 1 * time.Minute
 
 			if nowTime.Add(leeway).Before(nbfTime) {
+				log.Trace().Err(err).Msg("Token is not yet valid")
 				return nil, fmt.Errorf("oidc: current time %v before the nbf (not before) time: %v", nowTime, nbfTime)
 			}
 		}
