@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	auth_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/auth/oidc"
+	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	contracts_oauth2 "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/oauth2"
 	contracts_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/oidc"
 
@@ -19,6 +20,7 @@ type (
 	service struct {
 		*oidc.Provider
 		oauth2.Config
+		Logger                     contracts_logger.ILogger                  `inject:""`
 		GetOIDCAuthenticatorConfig contracts_oidc.GetOIDCAuthenticatorConfig `inject:""`
 		oidcProviderEx             *auth_oidc.Provider
 		issuer                     string

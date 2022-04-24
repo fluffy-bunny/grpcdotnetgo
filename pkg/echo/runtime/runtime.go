@@ -114,6 +114,7 @@ func (s *Runtime) phase1() error {
 	case "trace":
 		zerolog.SetGlobalLevel(zerolog.TraceLevel)
 	}
+	log.Info().Msgf("Starting %s", log.Logger.GetLevel().String())
 	return nil
 }
 
