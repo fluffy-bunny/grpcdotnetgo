@@ -22,6 +22,7 @@ type (
 		ClientID     string `json:"client_id" mapstructure:"CLIENT_ID"`
 		ClientSecret string `json:"client_secret" mapstructure:"CLIENT_SECRET"`
 		CallbackURL  string `json:"callback_url" mapstructure:"CALLBACK_URL"`
+		Insecure     bool   `json:"insecure" mapstructure:"INSECURE"`
 	}
 	// IOIDCAuthenticator ...
 	IOIDCAuthenticator interface {
