@@ -40,7 +40,7 @@ require (
 	github.com/tkuchiki/parsetime v0.3.0
 	github.com/ziflex/lecho v1.2.0
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-	google.golang.org/grpc v1.45.0
+	google.golang.org/grpc v1.46.0
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/square/go-jose.v2 v2.6.0
 
