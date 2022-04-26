@@ -39,7 +39,11 @@ func AddSingletonIOIDCAuthenticator(builder *di.Builder) {
 func (s *service) Ctor() {
 	log.Info().Msg("OIDC Authenticator created")
 	config := s.GetOIDCAuthenticatorConfig()
-	s.issuer = "https://" + config.Domain + "/"
+	s.issuer = "https://"
+	if config.Insecure {
+		s.issuer = "http://"
+	}
+	s.issuer += config.Domain + "/"
 	log.Info().Msgf("issuer: %s", s.issuer)
 	oidcProviderEx, err := auth_oidc.NewProvider(context.Background(), s.issuer)
 	if err != nil {
