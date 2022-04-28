@@ -14,7 +14,6 @@ import (
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
 	core_contracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/core"
-	core_echo "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo"
 	contracts_container "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/container"
 	contracts_handler "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/handler"
 	contracts_session "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/session"
@@ -176,14 +175,6 @@ func (s *Runtime) phase3() error {
 		s.echo.Use(core_middleware_session.EnsureDevelopmentSession(s.Container, mainSession, s.instanceID))
 	}
 	app := s.echo.Group("")
-	app.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
-		TokenLookup:    "header:X-Csrf-Token,form:csrf",
-		CookiePath:     "/",
-		CookieSecure:   false,
-		CookieHTTPOnly: false,
-		CookieSameSite: http.SameSiteStrictMode,
-		Skipper:        core_echo.HasWellknownAuthHeaders,
-	}))
 
 	// we have all our required upfront middleware running
 	// now we can add the optional startup ones.
