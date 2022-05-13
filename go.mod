@@ -6,7 +6,7 @@ require (
 	github.com/ReneKroon/ttlcache/v2 v2.11.0
 	github.com/bamzi/jobrunner v1.0.0
 	github.com/cheekybits/genny v1.0.0
-	github.com/coreos/go-oidc/v3 v3.1.0
+	github.com/coreos/go-oidc/v3 v3.2.0
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
 	github.com/fluffy-bunny/sarulabsdi v0.1.63
