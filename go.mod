@@ -1,6 +1,6 @@
 module github.com/fluffy-bunny/grpcdotnetgo
 
-go 1.17
+go 1.18
 
 require (
 	github.com/ReneKroon/ttlcache/v2 v2.11.0
