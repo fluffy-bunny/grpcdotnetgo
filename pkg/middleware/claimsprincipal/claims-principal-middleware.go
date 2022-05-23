@@ -105,9 +105,6 @@ func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypoint
 		}
 		subLogger = subLogger.With().Caller().Logger()
 
-		subLogger.Debug().Msg("Enter")
-		defer subLogger.Debug().Msg("Enter")
-
 		if requestContainer != nil {
 			claimsPrincipal := claimsprincipalContracts.GetIClaimsPrincipalFromContainer(requestContainer)
 
