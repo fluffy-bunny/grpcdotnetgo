@@ -432,7 +432,7 @@ func (suite *testSuite) SetupTest() {
 // suite.
 func (suite *testSuite) TestValidation() {
 	for _, tc := range suite.testCases {
-		actual := Validate(log.Debug(), tc.Config, tc.ClaimsPrincipal)
+		actual := Validate(&log.Logger, tc.Config, tc.ClaimsPrincipal)
 		suite.Equal(actual, tc.expected, tc.Desc)
 	}
 }

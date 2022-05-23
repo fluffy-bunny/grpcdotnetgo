@@ -16,18 +16,18 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
-func Validate(logEvent *zerolog.Event, claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
+func Validate(logger *zerolog.Logger, claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
 	if !validateAND(claimsConfig, claimsPrincipal) {
-		logEvent.Msg("AND validation failed")
+		logger.Debug().Msg("AND validation failed")
 		return false
 	}
 
 	if !validateOR(claimsConfig, claimsPrincipal) {
-		logEvent.Msg("OR validation failed")
+		logger.Debug().Msg("OR validation failed")
 		return false
 	}
 	if claimsConfig.Child != nil {
-		return Validate(logEvent, claimsConfig.Child, claimsPrincipal)
+		return Validate(logger, claimsConfig.Child, claimsPrincipal)
 	}
 	return true
 }
@@ -103,24 +103,25 @@ func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypoint
 				Str("FullMethod", info.FullMethod).
 				Logger()
 		}
+		subLogger = subLogger.With().Caller().Logger()
 
-		debugEvent := subLogger.Debug()
-		debugEvent.Msg("FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption Enter")
-		defer debugEvent.Msg("FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption Exit")
+		subLogger.Debug().Msg("Enter")
+		defer subLogger.Debug().Msg("Enter")
+
 		if requestContainer != nil {
 			claimsPrincipal := claimsprincipalContracts.GetIClaimsPrincipalFromContainer(requestContainer)
 
 			permissionDeniedFunc := func() (interface{}, error) {
-				debugEvent.Msg("Permission denied")
+				subLogger.Debug().Msg("Permission denied")
 				return nil, status.Errorf(codes.PermissionDenied, "permission denied")
 			}
 			elem, ok := grpcEntrypointClaimsMap[info.FullMethod]
 			if !ok && enableZeroTrust {
-				debugEvent.Msg("FullMethod not found in entrypoint claims map")
+				subLogger.Debug().Msg("FullMethod not found in entrypoint claims map")
 				return permissionDeniedFunc()
 			}
-			if !Validate(debugEvent, elem.ClaimsConfig, claimsPrincipal) {
-				debugEvent.Msg("ClaimsConfig validation failed")
+			if !Validate(&subLogger, elem.ClaimsConfig, claimsPrincipal) {
+				subLogger.Debug().Msg("ClaimsConfig validation failed")
 				return permissionDeniedFunc()
 			}
 		}

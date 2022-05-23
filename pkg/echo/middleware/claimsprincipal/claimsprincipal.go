@@ -65,7 +65,6 @@ func FinalAuthVerificationMiddlewareUsingClaimsMap(entrypointClaimsMap map[strin
 				Bool("enableZeroTrust", enableZeroTrust).
 				Str("FullMethod", path).
 				Logger()
-			debugEvent := subLogger.Debug()
 
 			scopedContainer := c.Get(wellknown.SCOPED_CONTAINER_KEY).(di.Container)
 			claimsPrincipal := contracts_core_claimsprincipal.GetIClaimsPrincipalFromContainer(scopedContainer)
@@ -85,11 +84,11 @@ func FinalAuthVerificationMiddlewareUsingClaimsMap(entrypointClaimsMap map[strin
 				return c.Redirect(http.StatusFound, "/unauthorized")
 			}
 			if !ok && enableZeroTrust {
-				debugEvent.Msg("FullMethod not found in entrypoint claims map")
+				subLogger.Debug().Msg("FullMethod not found in entrypoint claims map")
 				return permissionDeniedFunc()
 			}
-			if !middleware_claimsprincipal.Validate(debugEvent, elem.ClaimsConfig, claimsPrincipal) {
-				debugEvent.Msg("ClaimsConfig validation failed")
+			if !middleware_claimsprincipal.Validate(&subLogger, elem.ClaimsConfig, claimsPrincipal) {
+				subLogger.Debug().Msg("ClaimsConfig validation failed")
 				return permissionDeniedFunc()
 			}
 			return next(c)
