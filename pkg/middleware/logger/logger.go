@@ -30,7 +30,8 @@ func LoggingUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		requestContainer := middleware_dicontext.GetRequestContainer(ctx)
 		if requestContainer != nil {
 			logger := loggerContracts.GetILoggerFromContainer(requestContainer)
-			logger.Debug().
+			loggerZ := logger.GetLogger().With().Str("middleware", "LoggingUnaryServerInterceptor").Logger()
+			loggerZ.Trace().
 				Interface("request", req).
 				Msg("Handling request")
 		}
