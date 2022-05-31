@@ -1,6 +1,8 @@
 package metadatafilter
 
 import (
+	"strings"
+
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/gods/sets/hashset"
 )
 
@@ -23,7 +25,7 @@ func (s *EntryPointAllowedMetadataMapBuilder) WithAllowedMetadataHeader(fullMeth
 		s.EntryPointAllowedMetadataMap[fullMethodName] = hashset.NewStringSet()
 	}
 	for _, header := range headers {
-		s.EntryPointAllowedMetadataMap[fullMethodName].Add(header)
+		s.EntryPointAllowedMetadataMap[fullMethodName].Add(strings.ToLower(header))
 	}
 	return s
 }

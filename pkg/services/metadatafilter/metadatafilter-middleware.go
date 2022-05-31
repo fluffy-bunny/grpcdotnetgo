@@ -3,6 +3,7 @@ package metadatafilter
 import (
 	"context"
 	"reflect"
+	"strings"
 
 	contractsmetadatafilter "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/metadatafilter"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/gods/sets/hashset"
@@ -45,7 +46,7 @@ func (s *metadataFilterMiddleware) GetUnaryServerInterceptor() grpc.UnaryServerI
 			}
 			// is it explictly allowed for this entry point?
 			if entryPointExists {
-				exists := entryPointAllowed.Contains(header)
+				exists := entryPointAllowed.Contains(strings.ToLower(header))
 				if exists {
 					continue
 				}
