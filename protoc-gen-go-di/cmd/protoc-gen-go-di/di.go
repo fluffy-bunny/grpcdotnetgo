@@ -30,6 +30,17 @@ type genFileContext struct {
 	g           *protogen.GeneratedFile
 }
 
+func isServiceIgnored(service *protogen.Service) bool {
+	// Look for a comment consisting of "di:ignore"
+	const ignore = "di:ignore"
+	for _, comment := range service.Comments.LeadingDetached {
+		if strings.Contains(string(comment), ignore) {
+			return true
+		}
+	}
+
+	return strings.Contains(string(service.Comments.Leading), ignore)
+}
 func newGenFileContext(gen *protogen.Plugin, file *protogen.File) *genFileContext {
 	ctx := &genFileContext{
 		file:        file,
@@ -138,6 +149,10 @@ func (s *genFileContext) generateFileContent() {
 	var serviceGenCtxs []*serviceGenContext
 	// Generate each service
 	for _, service := range file.Services {
+		// Check if this service is ignored for DI purposes
+		if isServiceIgnored(service) {
+			continue
+		}
 		serviceGenCtx := newServiceGenContext(s.packageName, s.uniqueRunID, gen, file, g, service)
 		serviceGenCtx.genService()
 		serviceGenCtxs = append(serviceGenCtxs, serviceGenCtx)
