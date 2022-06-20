@@ -44,3 +44,18 @@ message HelloReply2 {
   string message = 1;
   
 }
+
+// Mapped client connector auth service.
+// di:ignore
+service EdgeControlService {
+  // Write a property to one or more known subtended device(s)
+  // Request: Unary
+  // Response: Streaming
+  rpc WriteProps(WritePropsRequest) returns (stream WritePropsResponse);
+}
+
+message WritePropsRequest {
+}
+
+message WritePropsResponse {
+}

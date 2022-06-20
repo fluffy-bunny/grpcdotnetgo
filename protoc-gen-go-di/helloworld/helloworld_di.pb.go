@@ -52,6 +52,12 @@ import (
                     "json_name": "message"
                 }
             ]
+        },
+        {
+            "name": "WritePropsRequest"
+        },
+        {
+            "name": "WritePropsResponse"
         }
     ],
     "service": [
@@ -76,6 +82,17 @@ import (
                     "options": {}
                 }
             ]
+        },
+        {
+            "name": "EdgeControlService",
+            "method": [
+                {
+                    "name": "WriteProps",
+                    "input_type": ".helloworld.WritePropsRequest",
+                    "output_type": ".helloworld.WritePropsResponse",
+                    "server_streaming": true
+                }
+            ]
         }
     ],
     "options": {
@@ -90,7 +107,7 @@ import (
                 "span": [
                     14,
                     0,
-                    45,
+                    60,
                     1
                 ]
             },
@@ -406,6 +423,21 @@ import (
                     0,
                     2,
                     0,
+                    4
+                ],
+                "span": [
+                    35,
+                    2,
+                    34,
+                    22
+                ]
+            },
+            {
+                "path": [
+                    4,
+                    0,
+                    2,
+                    0,
                     5
                 ],
                 "span": [
@@ -478,6 +510,21 @@ import (
                     40,
                     2,
                     21
+                ]
+            },
+            {
+                "path": [
+                    4,
+                    1,
+                    2,
+                    0,
+                    4
+                ],
+                "span": [
+                    40,
+                    2,
+                    39,
+                    20
                 ]
             },
             {
@@ -565,6 +612,21 @@ import (
                     2,
                     2,
                     0,
+                    4
+                ],
+                "span": [
+                    43,
+                    2,
+                    42,
+                    21
+                ]
+            },
+            {
+                "path": [
+                    4,
+                    2,
+                    2,
+                    0,
                     5
                 ],
                 "span": [
@@ -599,6 +661,149 @@ import (
                     43,
                     19,
                     20
+                ]
+            },
+            {
+                "path": [
+                    6,
+                    2
+                ],
+                "span": [
+                    49,
+                    0,
+                    54,
+                    1
+                ],
+                "leading_comments": " Mapped client connector auth service.\n di:ignore\n"
+            },
+            {
+                "path": [
+                    6,
+                    2,
+                    1
+                ],
+                "span": [
+                    49,
+                    8,
+                    26
+                ]
+            },
+            {
+                "path": [
+                    6,
+                    2,
+                    2,
+                    0
+                ],
+                "span": [
+                    53,
+                    2,
+                    72
+                ],
+                "leading_comments": " Write a property to one or more known subtended device(s)\n Request: Unary\n Response: Streaming\n"
+            },
+            {
+                "path": [
+                    6,
+                    2,
+                    2,
+                    0,
+                    1
+                ],
+                "span": [
+                    53,
+                    6,
+                    16
+                ]
+            },
+            {
+                "path": [
+                    6,
+                    2,
+                    2,
+                    0,
+                    2
+                ],
+                "span": [
+                    53,
+                    17,
+                    34
+                ]
+            },
+            {
+                "path": [
+                    6,
+                    2,
+                    2,
+                    0,
+                    6
+                ],
+                "span": [
+                    53,
+                    45,
+                    51
+                ]
+            },
+            {
+                "path": [
+                    6,
+                    2,
+                    2,
+                    0,
+                    3
+                ],
+                "span": [
+                    53,
+                    52,
+                    70
+                ]
+            },
+            {
+                "path": [
+                    4,
+                    3
+                ],
+                "span": [
+                    56,
+                    0,
+                    57,
+                    1
+                ]
+            },
+            {
+                "path": [
+                    4,
+                    3,
+                    1
+                ],
+                "span": [
+                    56,
+                    8,
+                    25
+                ]
+            },
+            {
+                "path": [
+                    4,
+                    4
+                ],
+                "span": [
+                    59,
+                    0,
+                    60,
+                    1
+                ]
+            },
+            {
+                "path": [
+                    4,
+                    4,
+                    1
+                ],
+                "span": [
+                    59,
+                    8,
+                    26
                 ]
             }
         ]

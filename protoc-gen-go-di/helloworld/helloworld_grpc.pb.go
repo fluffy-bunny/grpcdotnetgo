@@ -189,3 +189,122 @@ var Greeter2_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "protoc-gen-go-di/helloworld/helloworld.proto",
 }
+
+// EdgeControlServiceClient is the client API for EdgeControlService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type EdgeControlServiceClient interface {
+	// Write a property to one or more known subtended device(s)
+	// Request: Unary
+	// Response: Streaming
+	WriteProps(ctx context.Context, in *WritePropsRequest, opts ...grpc.CallOption) (EdgeControlService_WritePropsClient, error)
+}
+
+type edgeControlServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewEdgeControlServiceClient(cc grpc.ClientConnInterface) EdgeControlServiceClient {
+	return &edgeControlServiceClient{cc}
+}
+
+func (c *edgeControlServiceClient) WriteProps(ctx context.Context, in *WritePropsRequest, opts ...grpc.CallOption) (EdgeControlService_WritePropsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &EdgeControlService_ServiceDesc.Streams[0], "/helloworld.EdgeControlService/WriteProps", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &edgeControlServiceWritePropsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type EdgeControlService_WritePropsClient interface {
+	Recv() (*WritePropsResponse, error)
+	grpc.ClientStream
+}
+
+type edgeControlServiceWritePropsClient struct {
+	grpc.ClientStream
+}
+
+func (x *edgeControlServiceWritePropsClient) Recv() (*WritePropsResponse, error) {
+	m := new(WritePropsResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// EdgeControlServiceServer is the server API for EdgeControlService service.
+// All implementations must embed UnimplementedEdgeControlServiceServer
+// for forward compatibility
+type EdgeControlServiceServer interface {
+	// Write a property to one or more known subtended device(s)
+	// Request: Unary
+	// Response: Streaming
+	WriteProps(*WritePropsRequest, EdgeControlService_WritePropsServer) error
+	mustEmbedUnimplementedEdgeControlServiceServer()
+}
+
+// UnimplementedEdgeControlServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedEdgeControlServiceServer struct {
+}
+
+func (UnimplementedEdgeControlServiceServer) WriteProps(*WritePropsRequest, EdgeControlService_WritePropsServer) error {
+	return status.Errorf(codes.Unimplemented, "method WriteProps not implemented")
+}
+func (UnimplementedEdgeControlServiceServer) mustEmbedUnimplementedEdgeControlServiceServer() {}
+
+// UnsafeEdgeControlServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to EdgeControlServiceServer will
+// result in compilation errors.
+type UnsafeEdgeControlServiceServer interface {
+	mustEmbedUnimplementedEdgeControlServiceServer()
+}
+
+func RegisterEdgeControlServiceServer(s grpc.ServiceRegistrar, srv EdgeControlServiceServer) {
+	s.RegisterService(&EdgeControlService_ServiceDesc, srv)
+}
+
+func _EdgeControlService_WriteProps_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(WritePropsRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(EdgeControlServiceServer).WriteProps(m, &edgeControlServiceWritePropsServer{stream})
+}
+
+type EdgeControlService_WritePropsServer interface {
+	Send(*WritePropsResponse) error
+	grpc.ServerStream
+}
+
+type edgeControlServiceWritePropsServer struct {
+	grpc.ServerStream
+}
+
+func (x *edgeControlServiceWritePropsServer) Send(m *WritePropsResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+// EdgeControlService_ServiceDesc is the grpc.ServiceDesc for EdgeControlService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var EdgeControlService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "helloworld.EdgeControlService",
+	HandlerType: (*EdgeControlServiceServer)(nil),
+	Methods:     []grpc.MethodDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "WriteProps",
+			Handler:       _EdgeControlService_WriteProps_Handler,
+			ServerStreams: true,
+		},
+	},
+	Metadata: "protoc-gen-go-di/helloworld/helloworld.proto",
+}
