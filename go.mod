@@ -36,7 +36,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.11.0
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.7.4
 	github.com/tkuchiki/parsetime v0.3.0
 	github.com/ziflex/lecho v1.2.0
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
@@ -93,7 +93,7 @@ require (
 	google.golang.org/genproto v0.0.0-20220407144326-9054f6ed7bac // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 // replace github.com/fluffy-bunny/go-jwt-middleware => ../go-jwt-middleware
