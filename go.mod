@@ -31,7 +31,7 @@ require (
 	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/xid v1.4.0
-	github.com/rs/zerolog v1.26.1
+	github.com/rs/zerolog v1.27.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sirupsen/logrus v1.8.1
@@ -41,7 +41,7 @@ require (
 	github.com/tkuchiki/parsetime v0.3.0
 	github.com/ziflex/lecho v1.2.0
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
-	google.golang.org/grpc v1.46.2
+	google.golang.org/grpc v1.47.0
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/square/go-jose.v2 v2.6.0
 
