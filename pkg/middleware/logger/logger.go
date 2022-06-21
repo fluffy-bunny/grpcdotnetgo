@@ -18,7 +18,7 @@ import (
 // EnsureContextLoggingUnaryServerInterceptor returns a new unary server interceptors that performs request logging in JSON format
 func EnsureContextLoggingUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-		logger := log.With().Logger()
+		logger := log.With().Caller().Logger()
 		newCtx := logger.WithContext(ctx)
 		return handler(newCtx, req)
 	}

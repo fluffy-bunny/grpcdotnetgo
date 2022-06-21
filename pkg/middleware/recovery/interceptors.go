@@ -9,6 +9,11 @@ import (
 	"context"
 	"fmt"
 
+	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
+	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	zLog "github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -20,7 +25,7 @@ type RecoveryHandlerUnaryFunc func(fullMethodName string, p interface{}) (resp i
 // RecoveryHandlerStreamFunc is a function that recovers from the panic `p` by returning an `error`.
 type RecoveryHandlerStreamFunc func(fullMethodName string, p interface{}) (err error)
 
-// RecoveryHandlerFuncContext is a function that recovers from the panic `p` by returning an abritrary object which could be an `error`.
+// RecoveryHandlerUnaryFuncContext is a function that recovers from the panic `p` by returning an abritrary object which could be an `error`.
 // The context can be used to extract request scoped metadata and context values.
 type RecoveryHandlerUnaryFuncContext func(ctx context.Context, fullMethodName string, p interface{}) (resp interface{}, err error)
 
@@ -36,8 +41,28 @@ func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
 
 		defer func() {
 			if r := recover(); r != nil || panicked {
+				var log *zerolog.Logger
+				// try to get the logger from the container first
+				requestContainer := middleware_dicontext.GetRequestContainer(ctx)
+				if requestContainer != nil {
+					logger, err := loggerContracts.SafeGetILoggerFromContainer(requestContainer)
+					if err == nil {
+						log = logger.GetLogger()
+					}
+				}
+				if log == nil {
+					logZ := zLog.Logger.With().Caller().Logger()
+					log = &logZ
+				}
+				logZ := log.With().Str("middleware", "RecoveryUnaryServerInterceptor").Logger()
+				log = &logZ
+				defer func() {
+					if r := recover(); r != nil {
+						err := errors.Wrap(fmt.Errorf("%v", r), "panic")
+						log.Error().Stack().Err(err).Send()
+					}
+				}()
 				resp, err = recoverFromUnary(ctx, info, r, o.recoveryHandlerUnaryFunc)
-				fmt.Println("")
 			}
 		}()
 
