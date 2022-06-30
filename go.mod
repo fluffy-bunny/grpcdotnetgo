@@ -2,15 +2,18 @@ module github.com/fluffy-bunny/grpcdotnetgo
 
 go 1.18
 
+replace github.com/hibiken/asynq => github.com/fluffy-bunny/asynq v0.23.6
+
 require (
 	github.com/ReneKroon/ttlcache/v2 v2.11.0
+	github.com/alicebob/miniredis/v2 v2.21.0
 	github.com/bamzi/jobrunner v1.0.0
 	github.com/cheekybits/genny v1.0.0
 	github.com/coreos/go-oidc/v3 v3.2.0
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20210902160455-4c83c82b8422
 	github.com/fluffy-bunny/sarulabsdi v0.1.63
-	github.com/fluffy-bunny/viperEx v0.0.26
+	github.com/fluffy-bunny/viperEx v0.0.25
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
@@ -21,6 +24,7 @@ require (
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/hibiken/asynq v0.23.0
 	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/jinzhu/copier v0.3.5
 	github.com/jnewmano/grpc-json-proxy v0.0.6
@@ -49,11 +53,16 @@ require (
 
 require (
 	cloud.google.com/go/compute v1.6.1 // indirect
+	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
+	github.com/cespare/xxhash/v2 v2.1.1 // indirect
+	github.com/cristalhq/atomix v0.7.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
+	github.com/go-redis/redis/v8 v8.11.2 // indirect
 	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
@@ -83,6 +92,7 @@ require (
 	github.com/tkuchiki/go-timezone v0.2.2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
+	github.com/yuin/gopher-lua v0.0.0-20220504180219-658193537a64 // indirect
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect
 	golang.org/x/net v0.0.0-20220520000938-2e3eb7b945c2 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
