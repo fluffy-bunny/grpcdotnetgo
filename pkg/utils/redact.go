@@ -12,6 +12,26 @@ func PrettyPrintRedacted(source, dest interface{}) {
 	MakeRedactedCopy(source, dest)
 	fmt.Println(PrettyJSON(dest))
 }
+func clone(oldObj interface{}) interface{} {
+	newObj := reflect.New(reflect.TypeOf(oldObj).Elem())
+	oldVal := reflect.ValueOf(oldObj).Elem()
+	newVal := newObj.Elem()
+	for i := 0; i < oldVal.NumField(); i++ {
+		newValField := newVal.Field(i)
+		if newValField.CanSet() {
+			newValField.Set(oldVal.Field(i))
+		}
+	}
+
+	return newObj.Interface()
+}
+
+// CloneAndRedact logs a redacted version of the object
+func CloneAndRedact(source interface{}) (dest interface{}, err error) {
+	dest = clone(source)
+	err = MakeRedactedCopy(source, dest)
+	return dest, err
+}
 
 // MakeRedactedCopy ...
 func MakeRedactedCopy(src, dst interface{}) error {
@@ -58,7 +78,7 @@ func Redact(reflectValue reflect.Value) {
 }
 func redactString(s string) string {
 	if len(s) >= 8 {
-		return s[:2] + "**REDACTED**" + s[len(s)-2:]
+		return s[:4] + "**REDACTED**" + s[len(s)-2:]
 	} else if len(s) >= 6 {
 		return s[:2] + "**REDACTED**"
 	}
