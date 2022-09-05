@@ -25,7 +25,7 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/jnewmano/grpc-json-proxy v0.0.6
 	github.com/labstack/echo-contrib v0.12.0
-	github.com/labstack/echo/v4 v4.7.2
+	github.com/labstack/echo/v4 v4.9.0
 	github.com/lestrrat-go/jwx v1.2.25
 	github.com/pkg/errors v0.9.1
 	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7
