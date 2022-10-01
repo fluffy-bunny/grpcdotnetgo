@@ -35,15 +35,19 @@ func (m *MockIClaimsPrincipal) EXPECT() *MockIClaimsPrincipalMockRecorder {
 }
 
 // AddClaim mocks base method.
-func (m *MockIClaimsPrincipal) AddClaim(arg0 claimsprincipal.Claim) {
+func (m *MockIClaimsPrincipal) AddClaim(arg0 ...claimsprincipal.Claim) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "AddClaim", arg0)
+	varargs := []interface{}{}
+	for _, a := range arg0 {
+		varargs = append(varargs, a)
+	}
+	m.ctrl.Call(m, "AddClaim", varargs...)
 }
 
 // AddClaim indicates an expected call of AddClaim.
-func (mr *MockIClaimsPrincipalMockRecorder) AddClaim(arg0 interface{}) *gomock.Call {
+func (mr *MockIClaimsPrincipalMockRecorder) AddClaim(arg0 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddClaim", reflect.TypeOf((*MockIClaimsPrincipal)(nil).AddClaim), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddClaim", reflect.TypeOf((*MockIClaimsPrincipal)(nil).AddClaim), arg0...)
 }
 
 // GetClaims mocks base method.
@@ -103,13 +107,17 @@ func (mr *MockIClaimsPrincipalMockRecorder) HasClaimType(arg0 interface{}) *gomo
 }
 
 // RemoveClaim mocks base method.
-func (m *MockIClaimsPrincipal) RemoveClaim(arg0 claimsprincipal.Claim) {
+func (m *MockIClaimsPrincipal) RemoveClaim(arg0 ...claimsprincipal.Claim) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RemoveClaim", arg0)
+	varargs := []interface{}{}
+	for _, a := range arg0 {
+		varargs = append(varargs, a)
+	}
+	m.ctrl.Call(m, "RemoveClaim", varargs...)
 }
 
 // RemoveClaim indicates an expected call of RemoveClaim.
-func (mr *MockIClaimsPrincipalMockRecorder) RemoveClaim(arg0 interface{}) *gomock.Call {
+func (mr *MockIClaimsPrincipalMockRecorder) RemoveClaim(arg0 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveClaim", reflect.TypeOf((*MockIClaimsPrincipal)(nil).RemoveClaim), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveClaim", reflect.TypeOf((*MockIClaimsPrincipal)(nil).RemoveClaim), arg0...)
 }
