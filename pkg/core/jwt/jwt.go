@@ -9,14 +9,33 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
+type (
+	MintUnsignedOptons struct {
+		NotBefore  *time.Time
+		IssuedAt   *time.Time
+		Expiration *time.Duration
+	}
+)
+
 // MintUnsignedToken creates a new unsigned token
-func MintUnsignedToken(subject string, extraClaims jwt.MapClaims) (string, error) {
+func MintUnsignedToken(subject string, extraClaims jwt.MapClaims, options *MintUnsignedOptons) (string, error) {
 	if !utils.IsEmptyOrNil(subject) {
 		extraClaims["sub"] = subject
 	}
 	extraClaims["iat"] = time.Now().Unix()
 	extraClaims["nbf"] = time.Now().Unix()
-
+	extraClaims["exp"] = time.Now().Add(time.Hour).Unix()
+	if options != nil {
+		if options.Expiration != nil {
+			extraClaims["exp"] = time.Now().Add(*options.Expiration).Unix()
+		}
+		if options.IssuedAt != nil {
+			extraClaims["iat"] = options.IssuedAt.Unix()
+		}
+		if options.NotBefore != nil {
+			extraClaims["nbf"] = options.NotBefore.Unix()
+		}
+	}
 	token := jwt.NewWithClaims(jwt.SigningMethodNone, extraClaims)
 	return token.SignedString(jwt.UnsafeAllowNoneSignatureType)
 }
