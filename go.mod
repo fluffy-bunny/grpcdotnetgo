@@ -25,8 +25,8 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.3.3
 	github.com/jinzhu/copier v0.3.5
 	github.com/jnewmano/grpc-json-proxy v0.0.6
-	github.com/labstack/echo-contrib v0.12.0
-	github.com/labstack/echo/v4 v4.7.2
+	github.com/labstack/echo-contrib v0.13.0
+	github.com/labstack/echo/v4 v4.9.0
 	github.com/lestrrat-go/jwx v1.2.25
 	github.com/pkg/errors v0.9.1
 	github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7
@@ -42,7 +42,7 @@ require (
 	github.com/tkuchiki/parsetime v0.3.0
 	github.com/ziflex/lecho v1.2.0
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
-	google.golang.org/grpc v1.47.0
+	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/square/go-jose.v2 v2.6.0
 
@@ -84,12 +84,12 @@ require (
 	github.com/tkuchiki/go-timezone v0.2.2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
-	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect
-	golang.org/x/net v0.0.0-20220520000938-2e3eb7b945c2 // indirect
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
+	golang.org/x/net v0.0.0-20220728030405-41545e8bf201 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	golang.org/x/sys v0.0.0-20220728004956-3c1f35247d10 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/time v0.0.0-20201208040808-7e3f01d25324 // indirect
+	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20220519153652-3a47de7e79bd // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
