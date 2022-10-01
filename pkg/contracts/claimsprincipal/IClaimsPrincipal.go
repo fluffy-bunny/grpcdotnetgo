@@ -14,8 +14,8 @@ type Claim struct {
 type IClaimsPrincipal interface {
 	GetClaims() []Claim
 	HasClaim(claim Claim) bool
-	AddClaim(claim Claim)
-	RemoveClaim(claim Claim)
+	AddClaim(claim ...Claim)
+	RemoveClaim(claim ...Claim)
 	GetClaimsByType(claimType string) []Claim
 	HasClaimType(claimType string) bool
 }

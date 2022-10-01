@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
-	claimsprincipalServices "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
+	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	services_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	jwxt "github.com/lestrrat-go/jwx/jwt"
 	"github.com/rs/zerolog/log"
 )
@@ -38,7 +38,7 @@ func NewJWTValidator(options *JWTValidatorOptions) *JWTValidator {
 }
 
 // ParseToken validates an produces a claims principal
-func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken string) (claimsprincipalContracts.IClaimsPrincipal, error) {
+func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken string) (contracts_claimsprincipal.IClaimsPrincipal, error) {
 	var validationOpts []jwxt.ValidateOption
 	// Parse the JWT
 	jwkSet, err := jwtValidator.Options.OAuth2Document.fetchJwks(ctx)
@@ -66,7 +66,7 @@ func (jwtValidator *JWTValidator) ParseToken(ctx context.Context, accessToken st
 	if err != nil {
 		return nil, err
 	}
-	result := claimsprincipalServices.ClaimsPrincipalFromClaimsMap(claimsMap)
+	result := services_claimsprincipal.ClaimsPrincipalFromClaimsMap(claimsMap)
 
 	return result, nil
 }

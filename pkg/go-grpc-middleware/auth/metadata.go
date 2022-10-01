@@ -22,7 +22,8 @@ var (
 // case-insensitive format (see rfc2617, sec 1.2). If no such authorization is found, or the token
 // is of wrong scheme, an error with gRPC status `Unauthenticated` is returned.
 func AuthFromMD(ctx context.Context, expectedScheme string) (string, error) {
-	val := metautils.ExtractIncoming(ctx).Get(headerAuthorize)
+	md := metautils.ExtractIncoming(ctx)
+	val := md.Get(headerAuthorize)
 	if val == "" {
 		return "", status.Errorf(codes.Unauthenticated, "Request unauthenticated with "+expectedScheme)
 	}
