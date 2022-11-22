@@ -1,12 +1,14 @@
 package claimsprincipal
 
 import (
+	"context"
 	"testing"
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	claimsprincipalServices "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	"github.com/rs/zerolog/log"
+
 	suiteTestify "github.com/stretchr/testify/suite"
 )
 
@@ -432,7 +434,9 @@ func (suite *testSuite) SetupTest() {
 // suite.
 func (suite *testSuite) TestValidation() {
 	for _, tc := range suite.testCases {
-		actual := Validate(&log.Logger, tc.Config, tc.ClaimsPrincipal)
+		ctx := context.Background()
+		ctx = log.Logger.WithContext(ctx)
+		actual := Validate(ctx, tc.Config, tc.ClaimsPrincipal)
 		suite.Equal(actual, tc.expected, tc.Desc)
 	}
 }
