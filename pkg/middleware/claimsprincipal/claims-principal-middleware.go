@@ -17,14 +17,14 @@ import (
 
 // Validate ...
 func Validate(ctx context.Context, claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
-	log := zerolog.Ctx(ctx).With().Logger()
+	log := zerolog.Ctx(ctx).With().Interface("claimsConfig", claimsConfig).Logger()
 	if !validateAND(claimsConfig, claimsPrincipal) {
-		log.Debug().Msg("AND validation failed")
+		log.Debug().Interface("claims", claimsPrincipal.GetClaims()).Msg("AND validation failed")
 		return false
 	}
 
 	if !validateOR(claimsConfig, claimsPrincipal) {
-		log.Debug().Msg("OR validation failed")
+		log.Debug().Interface("claims", claimsPrincipal.GetClaims()).Msg("OR validation failed")
 		return false
 	}
 	if claimsConfig.Child != nil {
