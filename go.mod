@@ -22,7 +22,7 @@ require (
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
-	github.com/jedib0t/go-pretty/v6 v6.3.3
+	github.com/jedib0t/go-pretty/v6 v6.4.3
 	github.com/jinzhu/copier v0.3.5
 	github.com/jnewmano/grpc-json-proxy v0.0.6
 	github.com/labstack/echo-contrib v0.13.0
