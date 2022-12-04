@@ -102,7 +102,7 @@ func LoadConfig(configOptions *coreContracts.ConfigOptions) error {
 type ServerInstance struct {
 	StartupManifest coreContracts.StartupManifest
 	Server          *grpc.Server
-	Future          async.Future
+	Future          async.Future[interface{}]
 	DotNetGoBuilder *grpcdotnetgo.DotNetGoBuilder
 	Endpoints       []interface{}
 }
@@ -263,12 +263,12 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 
 	// do a future wait
 	for _, v := range s.ServerInstances {
-		v.Future.Get()
+		v.Future.Join()
 	}
 }
 
-func asyncServeGRPC(grpcServer *grpc.Server, lis net.Listener) async.Future {
-	return grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise) {
+func asyncServeGRPC(grpcServer *grpc.Server, lis net.Listener) async.Future[interface{}] {
+	return grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[interface{}]) {
 		var err error
 		log.Info().Msg("gRPC Server Starting up")
 

@@ -26,7 +26,7 @@ func excludeTestSayHello(t *testing.T) {
 	plugins = append(plugins, plugin.NewPlugin())
 	lis := bufconn.Listen(bufSize)
 	myRuntime := grpcdotnetgocore.NewRuntime()
-	future := grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise) {
+	future := grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[interface{}]) {
 		var err error
 
 		defer func() {
@@ -60,5 +60,5 @@ func excludeTestSayHello(t *testing.T) {
 	log.Printf("Response: %+v", resp)
 	// Test for output here.
 	myRuntime.Stop()
-	future.Get()
+	future.Join()
 }

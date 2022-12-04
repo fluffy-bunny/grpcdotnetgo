@@ -16,7 +16,7 @@ func TestUnsignedTok(t *testing.T) {
 		"some_number": 123,
 		"some_bool":   true,
 	}
-	token, err := MintUnsignedToken("bob", jwtClaims)
+	token, err := MintUnsignedToken("bob", jwtClaims, &MintUnsignedOptons{})
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 
