@@ -18,8 +18,8 @@ import (
 const bufSize = 1024 * 1024
 
 // ExecuteWithPromiseAsync ...
-func ExecuteWithPromiseAsync(runtime *grpcdotnetgocore.Runtime, lis *bufconn.Listener, plugins []plugin.IGRPCDotNetGoPlugin) async.Future {
-	future := grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise) {
+func ExecuteWithPromiseAsync(runtime *grpcdotnetgocore.Runtime, lis *bufconn.Listener, plugins []plugin.IGRPCDotNetGoPlugin) async.Future[interface{}] {
+	future := grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[interface{}]) {
 		var err error
 		defer func() {
 			promise.Success(&grpcdotnetgoasync.AsyncResponse{

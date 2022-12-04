@@ -303,8 +303,8 @@ github.com/pkg/sftp v1.13.1/go.mod h1:3HaPG6Dq1ILlpPZRO0HVMrsydcdLt6HRDccSgb87qR
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
-github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7 h1:9lfzUbF4HW8VDGFt6XephAx55wcfqwiMPo4iF0rd7sM=
-github.com/reugn/async v0.0.0-20200819063434-15e5b3951cd7/go.mod h1:n0ZYr8qjOmsw6Geew9LfM/g4aScytfVDL97/x8s0DG4=
+github.com/reugn/async v0.5.0 h1:tlMxdjDJHWoUK/SejHLzi07zoUM8xq1zWLg2aS+qq1U=
+github.com/reugn/async v0.5.0/go.mod h1:dqC0G1/FB/rdagox5H6kapz4ZxbuEDMQBGeH1V63DEA=
 github.com/rivo/uniseg v0.2.0 h1:S1pD9weZBuJdFmowNwbpi7BJ8TNftyUImj/0WQi72jY=
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/robfig/cron/v3 v3.0.0/go.mod h1:eQICP3HwyT7UooqI/z+Ov+PtYAWygg1TEWWzGIFLtro=
