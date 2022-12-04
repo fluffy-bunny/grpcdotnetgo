@@ -233,7 +233,7 @@ func (s *Runtime) finalPhase() error {
 			}
 		}
 	}
-	future := grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise) {
+	future := grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[interface{}]) {
 		var err error
 		defer func() {
 			promise.Success(&grpcdotnetgoasync.AsyncResponse{
@@ -267,7 +267,7 @@ func (s *Runtime) finalPhase() error {
 
 	err := s.echo.Shutdown(ctx)
 
-	response, err := future.Get()
+	response, err := future.Join()
 	asyncResponse := response.(*grpcdotnetgoasync.AsyncResponse)
 	err = asyncResponse.Error
 	fmt.Println(asyncResponse.Message)

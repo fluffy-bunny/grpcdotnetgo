@@ -17,7 +17,7 @@ func TestAsyncMap(t *testing.T) {
 		}
 	}
 	future := pr.Future
-	v, err := future.Get()
+	v, err := future.Join()
 	require.NoError(t, err)
 
 	require.True(t, v.(bool))
