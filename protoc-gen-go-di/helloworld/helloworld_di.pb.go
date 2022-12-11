@@ -16,7 +16,7 @@ import (
 
 /*  file.Proto
 {
-    "name": "helloworld/helloworld.proto",
+    "name": "protoc-gen-go-di/helloworld/helloworld.proto",
     "package": "helloworld",
     "message_type": [
         {
@@ -425,21 +425,6 @@ import (
                     0,
                     2,
                     0,
-                    4
-                ],
-                "span": [
-                    35,
-                    2,
-                    34,
-                    22
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    0,
-                    2,
-                    0,
                     5
                 ],
                 "span": [
@@ -520,21 +505,6 @@ import (
                     1,
                     2,
                     0,
-                    4
-                ],
-                "span": [
-                    40,
-                    2,
-                    39,
-                    20
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    1,
-                    2,
-                    0,
                     5
                 ],
                 "span": [
@@ -605,21 +575,6 @@ import (
                 "span": [
                     43,
                     2,
-                    21
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    2,
-                    2,
-                    0,
-                    4
-                ],
-                "span": [
-                    43,
-                    2,
-                    42,
                     21
                 ]
             },

@@ -99,7 +99,7 @@ var Greeter_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "helloworld/helloworld.proto",
+	Metadata: "protoc-gen-go-di/helloworld/helloworld.proto",
 }
 
 // Greeter2Client is the client API for Greeter2 service.
@@ -187,7 +187,7 @@ var Greeter2_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "helloworld/helloworld.proto",
+	Metadata: "protoc-gen-go-di/helloworld/helloworld.proto",
 }
 
 // EdgeControlServiceClient is the client API for EdgeControlService service.
@@ -306,5 +306,5 @@ var EdgeControlService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "helloworld/helloworld.proto",
+	Metadata: "protoc-gen-go-di/helloworld/helloworld.proto",
 }
