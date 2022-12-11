@@ -9,12 +9,14 @@ import (
 	pkg1 "github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/pkg"
 	sarulabsdi "github.com/fluffy-bunny/sarulabsdi"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	reflect "reflect"
 )
 
 /*  file.Proto
 {
-    "name": "protoc-gen-go-di/helloworld/helloworld.proto",
+    "name": "helloworld/helloworld.proto",
     "package": "helloworld",
     "message_type": [
         {
@@ -423,6 +425,21 @@ import (
                     0,
                     2,
                     0,
+                    4
+                ],
+                "span": [
+                    35,
+                    2,
+                    34,
+                    22
+                ]
+            },
+            {
+                "path": [
+                    4,
+                    0,
+                    2,
+                    0,
                     5
                 ],
                 "span": [
@@ -503,6 +520,21 @@ import (
                     1,
                     2,
                     0,
+                    4
+                ],
+                "span": [
+                    40,
+                    2,
+                    39,
+                    20
+                ]
+            },
+            {
+                "path": [
+                    4,
+                    1,
+                    2,
+                    0,
                     5
                 ],
                 "span": [
@@ -573,6 +605,21 @@ import (
                 "span": [
                     43,
                     2,
+                    21
+                ]
+            },
+            {
+                "path": [
+                    4,
+                    2,
+                    2,
+                    0,
+                    4
+                ],
+                "span": [
+                    43,
+                    2,
+                    42,
                     21
                 ]
             },
@@ -779,7 +826,21 @@ func setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(dst interface{}, field string)
 
 // IGreeterServer defines the grpc server
 type IGreeterServer interface {
+	mustEmbedUnimplementedGreeterServer()
 	SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error)
+}
+
+// UnimplementedGreeterServerEx defines the grpc server
+type UnimplementedGreeterServerEx struct {
+	UnimplemtedErrorResponse func() error
+}
+
+func (UnimplementedGreeterServerEx) mustEmbedUnimplementedGreeterServer() {}
+func (u UnimplementedGreeterServerEx) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error) {
+	if u.UnimplemtedErrorResponse != nil {
+		return nil, u.UnimplemtedErrorResponse()
+	}
+	return nil, status.Error(codes.Unimplemented, "method SayHello not implemented")
 }
 
 // IGreeterService defines the required downstream service interface
@@ -875,7 +936,7 @@ func SafeGetIGreeterServiceFromContainer(ctn sarulabsdi.Container) (IGreeterServ
 
 // Impl for Greeter server instances
 type greeterServer struct {
-	UnimplementedGreeterServer
+	UnimplementedGreeterServerEx
 }
 
 // RegisterGreeterServerDI ...
@@ -901,7 +962,21 @@ const (
 
 // IGreeter2Server defines the grpc server
 type IGreeter2Server interface {
+	mustEmbedUnimplementedGreeter2Server()
 	SayHello(ctx context.Context, request *HelloRequest) (*HelloReply2, error)
+}
+
+// UnimplementedGreeter2ServerEx defines the grpc server
+type UnimplementedGreeter2ServerEx struct {
+	UnimplemtedErrorResponse func() error
+}
+
+func (UnimplementedGreeter2ServerEx) mustEmbedUnimplementedGreeter2Server() {}
+func (u UnimplementedGreeter2ServerEx) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply2, error) {
+	if u.UnimplemtedErrorResponse != nil {
+		return nil, u.UnimplemtedErrorResponse()
+	}
+	return nil, status.Error(codes.Unimplemented, "method SayHello not implemented")
 }
 
 // IGreeter2Service defines the required downstream service interface
@@ -997,7 +1072,7 @@ func SafeGetIGreeter2ServiceFromContainer(ctn sarulabsdi.Container) (IGreeter2Se
 
 // Impl for Greeter2 server instances
 type greeter2Server struct {
-	UnimplementedGreeter2Server
+	UnimplementedGreeter2ServerEx
 }
 
 // RegisterGreeter2ServerDI ...

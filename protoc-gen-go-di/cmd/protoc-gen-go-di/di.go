@@ -13,6 +13,8 @@ const (
 	contextPackage        = protogen.GoImportPath("context")
 	errorsPackage         = protogen.GoImportPath("errors")
 	grpcPackage           = protogen.GoImportPath("google.golang.org/grpc")
+	grpcStatusPackage     = protogen.GoImportPath("google.golang.org/grpc/status")
+	grpcCodesPackage      = protogen.GoImportPath("google.golang.org/grpc/codes")
 	protoreflectPackage   = protogen.GoImportPath("google.golang.org/protobuf/reflect/protoreflect")
 	diPackage             = protogen.GoImportPath("github.com/fluffy-bunny/sarulabsdi")
 	grpcDIInternalPackage = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg")
@@ -241,14 +243,35 @@ func (s *serviceGenContext) genService() {
 	service := s.service
 
 	interfaceServerName := fmt.Sprintf("I%vServer", service.GoName)
+	mustEmbedUnimplementedName := fmt.Sprintf("mustEmbedUnimplemented%vServer", service.GoName)
+
 	g.P("// ", interfaceServerName, " defines the grpc server")
 	g.P("type ", interfaceServerName, " interface {")
+	g.P("  	", mustEmbedUnimplementedName, "()")
 	for _, method := range service.Methods {
 		methodGenCtx := newMethodGenContext(s.uniqueRunID, method, gen, file, g, service)
 		g.P(methodGenCtx.serverSignature())
 	}
 	g.P("}")
 	g.P()
+
+	unimplementedExServerName := fmt.Sprintf("Unimplemented%vServerEx", service.GoName)
+	g.P("// ", unimplementedExServerName, " defines the grpc server")
+	g.P("type ", unimplementedExServerName, " struct {")
+	g.P("  UnimplemtedErrorResponse func() error")
+	g.P("}")
+	g.P("func (", unimplementedExServerName, ") ",
+		"mustEmbedUnimplemented", service.GoName, "Server(){}")
+
+	for _, method := range service.Methods {
+		methodGenCtx := newMethodGenContext(s.uniqueRunID, method, gen, file, g, service)
+		g.P("func (u ", unimplementedExServerName, ") ", methodGenCtx.serverSignature(), "{")
+		g.P("  if u.UnimplemtedErrorResponse != nil {")
+		g.P("    return nil, u.UnimplemtedErrorResponse()")
+		g.P("  }")
+		g.P("  return nil, ", grpcStatusPackage.Ident("Error"), "(", grpcCodesPackage.Ident("Unimplemented"), ",\"method ", method.GoName, " not implemented\")")
+		g.P("}")
+	}
 
 	interfaceDownstreamServiceName := fmt.Sprintf("I%vService", service.GoName)
 	g.P("// ", interfaceDownstreamServiceName, " defines the required downstream service interface")
@@ -378,7 +401,7 @@ func (s *serviceGenContext) genService() {
 	// Instance Impl
 	g.P("// Impl for ", service.GoName, " server instances")
 	g.P("type ", strings.ToLower(service.GoName), "Server struct {")
-	g.P("Unimplemented", service.GoName, "Server")
+	g.P(unimplementedExServerName)
 	g.P("}")
 
 	// Server Registration
