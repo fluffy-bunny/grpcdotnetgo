@@ -3,10 +3,12 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"os/signal"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"syscall"
@@ -20,6 +22,7 @@ import (
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
 	"github.com/fluffy-bunny/viperEx"
+	glog "github.com/golang/glog"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/reugn/async"
 	"github.com/rs/zerolog"
@@ -27,6 +30,7 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
+	grpclog "google.golang.org/grpc/grpclog"
 )
 
 // ValidateConfigPath just makes sure, that the path provided is a file,
@@ -152,7 +156,33 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 	if plugins == nil || len(plugins) == 0 {
 		plugins = grpcdotnetgo_plugin.GetPlugins() // pull it from the global one
 	}
+	logFormat := os.Getenv("LOG_FORMAT")
+	if len(logFormat) == 0 {
+		logFormat = "json"
+	}
+	logFileName := os.Getenv("LOG_FILE")
+	if len(logFileName) == 0 {
+		logFileName = "stderr"
+	}
+	var logFile *os.File
+	// validate log destination
+	var target io.Writer
+	switch logFileName {
+	case "stderr":
+		target = os.Stderr
+	case "stdout":
+		target = os.Stdout
+	default:
+		// Open the log file
+		var err error
+		logFileName = fixPath(logFileName)
+		if logFile, err = os.Create(logFileName); err != nil {
+			log.Fatal().Err(err).Msg("Creating log file")
+		}
 
+		// Pass the ioWriter to the logger
+		target = logFile
+	}
 	var err error
 	logLevel := os.Getenv("LOG_LEVEL")
 	if len(logLevel) == 0 {
@@ -166,9 +196,11 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 			prettyLog = b
 		}
 	}
-	if prettyLog {
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	if prettyLog || logFormat == "pretty" {
+		target = zerolog.ConsoleWriter{Out: target}
 	}
+	log.Logger = log.Output(target)
+
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 
@@ -189,6 +221,15 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 	case "trace":
 		zerolog.SetGlobalLevel(zerolog.TraceLevel)
 	}
+	// Replace the grpc logger
+	grpclog.SetLoggerV2(NewGRPCLogger())
+	// Replace glog
+	glog.SetLogger(&glog.LoggerFunc{
+		DebugfFunc: func(f string, a ...interface{}) { log.Debug().Msgf(f, a...) },
+		InfofFunc:  func(f string, a ...interface{}) { log.Info().Msgf(f, a...) },
+		WarnfFunc:  func(f string, a ...interface{}) { log.Warn().Msgf(f, a...) },
+		ErrorfFunc: func(f string, a ...interface{}) { log.Error().Msgf(f, a...) },
+	})
 	for _, plugin := range plugins {
 		si := &ServerInstance{}
 
@@ -266,7 +307,24 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 		v.Future.Join()
 	}
 }
+func fixPath(fpath string) string {
+	if fpath == "" {
+		return ""
+	}
+	if fpath == "stdout" || fpath == "stderr" {
+		return fpath
+	}
 
+	// Is it already absolute?
+	if filepath.IsAbs(fpath) {
+		return filepath.Clean(fpath)
+	}
+
+	// Make it absolute
+	fpath, _ = filepath.Abs(fpath)
+
+	return fpath
+}
 func asyncServeGRPC(grpcServer *grpc.Server, lis net.Listener) async.Future[interface{}] {
 	return grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[interface{}]) {
 		var err error

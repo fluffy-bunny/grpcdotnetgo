@@ -13,22 +13,23 @@ import (
 	contracts_transient "github.com/fluffy-bunny/grpcdotnetgo/example/internal/contracts/transient"
 	pb "github.com/fluffy-bunny/grpcdotnetgo/example/internal/grpcContracts/helloworld"
 	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
-	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
 	contracts_serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/serviceprovider"
 	contracts_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/timeutils"
 	contracts_uuid "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/uuid"
 	grpc_error "github.com/fluffy-bunny/grpcdotnetgo/pkg/grpc/error"
+	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog"
 	"google.golang.org/grpc/codes"
 )
 
 // Service is used to implement helloworld.GreeterServer.
 type Service struct {
+	Container       di.Container                               `inject:""`
 	ServiceProvider contracts_serviceprovider.IServiceProvider `inject:""`
 	Request         contracts_request.IRequest                 `inject:""`
 	ScopedItems     contracts_request.IItems                   `inject:""`
 	ClaimsPrincipal contracts_claimsprincipal.IClaimsPrincipal `inject:""`
-	Logger          contracts_logger.ILogger                   `inject:""`
 	Config          *contracts_config.Config                   `inject:""`
 	Singleton       contracts_singleton.ISingleton             `inject:""`
 	Scoped          contracts_scoped.IScoped                   `inject:""`
@@ -54,18 +55,24 @@ func (s *Service) Ctor() {
 		builder.WriteString(":")
 		s.multiUUIDs = append(s.multiUUIDs, t())
 	}
-	s.Logger.Info().Msg(builder.String())
-	s.Logger.Info().Str("instanceID", s.instanceID).Msg("Ctor")
+
+}
+func (s *Service) getLogger() *zerolog.Logger {
+	ctx := s.Request.GetContext()
+	l := zerolog.Ctx(ctx)
+	return l
 }
 
 // Close if it exists is called when the container is torn down
 func (s *Service) Close() {
-	s.Logger.Info().Msg("Close")
+	logger := s.getLogger()
+	logger.Info().Msg("Close")
 }
 
 // SayHello implements helloworld.GreeterServer
 func (s *Service) SayHello(in *pb.HelloRequest) (*pb.HelloReply, error) {
-	s.Logger.Info().Msg("Enter")
+	logger := s.getLogger()
+	logger.Info().Msg("Enter")
 	fmt.Println(internal.PrettyJSON(s.ClaimsPrincipal))
 
 	if in.Directive == pb.HelloDirectives_HELLO_DIRECTIVES_PANIC {
@@ -79,7 +86,7 @@ func (s *Service) SayHello(in *pb.HelloRequest) (*pb.HelloReply, error) {
 		//	err := status.Errorf(codes.Internal, "%v", pb.HelloDirectives_HELLO_DIRECTIVES_ERROR)
 		return nil, errst
 	}
-	s.Logger.Info().Msgf("Received: %v", in.GetName())
+	logger.Info().Msgf("Received: %v", in.GetName())
 
 	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
 }
@@ -88,13 +95,19 @@ func (s *Service) SayHello(in *pb.HelloRequest) (*pb.HelloReply, error) {
 type Service2 struct {
 	Request         contracts_request.IRequest                 `inject:""`
 	ClaimsPrincipal contracts_claimsprincipal.IClaimsPrincipal `inject:""`
-	Logger          contracts_logger.ILogger                   `inject:""`
 	Config          *contracts_config.Config                   `inject:""`
+}
+
+func (s *Service2) getLogger() *zerolog.Logger {
+	ctx := s.Request.GetContext()
+	l := zerolog.Ctx(ctx)
+	return l
 }
 
 // SayHello implements helloworld.GreeterServer
 func (s *Service2) SayHello(in *pb.HelloRequest) (*pb.HelloReply2, error) {
-	s.Logger.Info().Msg("Enter")
+	logger := s.getLogger()
+	logger.Info().Msg("Enter")
 	fmt.Println(internal.PrettyJSON(s.ClaimsPrincipal))
 
 	if in.Directive == pb.HelloDirectives_HELLO_DIRECTIVES_PANIC {
@@ -105,6 +118,6 @@ func (s *Service2) SayHello(in *pb.HelloRequest) (*pb.HelloReply2, error) {
 		err := fmt.Errorf("Ermaghd")
 		return reply, err
 	}
-	s.Logger.Info().Msgf("Received: %v", in.GetName())
+	logger.Info().Msgf("Received: %v", in.GetName())
 	return &pb.HelloReply2{Message: "Hello " + in.GetName()}, nil
 }
