@@ -4,7 +4,6 @@ import (
 	"reflect"
 
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
-	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	di "github.com/fluffy-bunny/sarulabsdi"
 )
@@ -16,7 +15,6 @@ func AddCronOidcJobProvider(builder *di.Builder) {
 			obj := &serviceJobProvider{
 				OIDCConfigAccessor: middleware_oidc.GetOIDCConfigAccessorFromContainer(ctn),
 				Storage:            GetOidcBackgroundStorageFromContainer(ctn),
-				Logger:             contracts_logger.GetILoggerFromContainer(ctn),
 			}
 			return obj, nil
 		})

@@ -24,7 +24,6 @@ import (
 	services_contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/services/contextaccessor"
 	services_cookies "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/services/cookies"
 	services_handler "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/services/handler"
-	services_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/services/logger"
 	core_echo_templates "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/templates"
 	services_core_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	services_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/timeutils"
@@ -319,7 +318,6 @@ func (s *Runtime) addDefaultServices(builder *di.Builder) error {
 	services_timeutils.AddTimeParse(builder)
 	services_cookies.AddScopedISecureCookie(builder)
 	services_contextaccessor.AddScopedIEchoContextAccessor(builder)
-	services_logger.AddILogger(builder)
 	services_core_claimsprincipal.AddScopedIClaimsPrincipal(builder)
 	services_handler.AddSingletonIHandlerFactory(builder)
 	return nil

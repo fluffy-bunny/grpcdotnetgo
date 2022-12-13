@@ -7,7 +7,6 @@ import (
 	"time"
 
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
-	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	servicesBackgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	di "github.com/fluffy-bunny/sarulabsdi"
@@ -36,7 +35,7 @@ func (s *oidcBackgroundStorage) AtomicGet() *middleware_oidc.DiscoveryDocument {
 }
 
 // JOB
-//------------------------------------------
+// ------------------------------------------
 type oidcDiscoveryJob struct {
 	Authority    string
 	DiscoveryURL *url.URL
@@ -72,9 +71,8 @@ func (j *oidcDiscoveryJob) Run() {
 }
 
 // Job Provider
-//------------------------------------------
+// ------------------------------------------
 type serviceJobProvider struct {
-	Logger             contracts_logger.ILogger `inject:""`
 	OIDCConfigAccessor middleware_oidc.IOIDCConfigAccessor
 	Storage            IOidcBackgroundStorage
 }

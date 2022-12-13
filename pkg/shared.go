@@ -4,7 +4,6 @@ import (
 	contracts_serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/serviceprovider"
 	services_BackgroundTasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/backgroundtasks"
 	services_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
-	services_Logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/logger"
 	services_metadatafilter "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/metadatafilter"
 	services_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/request"
 	services_serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/serviceprovider"
@@ -42,8 +41,6 @@ func (dngbuilder *DotNetGoBuilder) AddDefaultService() {
 	services_claimsprincipal.AddScopedIClaimsPrincipal(builder)
 	services_request.AddScopedIRequest(builder)
 	services_request.AddScopedIItems(builder)
-	services_Logger.AddScopedILogger(builder)
-	services_Logger.AddSingletonILogger(builder)
 	services_BackgroundTasks.AddSingletonBackgroundTasks(builder)
 	services_metadatafilter.AddSingletonIMetadataFilterMiddlewareNil(builder)
 	services_serviceprovider.AddServiceProviders(builder)

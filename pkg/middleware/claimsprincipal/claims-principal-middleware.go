@@ -4,7 +4,6 @@ import (
 	"context"
 
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
-	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
@@ -89,20 +88,13 @@ func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypoint
 	log.Info().Interface("entryPointConfig", grpcEntrypointClaimsMap).Send()
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		logger := zerolog.Ctx(ctx)
+		subLogger := logger.With().
+			Bool("enableZeroTrust", enableZeroTrust).
+			Str("FullMethod", info.FullMethod).
+			Logger()
 		requestContainer := middleware_dicontext.GetRequestContainer(ctx)
-		var subLogger zerolog.Logger
-		if requestContainer != nil {
-			logger := loggerContracts.GetILoggerFromContainer(requestContainer)
-			loggerZ := logger.GetLogger()
-			subLogger = loggerZ.With().
-				Bool("enableZeroTrust", enableZeroTrust).
-				Str("FullMethod", info.FullMethod).
-				Logger()
-		} else {
-			subLogger = log.With().Bool("enableZeroTrust", enableZeroTrust).
-				Str("FullMethod", info.FullMethod).
-				Logger()
-		}
+
 		subLogger = subLogger.With().Caller().Logger()
 
 		if requestContainer != nil {
