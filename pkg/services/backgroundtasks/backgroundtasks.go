@@ -6,10 +6,10 @@ import (
 
 	"github.com/bamzi/jobrunner"
 	contracts_backgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
-	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/robfig/cron/v3"
+	"github.com/rs/zerolog/log"
 )
 
 // NewScheduledJob ...
@@ -39,7 +39,6 @@ func NewOneTimeJobs(jobs ...*contracts_backgroundtasks.OneTimeJob) contracts_bac
 }
 
 type serviceBackgroundTasks struct {
-	Logger        loggerContracts.ILogger                   `inject:""`
 	JobsProviders []contracts_backgroundtasks.IJobsProvider `inject:"optional"`
 }
 
@@ -54,8 +53,8 @@ func AddSingletonBackgroundTasks(builder *di.Builder) {
 
 func (s *serviceBackgroundTasks) Ctor() {
 	if !utils.IsEmptyOrNil(s.JobsProviders) {
-		s.Logger.Info().Msg("Starting BackgroundTasks")
-		jobrunner.Start()
+		log.Info().Msg("Starting BackgroundTasks")
+ 		jobrunner.Start()
 		for _, jp := range s.JobsProviders {
 			sjs := jp.GetScheduledJobs()
 			for _, sj := range sjs {
@@ -70,7 +69,7 @@ func (s *serviceBackgroundTasks) Ctor() {
 }
 func (s *serviceBackgroundTasks) Close() {
 	if !utils.IsEmptyOrNil(s.JobsProviders) {
-		s.Logger.Info().Msg("Closing BackgroundTasks")
+		log.Info().Msg("Closing BackgroundTasks")
 		jobrunner.Stop()
 	}
 }

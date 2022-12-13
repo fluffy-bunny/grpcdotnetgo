@@ -1,7 +1,6 @@
 package container
 
 import (
-	contracts_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
 	contracts_contextaccessor "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/contracts/contextaccessor"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/wellknown"
 	di "github.com/fluffy-bunny/sarulabsdi"
@@ -19,7 +18,6 @@ func EnsureScopedContainer(root di.Container) echo.MiddlewareFunc {
 			c.Set(wellknown.SCOPED_CONTAINER_KEY, subContainer)
 			internalContextAccessor := contracts_contextaccessor.GetIInternalEchoContextAccessorFromContainer(subContainer)
 			internalContextAccessor.SetContext(c)
-			contracts_logger.GetILoggerFromContainer(subContainer) // force an instantiation
 			/*
 				contextAccessor := contracts_contextaccessor.GetIEchoContextAccessorFromContainer(subContainer)
 				d := contextAccessor.GetContext()

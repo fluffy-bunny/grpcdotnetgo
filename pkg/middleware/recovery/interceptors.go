@@ -9,8 +9,6 @@ import (
 	"context"
 	"fmt"
 
-	loggerContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/logger"
-	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	zLog "github.com/rs/zerolog/log"
@@ -41,15 +39,8 @@ func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
 
 		defer func() {
 			if r := recover(); r != nil || panicked {
-				var log *zerolog.Logger
-				// try to get the logger from the container first
-				requestContainer := middleware_dicontext.GetRequestContainer(ctx)
-				if requestContainer != nil {
-					logger, err := loggerContracts.SafeGetILoggerFromContainer(requestContainer)
-					if err == nil {
-						log = logger.GetLogger()
-					}
-				}
+				log := zerolog.Ctx(ctx)
+
 				if log == nil {
 					logZ := zLog.Logger.With().Caller().Logger()
 					log = &logZ
