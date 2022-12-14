@@ -97,8 +97,8 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 		delete(config.Example.OIDCConfig.EntryPoints, k)
 		config.Example.OIDCConfig.EntryPoints[v.FullMethodName] = v
 	}
-	services_helloworld_handler.AddScopedIGreeterService(builder)
-	services_helloworld_handler.AddScopedIGreeter2Service(builder)
+	services_helloworld_handler.AddGreeterEndpointRegistration(builder)
+	services_helloworld_handler.AddGreeter2EndpointRegistration(builder)
 
 	services_lambda.AddGenerateGoogleUUIDFunc(builder)
 	services_lambda.AddGenerateSatoriUUIDFunc(builder)

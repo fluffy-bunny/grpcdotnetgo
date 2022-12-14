@@ -779,6 +779,35 @@ func setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(dst interface{}, field string)
 	}
 }
 
+// GreeterEndpointRegistration defines the grpc server endpoint registration
+type GreeterEndpointRegistration struct {
+}
+
+// TypeGreeterEndpointRegistration reflect type
+var TypeGreeterEndpointRegistration = sarulabsdi.GetInterfaceReflectType((*GreeterEndpointRegistration)(nil))
+
+// AddGreeterEndpointRegistration adds a type that implements IServiceEndpointRegistration
+func AddGreeterEndpointRegistration(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddSingletonWithImplementedTypes(builder, reflect.TypeOf(&GreeterEndpointRegistration{}))
+	AddScopedIGreeterService(builder, implType)
+}
+
+// GetName returns the name of the service
+func (s *GreeterEndpointRegistration) GetName() string {
+	return "Greeter"
+}
+
+// GetNewClient returns a new instance of a grpc client
+func (s *GreeterEndpointRegistration) GetNewClient(cc grpc.ClientConnInterface) interface{} {
+	return NewGreeterClient(cc)
+}
+
+// RegisterEndpoint registers a DI server
+func (s *GreeterEndpointRegistration) RegisterEndpoint(server *grpc.Server) interface{} {
+	endpoint := RegisterGreeterServerDI(server)
+	return endpoint
+}
+
 // IGreeterServer defines the grpc server
 type IGreeterServer interface {
 	mustEmbedUnimplementedGreeterServer()
@@ -814,6 +843,10 @@ var ReflectTypeIGreeterServer = sarulabsdi.GetInterfaceReflectType((*IGreeterSer
 
 // ReflectTypeIGreeterService reflect type
 var ReflectTypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(nil))
+
+func GetNewGreeterClient(cc grpc.ClientConnInterface) interface{} {
+	return NewGreeterClient(cc)
+}
 
 // AddSingletonIGreeterServerByObj adds a prebuilt obj
 func AddSingletonIGreeterServerByObj(builder *sarulabsdi.Builder, obj interface{}) {
@@ -915,6 +948,35 @@ const (
 	FMN_Greeter_SayHello = "/helloworld.Greeter/SayHello"
 )
 
+// Greeter2EndpointRegistration defines the grpc server endpoint registration
+type Greeter2EndpointRegistration struct {
+}
+
+// TypeGreeter2EndpointRegistration reflect type
+var TypeGreeter2EndpointRegistration = sarulabsdi.GetInterfaceReflectType((*Greeter2EndpointRegistration)(nil))
+
+// AddGreeter2EndpointRegistration adds a type that implements IServiceEndpointRegistration
+func AddGreeter2EndpointRegistration(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddSingletonWithImplementedTypes(builder, reflect.TypeOf(&Greeter2EndpointRegistration{}))
+	AddScopedIGreeter2Service(builder, implType)
+}
+
+// GetName returns the name of the service
+func (s *Greeter2EndpointRegistration) GetName() string {
+	return "Greeter2"
+}
+
+// GetNewClient returns a new instance of a grpc client
+func (s *Greeter2EndpointRegistration) GetNewClient(cc grpc.ClientConnInterface) interface{} {
+	return NewGreeter2Client(cc)
+}
+
+// RegisterEndpoint registers a DI server
+func (s *Greeter2EndpointRegistration) RegisterEndpoint(server *grpc.Server) interface{} {
+	endpoint := RegisterGreeterServerDI(server)
+	return endpoint
+}
+
 // IGreeter2Server defines the grpc server
 type IGreeter2Server interface {
 	mustEmbedUnimplementedGreeter2Server()
@@ -950,6 +1012,10 @@ var ReflectTypeIGreeter2Server = sarulabsdi.GetInterfaceReflectType((*IGreeter2S
 
 // ReflectTypeIGreeter2Service reflect type
 var ReflectTypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
+
+func GetNewGreeter2Client(cc grpc.ClientConnInterface) interface{} {
+	return NewGreeter2Client(cc)
+}
 
 // AddSingletonIGreeter2ServerByObj adds a prebuilt obj
 func AddSingletonIGreeter2ServerByObj(builder *sarulabsdi.Builder, obj interface{}) {

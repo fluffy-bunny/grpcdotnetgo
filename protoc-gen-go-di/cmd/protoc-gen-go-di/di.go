@@ -9,18 +9,19 @@ import (
 )
 
 const (
-	reflectPackage        = protogen.GoImportPath("reflect")
-	contextPackage        = protogen.GoImportPath("context")
-	errorsPackage         = protogen.GoImportPath("errors")
-	grpcPackage           = protogen.GoImportPath("google.golang.org/grpc")
-	grpcStatusPackage     = protogen.GoImportPath("google.golang.org/grpc/status")
-	grpcCodesPackage      = protogen.GoImportPath("google.golang.org/grpc/codes")
-	protoreflectPackage   = protogen.GoImportPath("google.golang.org/protobuf/reflect/protoreflect")
-	diPackage             = protogen.GoImportPath("github.com/fluffy-bunny/sarulabsdi")
-	grpcDIInternalPackage = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg")
-	grpcDIProtoError      = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg/proto/error")
-	diContextPackage      = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext")
-	protocGenGoDiPackage  = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/pkg")
+	reflectPackage               = protogen.GoImportPath("reflect")
+	contextPackage               = protogen.GoImportPath("context")
+	errorsPackage                = protogen.GoImportPath("errors")
+	grpcPackage                  = protogen.GoImportPath("google.golang.org/grpc")
+	grpcStatusPackage            = protogen.GoImportPath("google.golang.org/grpc/status")
+	grpcCodesPackage             = protogen.GoImportPath("google.golang.org/grpc/codes")
+	protoreflectPackage          = protogen.GoImportPath("google.golang.org/protobuf/reflect/protoreflect")
+	diPackage                    = protogen.GoImportPath("github.com/fluffy-bunny/sarulabsdi")
+	grpcDIInternalPackage        = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg")
+	grpcDIInternalRuntimePackage = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg/runtime")
+	grpcDIProtoError             = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg/proto/error")
+	diContextPackage             = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext")
+	protocGenGoDiPackage         = protogen.GoImportPath("github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/pkg")
 )
 
 type genFileContext struct {
@@ -242,8 +243,49 @@ func (s *serviceGenContext) genService() {
 	g := s.g
 	service := s.service
 
+	// IServiceEndpointRegistration
+	serviceEndpointRegistrationName := fmt.Sprintf("%vEndpointRegistration", service.GoName)
 	interfaceServerName := fmt.Sprintf("I%vServer", service.GoName)
 	mustEmbedUnimplementedName := fmt.Sprintf("mustEmbedUnimplemented%vServer", service.GoName)
+	interfaceDownstreamServiceName := fmt.Sprintf("I%vService", service.GoName)
+
+	// Define the ServiceEndpointRegistration implementation
+	//----------------------------------------------------------------------------------------------
+	g.P("// ", serviceEndpointRegistrationName, " defines the grpc server endpoint registration")
+	g.P("type ", serviceEndpointRegistrationName, " struct {")
+	g.P("}")
+	g.P()
+	// Add the DI Singleton registration
+	//----------------------------------------------------------------------------------------------
+	typeServiceEndpointRegistrationName := fmt.Sprintf("Type%s", serviceEndpointRegistrationName)
+	g.P("// ", typeServiceEndpointRegistrationName, " reflect type")
+	g.P("var ", typeServiceEndpointRegistrationName, " = ", diPackage.Ident("GetInterfaceReflectType"), "((*", serviceEndpointRegistrationName, ")(nil))")
+	g.P()
+	g.P("// Add", serviceEndpointRegistrationName, " adds a type that implements IServiceEndpointRegistration")
+	g.P("func Add", serviceEndpointRegistrationName, "(builder *", diPackage.Ident("Builder"), ",implType ", reflectPackage.Ident("Type"), ")", " {")
+	g.P("   ", diPackage.Ident("AddSingletonWithImplementedTypes"), "(builder,reflect.TypeOf(&", serviceEndpointRegistrationName, "{}))")
+	g.P("	AddScoped", interfaceDownstreamServiceName, "(builder,implType)")
+	g.P("}")
+	g.P()
+
+	// Add the methods
+	//----------------------------------------------------------------------------------------------
+	g.P("// GetName returns the name of the service")
+	g.P("func (s *", serviceEndpointRegistrationName, ") GetName() string {")
+	g.P("  return \"", service.GoName, "\"")
+	g.P("}")
+	g.P()
+	g.P("// GetNewClient returns a new instance of a grpc client")
+	g.P("func (s *", serviceEndpointRegistrationName, ") GetNewClient(cc grpc.ClientConnInterface) interface{} {")
+	g.P("	return New", service.GoName, "Client(cc)")
+	g.P("}")
+	g.P()
+	g.P("// RegisterEndpoint registers a DI server")
+	g.P("func (s *", serviceEndpointRegistrationName, ") RegisterEndpoint(server *grpc.Server) interface{} {")
+	g.P("  endpoint := RegisterGreeterServerDI(server)")
+	g.P("  return endpoint")
+	g.P("}")
+	g.P()
 
 	g.P("// ", interfaceServerName, " defines the grpc server")
 	g.P("type ", interfaceServerName, " interface {")
@@ -273,7 +315,6 @@ func (s *serviceGenContext) genService() {
 		g.P("}")
 	}
 
-	interfaceDownstreamServiceName := fmt.Sprintf("I%vService", service.GoName)
 	g.P("// ", interfaceDownstreamServiceName, " defines the required downstream service interface")
 	g.P("type ", interfaceDownstreamServiceName, " interface {")
 	for _, method := range service.Methods {
@@ -304,6 +345,11 @@ func (s *serviceGenContext) genService() {
 	g.P("// ", typeDownstreamServiceInterfaceName, " reflect type")
 	g.P("var ", typeDownstreamServiceInterfaceName, " = ", diPackage.Ident("GetInterfaceReflectType"), "((*", interfaceDownstreamServiceName, ")(nil))")
 
+	// Client Creation
+	g.P("func GetNew", service.GoName, "Client(cc ", grpcPackage.Ident("ClientConnInterface"), ") interface{} {")
+	g.P("return New", service.GoName, "Client(cc)")
+	g.P("}")
+	g.P()
 	// DI Helpers
 
 	// making type look like sarulabsdi genny types

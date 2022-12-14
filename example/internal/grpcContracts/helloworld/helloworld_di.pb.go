@@ -133,7 +133,7 @@ import (
                     18
                 ],
                 "leading_detached_comments": [
-                    " Copyright 2015 gRPC authors.\r\n\r\n Licensed under the Apache License, Version 2.0 (the \"License\");\r\n you may not use this file except in compliance with the License.\r\n You may obtain a copy of the License at\r\n\r\n     http://www.apache.org/licenses/LICENSE-2.0\r\n\r\n Unless required by applicable law or agreed to in writing, software\r\n distributed under the License is distributed on an \"AS IS\" BASIS,\r\n WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\r\n See the License for the specific language governing permissions and\r\n limitations under the License.\r\n"
+                    " Copyright 2015 gRPC authors.\n\n Licensed under the Apache License, Version 2.0 (the \"License\");\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n\n     http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n See the License for the specific language governing permissions and\n limitations under the License.\n"
                 ]
             },
             {
@@ -157,7 +157,7 @@ import (
                     76
                 ],
                 "leading_detached_comments": [
-                    "import \"grpcdotnetgo/proto/error/error.proto\";\r\n"
+                    "import \"grpcdotnetgo/proto/error/error.proto\";\n"
                 ]
             },
             {
@@ -391,7 +391,7 @@ import (
                     37,
                     1
                 ],
-                "leading_comments": " The greeting service definition.\r\n"
+                "leading_comments": " The greeting service definition.\n"
             },
             {
                 "path": [
@@ -417,7 +417,7 @@ import (
                     2,
                     53
                 ],
-                "leading_comments": " Sends a greeting\r\n"
+                "leading_comments": " Sends a greeting\n"
             },
             {
                 "path": [
@@ -497,7 +497,7 @@ import (
                     2,
                     54
                 ],
-                "leading_comments": " Sends a greeting\r\n"
+                "leading_comments": " Sends a greeting\n"
             },
             {
                 "path": [
@@ -552,7 +552,7 @@ import (
                     46,
                     1
                 ],
-                "leading_comments": " The request message containing the user's name.\r\n"
+                "leading_comments": " The request message containing the user's name.\n"
             },
             {
                 "path": [
@@ -687,7 +687,7 @@ import (
                     54,
                     1
                 ],
-                "leading_comments": " The response message containing the greetings\r\n"
+                "leading_comments": " The response message containing the greetings\n"
             },
             {
                 "path": [
@@ -713,7 +713,7 @@ import (
                     2,
                     21
                 ],
-                "trailing_comments": "error.Error error = 999;\r\n"
+                "trailing_comments": "error.Error error = 999;\n"
             },
             {
                 "path": [
@@ -852,6 +852,35 @@ func setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(dst interface{}, field string)
 	}
 }
 
+// GreeterEndpointRegistration defines the grpc server endpoint registration
+type GreeterEndpointRegistration struct {
+}
+
+// TypeGreeterEndpointRegistration reflect type
+var TypeGreeterEndpointRegistration = sarulabsdi.GetInterfaceReflectType((*GreeterEndpointRegistration)(nil))
+
+// AddGreeterEndpointRegistration adds a type that implements IServiceEndpointRegistration
+func AddGreeterEndpointRegistration(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddSingletonWithImplementedTypes(builder, reflect.TypeOf(&GreeterEndpointRegistration{}))
+	AddScopedIGreeterService(builder, implType)
+}
+
+// GetName returns the name of the service
+func (s *GreeterEndpointRegistration) GetName() string {
+	return "Greeter"
+}
+
+// GetNewClient returns a new instance of a grpc client
+func (s *GreeterEndpointRegistration) GetNewClient(cc grpc.ClientConnInterface) interface{} {
+	return NewGreeterClient(cc)
+}
+
+// RegisterEndpoint registers a DI server
+func (s *GreeterEndpointRegistration) RegisterEndpoint(server *grpc.Server) interface{} {
+	endpoint := RegisterGreeterServerDI(server)
+	return endpoint
+}
+
 // IGreeterServer defines the grpc server
 type IGreeterServer interface {
 	mustEmbedUnimplementedGreeterServer()
@@ -887,6 +916,10 @@ var ReflectTypeIGreeterServer = sarulabsdi.GetInterfaceReflectType((*IGreeterSer
 
 // ReflectTypeIGreeterService reflect type
 var ReflectTypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(nil))
+
+func GetNewGreeterClient(cc grpc.ClientConnInterface) interface{} {
+	return NewGreeterClient(cc)
+}
 
 // AddSingletonIGreeterServerByObj adds a prebuilt obj
 func AddSingletonIGreeterServerByObj(builder *sarulabsdi.Builder, obj interface{}) {
@@ -988,6 +1021,35 @@ const (
 	FMN_Greeter_SayHello = "/example.internal.grpcContracts.helloworld.Greeter/SayHello"
 )
 
+// Greeter2EndpointRegistration defines the grpc server endpoint registration
+type Greeter2EndpointRegistration struct {
+}
+
+// TypeGreeter2EndpointRegistration reflect type
+var TypeGreeter2EndpointRegistration = sarulabsdi.GetInterfaceReflectType((*Greeter2EndpointRegistration)(nil))
+
+// AddGreeter2EndpointRegistration adds a type that implements IServiceEndpointRegistration
+func AddGreeter2EndpointRegistration(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddSingletonWithImplementedTypes(builder, reflect.TypeOf(&Greeter2EndpointRegistration{}))
+	AddScopedIGreeter2Service(builder, implType)
+}
+
+// GetName returns the name of the service
+func (s *Greeter2EndpointRegistration) GetName() string {
+	return "Greeter2"
+}
+
+// GetNewClient returns a new instance of a grpc client
+func (s *Greeter2EndpointRegistration) GetNewClient(cc grpc.ClientConnInterface) interface{} {
+	return NewGreeter2Client(cc)
+}
+
+// RegisterEndpoint registers a DI server
+func (s *Greeter2EndpointRegistration) RegisterEndpoint(server *grpc.Server) interface{} {
+	endpoint := RegisterGreeterServerDI(server)
+	return endpoint
+}
+
 // IGreeter2Server defines the grpc server
 type IGreeter2Server interface {
 	mustEmbedUnimplementedGreeter2Server()
@@ -1023,6 +1085,10 @@ var ReflectTypeIGreeter2Server = sarulabsdi.GetInterfaceReflectType((*IGreeter2S
 
 // ReflectTypeIGreeter2Service reflect type
 var ReflectTypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
+
+func GetNewGreeter2Client(cc grpc.ClientConnInterface) interface{} {
+	return NewGreeter2Client(cc)
+}
 
 // AddSingletonIGreeter2ServerByObj adds a prebuilt obj
 func AddSingletonIGreeter2ServerByObj(builder *sarulabsdi.Builder, obj interface{}) {
