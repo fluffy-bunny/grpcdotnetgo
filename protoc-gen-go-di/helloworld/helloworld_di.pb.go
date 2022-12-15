@@ -5,10 +5,11 @@ package helloworld
 import (
 	context "context"
 	pkg "github.com/fluffy-bunny/grpcdotnetgo/pkg"
+	grpc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/grpc"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	pkg1 "github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/pkg"
 	sarulabsdi "github.com/fluffy-bunny/sarulabsdi"
-	grpc "google.golang.org/grpc"
+	grpc1 "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	reflect "reflect"
@@ -788,7 +789,7 @@ var TypeGreeterEndpointRegistration = sarulabsdi.GetInterfaceReflectType((*Greet
 
 // AddGreeterEndpointRegistration adds a type that implements IServiceEndpointRegistration
 func AddGreeterEndpointRegistration(builder *sarulabsdi.Builder, implType reflect.Type) {
-	sarulabsdi.AddSingletonWithImplementedTypes(builder, reflect.TypeOf(&GreeterEndpointRegistration{}))
+	grpc.AddSingletonIServiceEndpointRegistration(builder, reflect.TypeOf(&GreeterEndpointRegistration{}))
 	AddScopedIGreeterService(builder, implType)
 }
 
@@ -798,12 +799,12 @@ func (s *GreeterEndpointRegistration) GetName() string {
 }
 
 // GetNewClient returns a new instance of a grpc client
-func (s *GreeterEndpointRegistration) GetNewClient(cc grpc.ClientConnInterface) interface{} {
+func (s *GreeterEndpointRegistration) GetNewClient(cc grpc1.ClientConnInterface) interface{} {
 	return NewGreeterClient(cc)
 }
 
 // RegisterEndpoint registers a DI server
-func (s *GreeterEndpointRegistration) RegisterEndpoint(server *grpc.Server) interface{} {
+func (s *GreeterEndpointRegistration) RegisterEndpoint(server *grpc1.Server) interface{} {
 	endpoint := RegisterGreeterServerDI(server)
 	return endpoint
 }
@@ -844,7 +845,7 @@ var ReflectTypeIGreeterServer = sarulabsdi.GetInterfaceReflectType((*IGreeterSer
 // ReflectTypeIGreeterService reflect type
 var ReflectTypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(nil))
 
-func GetNewGreeterClient(cc grpc.ClientConnInterface) interface{} {
+func GetNewGreeterClient(cc grpc1.ClientConnInterface) interface{} {
 	return NewGreeterClient(cc)
 }
 
@@ -928,7 +929,7 @@ type greeterServer struct {
 }
 
 // RegisterGreeterServerDI ...
-func RegisterGreeterServerDI(s grpc.ServiceRegistrar) interface{} {
+func RegisterGreeterServerDI(s grpc1.ServiceRegistrar) interface{} {
 	// Register the server
 	var server = &greeterServer{}
 	RegisterGreeterServer(s, server)
@@ -957,7 +958,7 @@ var TypeGreeter2EndpointRegistration = sarulabsdi.GetInterfaceReflectType((*Gree
 
 // AddGreeter2EndpointRegistration adds a type that implements IServiceEndpointRegistration
 func AddGreeter2EndpointRegistration(builder *sarulabsdi.Builder, implType reflect.Type) {
-	sarulabsdi.AddSingletonWithImplementedTypes(builder, reflect.TypeOf(&Greeter2EndpointRegistration{}))
+	grpc.AddSingletonIServiceEndpointRegistration(builder, reflect.TypeOf(&Greeter2EndpointRegistration{}))
 	AddScopedIGreeter2Service(builder, implType)
 }
 
@@ -967,13 +968,13 @@ func (s *Greeter2EndpointRegistration) GetName() string {
 }
 
 // GetNewClient returns a new instance of a grpc client
-func (s *Greeter2EndpointRegistration) GetNewClient(cc grpc.ClientConnInterface) interface{} {
+func (s *Greeter2EndpointRegistration) GetNewClient(cc grpc1.ClientConnInterface) interface{} {
 	return NewGreeter2Client(cc)
 }
 
 // RegisterEndpoint registers a DI server
-func (s *Greeter2EndpointRegistration) RegisterEndpoint(server *grpc.Server) interface{} {
-	endpoint := RegisterGreeterServerDI(server)
+func (s *Greeter2EndpointRegistration) RegisterEndpoint(server *grpc1.Server) interface{} {
+	endpoint := RegisterGreeter2ServerDI(server)
 	return endpoint
 }
 
@@ -1013,7 +1014,7 @@ var ReflectTypeIGreeter2Server = sarulabsdi.GetInterfaceReflectType((*IGreeter2S
 // ReflectTypeIGreeter2Service reflect type
 var ReflectTypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
 
-func GetNewGreeter2Client(cc grpc.ClientConnInterface) interface{} {
+func GetNewGreeter2Client(cc grpc1.ClientConnInterface) interface{} {
 	return NewGreeter2Client(cc)
 }
 
@@ -1097,7 +1098,7 @@ type greeter2Server struct {
 }
 
 // RegisterGreeter2ServerDI ...
-func RegisterGreeter2ServerDI(s grpc.ServiceRegistrar) interface{} {
+func RegisterGreeter2ServerDI(s grpc1.ServiceRegistrar) interface{} {
 	// Register the server
 	var server = &greeter2Server{}
 	RegisterGreeter2Server(s, server)
