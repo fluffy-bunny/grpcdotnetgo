@@ -18,6 +18,7 @@ import (
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
+	contracts_grpc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/grpc"
 	pluginContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
@@ -265,7 +266,17 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 				unaryServerInterceptorBuilder.GetUnaryServerInterceptors()...,
 			)),
 		)
-		si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
+		serverRegistrations, err := contracts_grpc.SafeGetManyIServiceEndpointRegistrationFromContainer(rootContainer)
+		if err == nil {
+			si.Endpoints = make([]interface{}, 0, len(serverRegistrations))
+			for _, serverRegistration := range serverRegistrations {
+				endpoint := serverRegistration.RegisterEndpoint(grpcServer)
+				si.Endpoints = append(si.Endpoints, endpoint)
+			}
+		} else {
+			// legacy
+			si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
+		}
 		// TODO: Make this a first class abstaction
 		// ILifeCycleHook but maybe IStartup can have those
 		backgroundtasksContracts.GetIBackgroundTasksFromContainer(rootContainer)
