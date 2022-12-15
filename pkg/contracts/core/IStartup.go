@@ -18,16 +18,44 @@ type ICoreConfig interface {
 type StartupManifest struct {
 	Name    string
 	Version string
+	Port    int
+}
+
+// UnimplementedStartup helper ...
+type UnimplementedStartup struct {
+}
+
+func (UnimplementedStartup) mustEmbedUnimplementedStartup() {}
+
+// RegisterGRPCEndpoints legacy
+func (u UnimplementedStartup) RegisterGRPCEndpoints(_ *grpc.Server) []interface{} {
+	return nil
+}
+
+// OnPreServerStartup ...
+func (u UnimplementedStartup) OnPreServerStartup() error { return nil }
+
+// OnPostServerShutdown ...
+func (u UnimplementedStartup) OnPostServerShutdown() {}
+
+// GetPort ...
+func (u UnimplementedStartup) GetPort() int {
+	return 0
 }
 
 // IStartup contract
 type IStartup interface {
+	mustEmbedUnimplementedStartup()
 	GetStartupManifest() StartupManifest
 	GetConfigOptions() *ConfigOptions
 	ConfigureServices(builder *di.Builder)
 	Configure(unaryServerInterceptorBuilder IUnaryServerInterceptorBuilder)
+	// GetPort returns the port number.
+	// Deprecated: pass the port in the StartupManifest
 	GetPort() int
 
+	// RegisterGRPCEndpoints registers the grpc endpoints with the server.
+	// Deprecated: Server endpoints are now added via the DI.  i.e. AddGreeterEndpointRegistration(...)
 	RegisterGRPCEndpoints(server *grpc.Server) []interface{}
 	SetRootContainer(container di.Container)
 	OnPreServerStartup() error

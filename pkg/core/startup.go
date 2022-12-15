@@ -17,7 +17,7 @@ import (
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
 	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
-	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
+	contracts_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	contracts_grpc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/grpc"
 	pluginContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
@@ -32,6 +32,7 @@ import (
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	grpclog "google.golang.org/grpc/grpclog"
+	health "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 // ValidateConfigPath just makes sure, that the path provided is a file,
@@ -46,7 +47,7 @@ func ValidateConfigPath(configPath string) error {
 	}
 	return nil
 }
-func LoadConfig(configOptions *coreContracts.ConfigOptions) error {
+func LoadConfig(configOptions *contracts_core.ConfigOptions) error {
 	v := viper.NewWithOptions(viper.KeyDelimiter("__"))
 	var err error
 	v.SetConfigType("json")
@@ -105,7 +106,7 @@ func LoadConfig(configOptions *coreContracts.ConfigOptions) error {
 
 // ServerInstance represents an instance of a plugin
 type ServerInstance struct {
-	StartupManifest coreContracts.StartupManifest
+	StartupManifest contracts_core.StartupManifest
 	Server          *grpc.Server
 	Future          async.Future[interface{}]
 	DotNetGoBuilder *grpcdotnetgo.DotNetGoBuilder
@@ -273,6 +274,11 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 				endpoint := serverRegistration.RegisterEndpoint(grpcServer)
 				si.Endpoints = append(si.Endpoints, endpoint)
 			}
+			healthServer, _ := contracts_core.SafeGetIHealthServerFromContainer(rootContainer)
+			if healthServer != nil {
+				health.RegisterHealthServer(grpcServer, healthServer)
+				si.Endpoints = append(si.Endpoints, healthServer)
+			}
 		} else {
 			// legacy
 			si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
@@ -288,7 +294,11 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 			panic(err)
 		} else {
 			if lis == nil {
-				lis, err = net.Listen("tcp", fmt.Sprintf(":%d", startup.GetPort()))
+				if si.StartupManifest.Port == 0 {
+					// legacy
+					si.StartupManifest.Port = startup.GetPort()
+				}
+				lis, err = net.Listen("tcp", fmt.Sprintf(":%d", si.StartupManifest.Port))
 				if err != nil {
 					panic(err)
 				}

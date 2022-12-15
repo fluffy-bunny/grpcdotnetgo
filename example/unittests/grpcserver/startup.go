@@ -16,7 +16,7 @@ import (
 	services_transient "github.com/fluffy-bunny/grpcdotnetgo/example/internal/services/transient"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/auth/oauth2"
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
-	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
+	core_contracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext/middleware"
 	middleware_logger "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/logger"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
@@ -27,9 +27,7 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	_ "github.com/jnewmano/grpc-json-proxy/codec" // justified
 	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	health "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
 )
 
@@ -45,20 +43,21 @@ func getConfigPath() string {
 
 // Startup type
 type Startup struct {
+	core_contracts.UnimplementedStartup
 	MockOIDCService interface{}
-	ConfigOptions   *coreContracts.ConfigOptions
+	ConfigOptions   *core_contracts.ConfigOptions
 	RootContainer   di.Container
 }
 
 // NewStartup creates a new IStartup object
-func NewStartup() coreContracts.IStartup {
+func NewStartup() core_contracts.IStartup {
 	startup := &Startup{}
 	startup.ctor()
 	return startup
 }
 
 func (s *Startup) ctor() {
-	s.ConfigOptions = &coreContracts.ConfigOptions{
+	s.ConfigOptions = &core_contracts.ConfigOptions{
 		Destination: &contracts_config.Config{},
 		RootConfig:  contracts_config.ConfigDefaultJSON,
 		ConfigPath:  getConfigPath(),
@@ -66,19 +65,13 @@ func (s *Startup) ctor() {
 }
 
 // GetConfigOptions is called by the runtime to determine where to write the configuration information to
-func (s *Startup) GetConfigOptions() *coreContracts.ConfigOptions {
+func (s *Startup) GetConfigOptions() *core_contracts.ConfigOptions {
 	return s.ConfigOptions
 }
 
 // SetRootContainer is called by the framework letting us now the root DI container
 func (s *Startup) SetRootContainer(container di.Container) {
 	s.RootContainer = container
-}
-
-// GetPort get the port number
-func (s *Startup) GetPort() int {
-	config := s.ConfigOptions.Destination.(*contracts_config.Config)
-	return config.Example.Port
 }
 
 // ConfigureServices is where we register our services with the DI
@@ -118,7 +111,7 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 }
 
 // Configure setups up our middleware
-func (s *Startup) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
+func (s *Startup) Configure(unaryServerInterceptorBuilder core_contracts.IUnaryServerInterceptorBuilder) {
 	// this is how  you get your config before you register your services
 	config := s.ConfigOptions.Destination.(*contracts_config.Config)
 
@@ -161,24 +154,14 @@ func (s *Startup) Configure(unaryServerInterceptorBuilder coreContracts.IUnarySe
 	unaryServerInterceptorBuilder.Use(middleware_grpc_recovery.UnaryServerInterceptor(recoveryOpts...))
 }
 
-// RegisterGRPCEndpoints registeres all our servers with the framework
-func (s *Startup) RegisterGRPCEndpoints(server *grpc.Server) []interface{} {
-	var endpoints []interface{}
-	endpoints = append(endpoints, pb.RegisterGreeterServerDI(server))
-	endpoints = append(endpoints, pb.RegisterGreeter2ServerDI(server))
-	healthServer, _ := coreContracts.SafeGetIHealthServerFromContainer(s.RootContainer)
-	if healthServer != nil {
-		health.RegisterHealthServer(server, healthServer)
-		endpoints = append(endpoints, healthServer)
-	}
-	return endpoints
-}
-
 // GetStartupManifest wrapper
-func (s *Startup) GetStartupManifest() coreContracts.StartupManifest {
-	return coreContracts.StartupManifest{
+func (s *Startup) GetStartupManifest() core_contracts.StartupManifest {
+
+	config := s.ConfigOptions.Destination.(*contracts_config.Config)
+	return core_contracts.StartupManifest{
 		Name:    "hello",
 		Version: "test.1",
+		Port:    config.Example.Port,
 	}
 }
 
