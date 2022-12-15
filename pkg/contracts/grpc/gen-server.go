@@ -6,46 +6,202 @@ package grpc
 
 import (
 	"reflect"
+	"strings"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
+	"github.com/rs/zerolog/log"
 )
 
 // ReflectTypeIServiceEndpointRegistration used when your service claims to implement IServiceEndpointRegistration
 var ReflectTypeIServiceEndpointRegistration = di.GetInterfaceReflectType((*IServiceEndpointRegistration)(nil))
 
-// AddSingletonIServiceEndpointRegistrationByObj adds a prebuilt obj
-func AddSingletonIServiceEndpointRegistrationByObj(builder *di.Builder, obj interface{}) {
-	di.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIServiceEndpointRegistration)
+// AddSingletonIServiceEndpointRegistration adds a type that implements IServiceEndpointRegistration
+func AddSingletonIServiceEndpointRegistration(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("SINGLETON", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+	di.AddSingleton(builder, implType, implementedTypes...)
 }
 
-// AddSingletonIServiceEndpointRegistration adds a type that implements IServiceEndpointRegistration
-func AddSingletonIServiceEndpointRegistration(builder *di.Builder, implType reflect.Type) {
-	di.AddSingletonWithImplementedTypes(builder, implType, ReflectTypeIServiceEndpointRegistration)
+// AddSingletonIServiceEndpointRegistrationWithMetadata adds a type that implements IServiceEndpointRegistration
+func AddSingletonIServiceEndpointRegistrationWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("SINGLETON", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+	di.AddSingletonWithMetadata(builder, implType, metaData, implementedTypes...)
+}
+
+// AddSingletonIServiceEndpointRegistrationByObj adds a prebuilt obj
+func AddSingletonIServiceEndpointRegistrationByObj(builder *di.Builder, obj interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("SINGLETON", reflect.TypeOf(obj), _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		})
+	di.AddSingletonWithImplementedTypesByObj(builder, obj, implementedTypes...)
+}
+
+// AddSingletonIServiceEndpointRegistrationByObjWithMetadata adds a prebuilt obj
+func AddSingletonIServiceEndpointRegistrationByObjWithMetadata(builder *di.Builder, obj interface{}, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("SINGLETON", reflect.TypeOf(obj), _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "obj",
+		},
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
+	di.AddSingletonWithImplementedTypesByObjWithMetadata(builder, obj, metaData, implementedTypes...)
 }
 
 // AddSingletonIServiceEndpointRegistrationByFunc adds a type by a custom func
-func AddSingletonIServiceEndpointRegistrationByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIServiceEndpointRegistration)
+func AddSingletonIServiceEndpointRegistrationByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("SINGLETON", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+	di.AddSingletonWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddSingletonIServiceEndpointRegistrationByFuncWithMetadata adds a type by a custom func
+func AddSingletonIServiceEndpointRegistrationByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("SINGLETON", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
+	di.AddSingletonWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddTransientIServiceEndpointRegistration adds a type that implements IServiceEndpointRegistration
-func AddTransientIServiceEndpointRegistration(builder *di.Builder, implType reflect.Type) {
-	di.AddTransientWithImplementedTypes(builder, implType, ReflectTypeIServiceEndpointRegistration)
+func AddTransientIServiceEndpointRegistration(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("TRANSIENT", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+
+	di.AddTransientWithImplementedTypes(builder, implType, implementedTypes...)
+}
+
+// AddTransientIServiceEndpointRegistrationWithMetadata adds a type that implements IServiceEndpointRegistration
+func AddTransientIServiceEndpointRegistrationWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("TRANSIENT", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
+	di.AddTransientWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddTransientIServiceEndpointRegistrationByFunc adds a type by a custom func
-func AddTransientIServiceEndpointRegistrationByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIServiceEndpointRegistration)
+func AddTransientIServiceEndpointRegistrationByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("TRANSIENT", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+
+	di.AddTransientWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddTransientIServiceEndpointRegistrationByFuncWithMetadata adds a type by a custom func
+func AddTransientIServiceEndpointRegistrationByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("TRANSIENT", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
+	di.AddTransientWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // AddScopedIServiceEndpointRegistration adds a type that implements IServiceEndpointRegistration
-func AddScopedIServiceEndpointRegistration(builder *di.Builder, implType reflect.Type) {
-	di.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIServiceEndpointRegistration)
+func AddScopedIServiceEndpointRegistration(builder *di.Builder, implType reflect.Type, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("SCOPED", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		})
+	di.AddScopedWithImplementedTypes(builder, implType, implementedTypes...)
+}
+
+// AddScopedIServiceEndpointRegistrationWithMetadata adds a type that implements IServiceEndpointRegistration
+func AddScopedIServiceEndpointRegistrationWithMetadata(builder *di.Builder, implType reflect.Type, metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("SCOPED", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "type",
+		},
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+	di.AddScopedWithImplementedTypesWithMetadata(builder, implType, metaData, implementedTypes...)
 }
 
 // AddScopedIServiceEndpointRegistrationByFunc adds a type by a custom func
-func AddScopedIServiceEndpointRegistrationByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error)) {
-	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIServiceEndpointRegistration)
+func AddScopedIServiceEndpointRegistrationByFunc(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("SCOPED", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		})
+	di.AddScopedWithImplementedTypesByFunc(builder, implType, build, implementedTypes...)
+}
+
+// AddScopedIServiceEndpointRegistrationByFuncWithMetadata adds a type by a custom func
+func AddScopedIServiceEndpointRegistrationByFuncWithMetadata(builder *di.Builder, implType reflect.Type, build func(ctn di.Container) (interface{}, error), metaData map[string]interface{}, implementedTypes ...reflect.Type) {
+	implementedTypes = append(implementedTypes, ReflectTypeIServiceEndpointRegistration)
+	_logAddIServiceEndpointRegistration("SCOPED", implType, _getImplementedIServiceEndpointRegistrationNames(implementedTypes...),
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-BY",
+			Value: "func",
+		},
+		_logIServiceEndpointRegistrationExtra{
+			Name:  "DI-M",
+			Value: metaData,
+		})
+
+	di.AddScopedWithImplementedTypesByFuncWithMetadata(builder, implType, build, metaData, implementedTypes...)
 }
 
 // RemoveAllIServiceEndpointRegistration removes all IServiceEndpointRegistration from the DI
@@ -77,6 +233,18 @@ func SafeGetIServiceEndpointRegistrationFromContainer(ctn di.Container) (IServic
 	return obj.(IServiceEndpointRegistration), nil
 }
 
+// GetIServiceEndpointRegistrationDefinition returns that last definition registered that this container can provide
+func GetIServiceEndpointRegistrationDefinition(ctn di.Container) *di.Def {
+	def := ctn.GetDefinitionByType(ReflectTypeIServiceEndpointRegistration)
+	return def
+}
+
+// GetIServiceEndpointRegistrationDefinitions returns all definitions that this container can provide
+func GetIServiceEndpointRegistrationDefinitions(ctn di.Container) []*di.Def {
+	defs := ctn.GetDefinitionsByType(ReflectTypeIServiceEndpointRegistration)
+	return defs
+}
+
 // SafeGetManyIServiceEndpointRegistrationFromContainer trys to get the object by type, will not panic, returns nil and error
 func SafeGetManyIServiceEndpointRegistrationFromContainer(ctn di.Container) ([]IServiceEndpointRegistration, error) {
 	objs, err := ctn.SafeGetManyByType(ReflectTypeIServiceEndpointRegistration)
@@ -88,4 +256,33 @@ func SafeGetManyIServiceEndpointRegistrationFromContainer(ctn di.Container) ([]I
 		results = append(results, obj.(IServiceEndpointRegistration))
 	}
 	return results, nil
+}
+
+type _logIServiceEndpointRegistrationExtra struct {
+	Name  string
+	Value interface{}
+}
+
+func _logAddIServiceEndpointRegistration(scopeType string, implType reflect.Type, interfaces string, extra ..._logIServiceEndpointRegistrationExtra) {
+	infoEvent := log.Info().
+		Str("DI", scopeType).
+		Str("DI-I", interfaces).
+		Str("DI-B", implType.Elem().String())
+
+	for _, extra := range extra {
+		infoEvent = infoEvent.Interface(extra.Name, extra.Value)
+	}
+
+	infoEvent.Send()
+
+}
+func _getImplementedIServiceEndpointRegistrationNames(implementedTypes ...reflect.Type) string {
+	builder := strings.Builder{}
+	for idx, implementedType := range implementedTypes {
+		builder.WriteString(implementedType.Name())
+		if idx < len(implementedTypes)-1 {
+			builder.WriteString(", ")
+		}
+	}
+	return builder.String()
 }
