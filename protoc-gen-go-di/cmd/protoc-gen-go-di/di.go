@@ -346,8 +346,10 @@ func (s *serviceGenContext) genService() {
 	g.P("// ", typeDownstreamServiceInterfaceName, " reflect type")
 	g.P("var ", typeDownstreamServiceInterfaceName, " = ", diPackage.Ident("GetInterfaceReflectType"), "((*", interfaceDownstreamServiceName, ")(nil))")
 
+	g.P("type Get", service.GoName, "Client func() ", service.GoName, "Client")
+
 	// Client Creation
-	g.P("func GetNew", service.GoName, "Client(cc ", grpcPackage.Ident("ClientConnInterface"), ") interface{} {")
+	g.P("func GetNew", service.GoName, "Client(cc ", grpcPackage.Ident("ClientConnInterface"), ") ", service.GoName, "Client {")
 	g.P("return New", service.GoName, "Client(cc)")
 	g.P("}")
 	g.P()
