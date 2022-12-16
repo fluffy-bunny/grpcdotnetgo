@@ -252,7 +252,7 @@ func (s *serviceGenContext) genService() {
 	service := s.service
 
 	// IServiceEndpointRegistration
-	serviceEndpointRegistrationName := fmt.Sprintf("%vEndpointRegistration", service.GoName)
+	//serviceEndpointRegistrationName := fmt.Sprintf("%vEndpointRegistration", service.GoName)
 	interfaceServerActiviteisName := fmt.Sprintf("I%vActivities", service.GoName)
 	mustEmbedUnimplementedName := fmt.Sprintf("mustEmbedUnimplemented%vServer", service.GoName)
 	interfaceDownstreamServiceName := fmt.Sprintf("I%vService", service.GoName)

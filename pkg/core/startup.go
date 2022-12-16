@@ -158,6 +158,23 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 	if plugins == nil || len(plugins) == 0 {
 		plugins = grpcdotnetgo_plugin.GetPlugins() // pull it from the global one
 	}
+	controlPort := os.Getenv("CONTROL_PORT")
+	if len(controlPort) != 0 {
+		// convert to int
+		port, err := strconv.Atoi(controlPort)
+		if err != nil {
+			log.Fatal().Err(err).Msg("Failed to convert control port to int")
+		}
+		// start the control server
+		log.Info().Int("port", port).Msg("Starting control server")
+		control := NewControl(s, port)
+		control.Start()
+		defer func() {
+			log.Info().Msg("Stopping control server")
+			control.Stop()
+			log.Info().Msg("Control server stopped")
+		}()
+	}
 	logFormat := os.Getenv("LOG_FORMAT")
 	if len(logFormat) == 0 {
 		logFormat = "json"
