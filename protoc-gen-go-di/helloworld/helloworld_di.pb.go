@@ -845,7 +845,9 @@ var ReflectTypeIGreeterServer = sarulabsdi.GetInterfaceReflectType((*IGreeterSer
 // ReflectTypeIGreeterService reflect type
 var ReflectTypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(nil))
 
-func GetNewGreeterClient(cc grpc1.ClientConnInterface) interface{} {
+type GetGreeterClient func() GreeterClient
+
+func GetNewGreeterClient(cc grpc1.ClientConnInterface) GreeterClient {
 	return NewGreeterClient(cc)
 }
 
@@ -1014,7 +1016,9 @@ var ReflectTypeIGreeter2Server = sarulabsdi.GetInterfaceReflectType((*IGreeter2S
 // ReflectTypeIGreeter2Service reflect type
 var ReflectTypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
 
-func GetNewGreeter2Client(cc grpc1.ClientConnInterface) interface{} {
+type GetGreeter2Client func() Greeter2Client
+
+func GetNewGreeter2Client(cc grpc1.ClientConnInterface) Greeter2Client {
 	return NewGreeter2Client(cc)
 }
 
