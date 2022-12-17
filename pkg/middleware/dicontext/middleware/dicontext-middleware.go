@@ -5,9 +5,10 @@ import (
 	"strconv"
 	"time"
 
-	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	contracts_request "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/request"
 	contracts_serviceprovider "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/serviceprovider"
+	middleware_context "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/context"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
@@ -21,8 +22,13 @@ func UnaryServerInterceptor(rootContainer di.Container) grpc.UnaryServerIntercep
 		// Deleting the request will close the connection.
 		requestContainer, _ := rootContainer.SubContainer()
 		defer requestContainer.Delete()
-
 		ctx = dicontext.SetRequestContainer(ctx, requestContainer)
+
+		// this is a helper that ensures all contexts of timeout type are cancelled when the request is done
+		//------------------------------------------------------------------------------------------------
+		contextWithTimeoutManager := middleware_context.NewContextWithTimeoutManager()
+		defer contextWithTimeoutManager.CancelAll()
+		ctx = middleware_context.SetContextWithTimeoutManager(ctx, contextWithTimeoutManager)
 
 		// expose the request container in an IServiceProvider object
 		serviceProvider := contracts_serviceprovider.GetIServiceProviderFromContainer(requestContainer)
@@ -38,8 +44,8 @@ func UnaryServerInterceptor(rootContainer di.Container) grpc.UnaryServerIntercep
 
 		// get a fresh ClaimsPrincipal from the request container and populate it with uuid data
 		// this ensures that this claims principal object lives for the lifetime of the request
-		claimsPrincipal := claimsprincipalContracts.GetIClaimsPrincipalFromContainer(requestContainer)
-		claimsPrincipal.AddClaim(claimsprincipalContracts.Claim{
+		claimsPrincipal := contracts_claimsprincipal.GetIClaimsPrincipalFromContainer(requestContainer)
+		claimsPrincipal.AddClaim(contracts_claimsprincipal.Claim{
 			Type:  "_requestTimeUnixMicro",
 			Value: strconv.FormatInt(time.Now().UnixMicro(), 10),
 		})
