@@ -18,7 +18,8 @@ import (
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
 	contracts_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	contracts_grpc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/grpc"
-	pluginContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
+	contracts_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
+
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
 	"github.com/fluffy-bunny/viperEx"
@@ -153,44 +154,29 @@ func (s *Runtime) Start() {
 }
 
 // StartWithListenterAndPlugins starts up the server
-func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []pluginContracts.IGRPCDotNetGoPlugin) {
+func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contracts_plugin.IGRPCDotNetGoPlugin) {
 	if plugins == nil || len(plugins) == 0 {
 		plugins = grpcdotnetgo_plugin.GetPlugins() // pull it from the global one
 	}
-	pprofPort := os.Getenv("PPROF_PORT")
-	if len(pprofPort) != 0 {
-		// convert to int
-		port, err := strconv.Atoi(pprofPort)
-		if err != nil {
-			log.Fatal().Err(err).Msg("Failed to convert pprof port to int")
-		}
-		// start the pprof server
-		log.Info().Int("port", port).Msg("Starting pprof server")
-		pprof := NewPProf(s, port)
-		pprof.Start()
-		defer func() {
-			log.Info().Msg("Stopping pprof server")
-			pprof.Stop()
-			log.Info().Msg("Pprof server stopped")
-		}()
-	}
-	controlPort := os.Getenv("CONTROL_PORT")
-	if len(controlPort) != 0 {
-		// convert to int
-		port, err := strconv.Atoi(controlPort)
-		if err != nil {
-			log.Fatal().Err(err).Msg("Failed to convert control port to int")
-		}
-		// start the control server
-		log.Info().Int("port", port).Msg("Starting control server")
-		control := NewControl(s, port)
-		control.Start()
-		defer func() {
-			log.Info().Msg("Stopping control server")
-			control.Stop()
-			log.Info().Msg("Control server stopped")
-		}()
-	}
+	// start the pprof web server
+	pProfServer := NewPProfServer()
+	pProfServer.Start()
+	defer func() {
+		pProfServer.Stop()
+	}()
+	// start the go profiler
+	pprof := NewPProf()
+	pprof.Start()
+	defer func() {
+		pprof.Stop()
+	}()
+
+	control := NewControl(s)
+	control.Start()
+	defer func() {
+		control.Stop()
+	}()
+
 	logFormat := os.Getenv("LOG_FORMAT")
 	if len(logFormat) == 0 {
 		logFormat = "json"
