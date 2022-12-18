@@ -29,9 +29,7 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	_ "github.com/jnewmano/grpc-json-proxy/codec" // justified
 	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	health "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
 )
 
@@ -47,6 +45,7 @@ func getConfigPath() string {
 
 // Startup type
 type Startup struct {
+	contracts_core.UnimplementedStartup
 	MockOIDCService interface{}
 	ConfigOptions   *contracts_core.ConfigOptions
 	RootContainer   di.Container
@@ -77,12 +76,6 @@ func (s *Startup) SetRootContainer(container di.Container) {
 	s.RootContainer = container
 }
 
-// GetPort get the port number
-func (s *Startup) GetPort() int {
-	config := s.ConfigOptions.Destination.(*contracts_config.Config)
-	return config.Example.Port
-}
-
 // ConfigureServices is where we register our services with the DI
 func (s *Startup) ConfigureServices(builder *di.Builder) {
 	// this is how  you get your config before you register your services
@@ -97,8 +90,8 @@ func (s *Startup) ConfigureServices(builder *di.Builder) {
 		delete(config.Example.OIDCConfig.EntryPoints, k)
 		config.Example.OIDCConfig.EntryPoints[v.FullMethodName] = v
 	}
-	services_helloworld_handler.AddScopedIGreeterService(builder)
-	services_helloworld_handler.AddScopedIGreeter2Service(builder)
+	services_helloworld_handler.AddGreeterEndpointRegistration(builder)
+	services_helloworld_handler.AddGreeter2EndpointRegistration(builder)
 
 	services_lambda.AddGenerateGoogleUUIDFunc(builder)
 	services_lambda.AddGenerateSatoriUUIDFunc(builder)
@@ -176,25 +169,15 @@ func (s *Startup) Configure(unaryServerInterceptorBuilder contracts_core.IUnaryS
 	s.MockOIDCService = mockoidcservice.GetMockOIDCServiceFromContainer(s.RootContainer)
 }
 
-// RegisterGRPCEndpoints registeres all our servers with the framework
-func (s *Startup) RegisterGRPCEndpoints(server *grpc.Server) []interface{} {
-	var endpoints []interface{}
-	endpoints = append(endpoints, pb.RegisterGreeterServerDI(server))
-	endpoints = append(endpoints, pb.RegisterGreeter2ServerDI(server))
-	healthServer, _ := contracts_core.SafeGetIHealthServerFromContainer(s.RootContainer)
-	if healthServer != nil {
-		health.RegisterHealthServer(server, healthServer)
-		endpoints = append(endpoints, healthServer)
-	}
-	return endpoints
-}
-
 // GetStartupManifest wrapper
 func (s *Startup) GetStartupManifest() contracts_core.StartupManifest {
-	return contracts_core.StartupManifest{
+	config := s.ConfigOptions.Destination.(*contracts_config.Config)
+	manifest := contracts_core.StartupManifest{
 		Name:    "hello",
 		Version: "test.1",
+		Port:    config.Example.Port,
 	}
+	return manifest
 }
 
 // OnPreServerStartup wrapper

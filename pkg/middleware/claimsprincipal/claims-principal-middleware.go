@@ -109,10 +109,15 @@ func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypoint
 				subLogger.Debug().Msg("FullMethod not found in entrypoint claims map")
 				return permissionDeniedFunc()
 			}
+			if !ok || elem == nil {
+				// break out of if
+				goto end
+			}
 			if !Validate(&subLogger, elem.ClaimsConfig, claimsPrincipal) {
 				subLogger.Debug().Msg("ClaimsConfig validation failed")
 				return permissionDeniedFunc()
 			}
+		end:
 		}
 		return handler(ctx, req)
 	}

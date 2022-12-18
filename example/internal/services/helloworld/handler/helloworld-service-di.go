@@ -7,12 +7,14 @@ import (
 	di "github.com/fluffy-bunny/sarulabsdi"
 )
 
-// AddScopedIGreeterService adds service to the DI container
-func AddScopedIGreeterService(builder *di.Builder) {
-	pb.AddScopedIGreeterService(builder, reflect.TypeOf(&Service{}))
+// AddGreeterEndpointRegistration adds service to the DI container
+func AddGreeterEndpointRegistration(builder *di.Builder) {
+	pb.AddGreeterEndpointRegistration(builder, reflect.TypeOf(&Service{}))
+	//pb.AddScopedIGreeterService(builder, reflect.TypeOf(&Service{}))
 }
 
-// AddScopedIGreeter2Service adds service to the DI container
-func AddScopedIGreeter2Service(builder *di.Builder) {
-	pb.AddScopedIGreeter2Service(builder, reflect.TypeOf(&Service2{}))
+// AddGreeter2EndpointRegistration adds service to the DI container
+func AddGreeter2EndpointRegistration(builder *di.Builder) {
+	pb.AddGreeter2EndpointRegistration(builder, reflect.TypeOf(&Service2{}))
+	//pb.AddScopedIGreeter2Service(builder, reflect.TypeOf(&Service2{}))
 }

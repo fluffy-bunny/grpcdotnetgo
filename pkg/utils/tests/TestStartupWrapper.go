@@ -1,18 +1,20 @@
 package tests
 
 import (
-	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
+	contracts_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"google.golang.org/grpc"
 )
 
 type TestStartupWrapperConfig struct {
-	InnerStartup          coreContracts.IStartup
+	InnerStartup          contracts_core.IStartup
 	ConfigureServicesHook func(builder *di.Builder)
 }
 
 // TestStartupWrapper struct
 type TestStartupWrapper struct {
+	contracts_core.UnimplementedStartup
+
 	Config        *TestStartupWrapperConfig
 	RootContainer di.Container
 }
@@ -25,7 +27,7 @@ func NewTestStartupWrapper(config *TestStartupWrapperConfig) *TestStartupWrapper
 }
 
 // GetConfigOptions wrapper
-func (s *TestStartupWrapper) GetConfigOptions() *coreContracts.ConfigOptions {
+func (s *TestStartupWrapper) GetConfigOptions() *contracts_core.ConfigOptions {
 	return s.Config.InnerStartup.GetConfigOptions()
 }
 
@@ -38,7 +40,7 @@ func (s *TestStartupWrapper) ConfigureServices(builder *di.Builder) {
 }
 
 // Configure wrapper
-func (s *TestStartupWrapper) Configure(unaryServerInterceptorBuilder coreContracts.IUnaryServerInterceptorBuilder) {
+func (s *TestStartupWrapper) Configure(unaryServerInterceptorBuilder contracts_core.IUnaryServerInterceptorBuilder) {
 	s.Config.InnerStartup.Configure(unaryServerInterceptorBuilder)
 }
 
@@ -59,8 +61,8 @@ func (s *TestStartupWrapper) SetRootContainer(container di.Container) {
 }
 
 // GetStartupManifest wrapper
-func (s *TestStartupWrapper) GetStartupManifest() coreContracts.StartupManifest {
-	return coreContracts.StartupManifest{
+func (s *TestStartupWrapper) GetStartupManifest() contracts_core.StartupManifest {
+	return contracts_core.StartupManifest{
 		Name:    "test",
 		Version: "test.1",
 	}

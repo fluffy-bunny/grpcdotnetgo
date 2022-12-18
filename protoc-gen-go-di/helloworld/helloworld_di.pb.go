@@ -5,769 +5,16 @@ package helloworld
 import (
 	context "context"
 	pkg "github.com/fluffy-bunny/grpcdotnetgo/pkg"
+	grpc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/grpc"
 	dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	pkg1 "github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/pkg"
 	sarulabsdi "github.com/fluffy-bunny/sarulabsdi"
-	grpc "google.golang.org/grpc"
+	grpc1 "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	reflect "reflect"
 )
 
-/*  file.Proto
-{
-    "name": "protoc-gen-go-di/helloworld/helloworld.proto",
-    "package": "helloworld",
-    "message_type": [
-        {
-            "name": "HelloRequest",
-            "field": [
-                {
-                    "name": "name",
-                    "number": 1,
-                    "label": 1,
-                    "type": 9,
-                    "json_name": "name"
-                }
-            ]
-        },
-        {
-            "name": "HelloReply",
-            "field": [
-                {
-                    "name": "message",
-                    "number": 1,
-                    "label": 1,
-                    "type": 9,
-                    "json_name": "message"
-                }
-            ]
-        },
-        {
-            "name": "HelloReply2",
-            "field": [
-                {
-                    "name": "message",
-                    "number": 1,
-                    "label": 1,
-                    "type": 9,
-                    "json_name": "message"
-                }
-            ]
-        },
-        {
-            "name": "WritePropsRequest"
-        },
-        {
-            "name": "WritePropsResponse"
-        }
-    ],
-    "service": [
-        {
-            "name": "Greeter",
-            "method": [
-                {
-                    "name": "SayHello",
-                    "input_type": ".helloworld.HelloRequest",
-                    "output_type": ".helloworld.HelloReply",
-                    "options": {}
-                }
-            ]
-        },
-        {
-            "name": "Greeter2",
-            "method": [
-                {
-                    "name": "SayHello",
-                    "input_type": ".helloworld.HelloRequest",
-                    "output_type": ".helloworld.HelloReply2",
-                    "options": {}
-                }
-            ]
-        },
-        {
-            "name": "EdgeControlService",
-            "method": [
-                {
-                    "name": "WriteProps",
-                    "input_type": ".helloworld.WritePropsRequest",
-                    "output_type": ".helloworld.WritePropsResponse",
-                    "server_streaming": true
-                }
-            ]
-        }
-    ],
-    "options": {
-        "java_package": "io.grpc.examples.helloworld",
-        "java_outer_classname": "HelloWorldProto",
-        "java_multiple_files": true,
-        "go_package": "google.golang.org/grpc/examples/helloworld/helloworld"
-    },
-    "source_code_info": {
-        "location": [
-            {
-                "span": [
-                    14,
-                    0,
-                    60,
-                    1
-                ]
-            },
-            {
-                "path": [
-                    12
-                ],
-                "span": [
-                    14,
-                    0,
-                    18
-                ],
-                "leading_detached_comments": [
-                    " Copyright 2015 gRPC authors.\n\n Licensed under the Apache License, Version 2.0 (the \"License\");\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n\n     http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n See the License for the specific language governing permissions and\n limitations under the License.\n"
-                ]
-            },
-            {
-                "path": [
-                    8
-                ],
-                "span": [
-                    17,
-                    0,
-                    76
-                ]
-            },
-            {
-                "path": [
-                    8,
-                    11
-                ],
-                "span": [
-                    17,
-                    0,
-                    76
-                ]
-            },
-            {
-                "path": [
-                    8
-                ],
-                "span": [
-                    18,
-                    0,
-                    34
-                ]
-            },
-            {
-                "path": [
-                    8,
-                    10
-                ],
-                "span": [
-                    18,
-                    0,
-                    34
-                ]
-            },
-            {
-                "path": [
-                    8
-                ],
-                "span": [
-                    19,
-                    0,
-                    52
-                ]
-            },
-            {
-                "path": [
-                    8,
-                    1
-                ],
-                "span": [
-                    19,
-                    0,
-                    52
-                ]
-            },
-            {
-                "path": [
-                    8
-                ],
-                "span": [
-                    20,
-                    0,
-                    48
-                ]
-            },
-            {
-                "path": [
-                    8,
-                    8
-                ],
-                "span": [
-                    20,
-                    0,
-                    48
-                ]
-            },
-            {
-                "path": [
-                    2
-                ],
-                "span": [
-                    22,
-                    0,
-                    19
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    0
-                ],
-                "span": [
-                    25,
-                    0,
-                    28,
-                    1
-                ],
-                "leading_comments": " The greeting service definition.\n"
-            },
-            {
-                "path": [
-                    6,
-                    0,
-                    1
-                ],
-                "span": [
-                    25,
-                    8,
-                    15
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    0,
-                    2,
-                    0
-                ],
-                "span": [
-                    27,
-                    2,
-                    53
-                ],
-                "leading_comments": " Sends a greeting\n"
-            },
-            {
-                "path": [
-                    6,
-                    0,
-                    2,
-                    0,
-                    1
-                ],
-                "span": [
-                    27,
-                    6,
-                    14
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    0,
-                    2,
-                    0,
-                    2
-                ],
-                "span": [
-                    27,
-                    16,
-                    28
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    0,
-                    2,
-                    0,
-                    3
-                ],
-                "span": [
-                    27,
-                    39,
-                    49
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    1
-                ],
-                "span": [
-                    29,
-                    0,
-                    32,
-                    1
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    1,
-                    1
-                ],
-                "span": [
-                    29,
-                    8,
-                    16
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    1,
-                    2,
-                    0
-                ],
-                "span": [
-                    31,
-                    2,
-                    54
-                ],
-                "leading_comments": " Sends a greeting\n"
-            },
-            {
-                "path": [
-                    6,
-                    1,
-                    2,
-                    0,
-                    1
-                ],
-                "span": [
-                    31,
-                    6,
-                    14
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    1,
-                    2,
-                    0,
-                    2
-                ],
-                "span": [
-                    31,
-                    16,
-                    28
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    1,
-                    2,
-                    0,
-                    3
-                ],
-                "span": [
-                    31,
-                    39,
-                    50
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    0
-                ],
-                "span": [
-                    34,
-                    0,
-                    36,
-                    1
-                ],
-                "leading_comments": " The request message containing the user's name.\n"
-            },
-            {
-                "path": [
-                    4,
-                    0,
-                    1
-                ],
-                "span": [
-                    34,
-                    8,
-                    20
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    0,
-                    2,
-                    0
-                ],
-                "span": [
-                    35,
-                    2,
-                    18
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    0,
-                    2,
-                    0,
-                    5
-                ],
-                "span": [
-                    35,
-                    2,
-                    8
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    0,
-                    2,
-                    0,
-                    1
-                ],
-                "span": [
-                    35,
-                    9,
-                    13
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    0,
-                    2,
-                    0,
-                    3
-                ],
-                "span": [
-                    35,
-                    16,
-                    17
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    1
-                ],
-                "span": [
-                    39,
-                    0,
-                    41,
-                    1
-                ],
-                "leading_comments": " The response message containing the greetings\n"
-            },
-            {
-                "path": [
-                    4,
-                    1,
-                    1
-                ],
-                "span": [
-                    39,
-                    8,
-                    18
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    1,
-                    2,
-                    0
-                ],
-                "span": [
-                    40,
-                    2,
-                    21
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    1,
-                    2,
-                    0,
-                    5
-                ],
-                "span": [
-                    40,
-                    2,
-                    8
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    1,
-                    2,
-                    0,
-                    1
-                ],
-                "span": [
-                    40,
-                    9,
-                    16
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    1,
-                    2,
-                    0,
-                    3
-                ],
-                "span": [
-                    40,
-                    19,
-                    20
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    2
-                ],
-                "span": [
-                    42,
-                    0,
-                    45,
-                    1
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    2,
-                    1
-                ],
-                "span": [
-                    42,
-                    8,
-                    19
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    2,
-                    2,
-                    0
-                ],
-                "span": [
-                    43,
-                    2,
-                    21
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    2,
-                    2,
-                    0,
-                    5
-                ],
-                "span": [
-                    43,
-                    2,
-                    8
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    2,
-                    2,
-                    0,
-                    1
-                ],
-                "span": [
-                    43,
-                    9,
-                    16
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    2,
-                    2,
-                    0,
-                    3
-                ],
-                "span": [
-                    43,
-                    19,
-                    20
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    2
-                ],
-                "span": [
-                    49,
-                    0,
-                    54,
-                    1
-                ],
-                "leading_comments": " Mapped client connector auth service.\n di:ignore\n"
-            },
-            {
-                "path": [
-                    6,
-                    2,
-                    1
-                ],
-                "span": [
-                    49,
-                    8,
-                    26
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    2,
-                    2,
-                    0
-                ],
-                "span": [
-                    53,
-                    2,
-                    72
-                ],
-                "leading_comments": " Write a property to one or more known subtended device(s)\n Request: Unary\n Response: Streaming\n"
-            },
-            {
-                "path": [
-                    6,
-                    2,
-                    2,
-                    0,
-                    1
-                ],
-                "span": [
-                    53,
-                    6,
-                    16
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    2,
-                    2,
-                    0,
-                    2
-                ],
-                "span": [
-                    53,
-                    17,
-                    34
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    2,
-                    2,
-                    0,
-                    6
-                ],
-                "span": [
-                    53,
-                    45,
-                    51
-                ]
-            },
-            {
-                "path": [
-                    6,
-                    2,
-                    2,
-                    0,
-                    3
-                ],
-                "span": [
-                    53,
-                    52,
-                    70
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    3
-                ],
-                "span": [
-                    56,
-                    0,
-                    57,
-                    1
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    3,
-                    1
-                ],
-                "span": [
-                    56,
-                    8,
-                    25
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    4
-                ],
-                "span": [
-                    59,
-                    0,
-                    60,
-                    1
-                ]
-            },
-            {
-                "path": [
-                    4,
-                    4,
-                    1
-                ],
-                "span": [
-                    59,
-                    8,
-                    26
-                ]
-            }
-        ]
-    },
-    "syntax": "proto3"
-}
-*/
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
 const _ = pkg.SupportPackageIsVersion7
@@ -777,6 +24,35 @@ func setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(dst interface{}, field string)
 	if v.IsValid() {
 		v.Set(reflect.New(v.Type().Elem()))
 	}
+}
+
+// GreeterEndpointRegistration defines the grpc server endpoint registration
+type GreeterEndpointRegistration struct {
+}
+
+// TypeGreeterEndpointRegistration reflect type
+var TypeGreeterEndpointRegistration = sarulabsdi.GetInterfaceReflectType((*GreeterEndpointRegistration)(nil))
+
+// AddGreeterEndpointRegistration adds a type that implements IServiceEndpointRegistration
+func AddGreeterEndpointRegistration(builder *sarulabsdi.Builder, implType reflect.Type) {
+	grpc.AddSingletonIServiceEndpointRegistration(builder, reflect.TypeOf(&GreeterEndpointRegistration{}))
+	AddScopedIGreeterService(builder, implType)
+}
+
+// GetName returns the name of the service
+func (s *GreeterEndpointRegistration) GetName() string {
+	return "Greeter"
+}
+
+// GetNewClient returns a new instance of a grpc client
+func (s *GreeterEndpointRegistration) GetNewClient(cc grpc1.ClientConnInterface) interface{} {
+	return NewGreeterClient(cc)
+}
+
+// RegisterEndpoint registers a DI server
+func (s *GreeterEndpointRegistration) RegisterEndpoint(server *grpc1.Server) interface{} {
+	endpoint := RegisterGreeterServerDI(server)
+	return endpoint
 }
 
 // IGreeterServer defines the grpc server
@@ -814,6 +90,12 @@ var ReflectTypeIGreeterServer = sarulabsdi.GetInterfaceReflectType((*IGreeterSer
 
 // ReflectTypeIGreeterService reflect type
 var ReflectTypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterService)(nil))
+
+type GetGreeterClient func() (GreeterClient, error)
+
+func GetNewGreeterClient(cc grpc1.ClientConnInterface) GreeterClient {
+	return NewGreeterClient(cc)
+}
 
 // AddSingletonIGreeterServerByObj adds a prebuilt obj
 func AddSingletonIGreeterServerByObj(builder *sarulabsdi.Builder, obj interface{}) {
@@ -895,7 +177,7 @@ type greeterServer struct {
 }
 
 // RegisterGreeterServerDI ...
-func RegisterGreeterServerDI(s grpc.ServiceRegistrar) interface{} {
+func RegisterGreeterServerDI(s grpc1.ServiceRegistrar) interface{} {
 	// Register the server
 	var server = &greeterServer{}
 	RegisterGreeterServer(s, server)
@@ -914,6 +196,35 @@ const (
 	// FMN_Greeter_SayHello
 	FMN_Greeter_SayHello = "/helloworld.Greeter/SayHello"
 )
+
+// Greeter2EndpointRegistration defines the grpc server endpoint registration
+type Greeter2EndpointRegistration struct {
+}
+
+// TypeGreeter2EndpointRegistration reflect type
+var TypeGreeter2EndpointRegistration = sarulabsdi.GetInterfaceReflectType((*Greeter2EndpointRegistration)(nil))
+
+// AddGreeter2EndpointRegistration adds a type that implements IServiceEndpointRegistration
+func AddGreeter2EndpointRegistration(builder *sarulabsdi.Builder, implType reflect.Type) {
+	grpc.AddSingletonIServiceEndpointRegistration(builder, reflect.TypeOf(&Greeter2EndpointRegistration{}))
+	AddScopedIGreeter2Service(builder, implType)
+}
+
+// GetName returns the name of the service
+func (s *Greeter2EndpointRegistration) GetName() string {
+	return "Greeter2"
+}
+
+// GetNewClient returns a new instance of a grpc client
+func (s *Greeter2EndpointRegistration) GetNewClient(cc grpc1.ClientConnInterface) interface{} {
+	return NewGreeter2Client(cc)
+}
+
+// RegisterEndpoint registers a DI server
+func (s *Greeter2EndpointRegistration) RegisterEndpoint(server *grpc1.Server) interface{} {
+	endpoint := RegisterGreeter2ServerDI(server)
+	return endpoint
+}
 
 // IGreeter2Server defines the grpc server
 type IGreeter2Server interface {
@@ -950,6 +261,12 @@ var ReflectTypeIGreeter2Server = sarulabsdi.GetInterfaceReflectType((*IGreeter2S
 
 // ReflectTypeIGreeter2Service reflect type
 var ReflectTypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
+
+type GetGreeter2Client func() (Greeter2Client, error)
+
+func GetNewGreeter2Client(cc grpc1.ClientConnInterface) Greeter2Client {
+	return NewGreeter2Client(cc)
+}
 
 // AddSingletonIGreeter2ServerByObj adds a prebuilt obj
 func AddSingletonIGreeter2ServerByObj(builder *sarulabsdi.Builder, obj interface{}) {
@@ -1031,7 +348,7 @@ type greeter2Server struct {
 }
 
 // RegisterGreeter2ServerDI ...
-func RegisterGreeter2ServerDI(s grpc.ServiceRegistrar) interface{} {
+func RegisterGreeter2ServerDI(s grpc1.ServiceRegistrar) interface{} {
 	// Register the server
 	var server = &greeter2Server{}
 	RegisterGreeter2Server(s, server)
