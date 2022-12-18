@@ -157,6 +157,23 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 	if plugins == nil || len(plugins) == 0 {
 		plugins = grpcdotnetgo_plugin.GetPlugins() // pull it from the global one
 	}
+	pprofPort := os.Getenv("PPROF_PORT")
+	if len(pprofPort) != 0 {
+		// convert to int
+		port, err := strconv.Atoi(pprofPort)
+		if err != nil {
+			log.Fatal().Err(err).Msg("Failed to convert pprof port to int")
+		}
+		// start the pprof server
+		log.Info().Int("port", port).Msg("Starting pprof server")
+		pprof := NewPProf(s, port)
+		pprof.Start()
+		defer func() {
+			log.Info().Msg("Stopping pprof server")
+			pprof.Stop()
+			log.Info().Msg("Pprof server stopped")
+		}()
+	}
 	controlPort := os.Getenv("CONTROL_PORT")
 	if len(controlPort) != 0 {
 		// convert to int

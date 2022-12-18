@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"runtime"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
@@ -48,6 +49,10 @@ func (s *Control) Start() {
 	e.GET("/stop", func(c echo.Context) error {
 		s.runtime.Stop()
 		return c.String(http.StatusOK, "Signalled server to stop")
+	})
+	e.GET("/gc", func(c echo.Context) error {
+		runtime.GC()
+		return c.String(http.StatusOK, "Called GC")
 	})
 	asyncAction := func() async.Future[string] {
 		promise := async.NewPromise[string]()
