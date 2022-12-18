@@ -2,12 +2,8 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/fluffy-bunny/grpcdotnetgo/example/internal"
 	_ "github.com/fluffy-bunny/grpcdotnetgo/example/internal/plugin"
 	runtime "github.com/fluffy-bunny/grpcdotnetgo/pkg/runtime"
-	pkg "github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/pkg"
 	"github.com/gogo/protobuf/gogoproto"
 	_ "github.com/jnewmano/grpc-json-proxy/codec"
 )
@@ -20,14 +16,15 @@ func main() {
 		panic("boo hoo")
 	}
 	runtime.SetVersion(version)
-	fmt.Println("Version:\t", version)
+	/*
+		fmt.Println("Version:\t", version)
 
-	fmt.Println(internal.PrettyJSON(pkg.NewFullMethodNameToMap(
-		func(fullMethodName string) interface{} {
-			return make(map[string]interface{})
-		},
-	)))
-
+		fmt.Println(internal.PrettyJSON(pkg.NewFullMethodNameToMap(
+			func(fullMethodName string) interface{} {
+				return make(map[string]interface{})
+			},
+		)))
+	*/
 	runtime.Start()
 }
 

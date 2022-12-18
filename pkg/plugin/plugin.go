@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	pluginContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
-	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -17,7 +16,7 @@ func AddPlugin(plugin pluginContracts.IGRPCDotNetGoPlugin) {
 	mutex.Lock()
 	defer mutex.Unlock()
 	availablePlugins = append(availablePlugins, plugin)
-	log.Debug().Interface("availablePlugins", availablePlugins).Send()
+	//log.Debug().Interface("availablePlugins", availablePlugins).Send()
 }
 
 // GetPlugins gets all the plugins

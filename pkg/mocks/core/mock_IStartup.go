@@ -191,6 +191,18 @@ func (mr *MockIStartupMockRecorder) SetRootContainer(arg0 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetRootContainer", reflect.TypeOf((*MockIStartup)(nil).SetRootContainer), arg0)
 }
 
+// mustEmbedUnimplementedStartup mocks base method.
+func (m *MockIStartup) mustEmbedUnimplementedStartup() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "mustEmbedUnimplementedStartup")
+}
+
+// mustEmbedUnimplementedStartup indicates an expected call of mustEmbedUnimplementedStartup.
+func (mr *MockIStartupMockRecorder) mustEmbedUnimplementedStartup() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "mustEmbedUnimplementedStartup", reflect.TypeOf((*MockIStartup)(nil).mustEmbedUnimplementedStartup))
+}
+
 // MockIUnaryServerInterceptorBuilder is a mock of IUnaryServerInterceptorBuilder interface.
 type MockIUnaryServerInterceptorBuilder struct {
 	ctrl     *gomock.Controller

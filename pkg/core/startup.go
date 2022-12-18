@@ -16,9 +16,10 @@ import (
 	"github.com/fatih/structs"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
-	backgroundtasksContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
-	coreContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
-	pluginContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
+	contracts_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
+	contracts_grpc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/grpc"
+	contracts_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
+
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
 	"github.com/fluffy-bunny/viperEx"
@@ -31,6 +32,7 @@ import (
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	grpclog "google.golang.org/grpc/grpclog"
+	health "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 // ValidateConfigPath just makes sure, that the path provided is a file,
@@ -45,7 +47,7 @@ func ValidateConfigPath(configPath string) error {
 	}
 	return nil
 }
-func LoadConfig(configOptions *coreContracts.ConfigOptions) error {
+func LoadConfig(configOptions *contracts_core.ConfigOptions) error {
 	v := viper.NewWithOptions(viper.KeyDelimiter("__"))
 	var err error
 	v.SetConfigType("json")
@@ -104,7 +106,7 @@ func LoadConfig(configOptions *coreContracts.ConfigOptions) error {
 
 // ServerInstance represents an instance of a plugin
 type ServerInstance struct {
-	StartupManifest coreContracts.StartupManifest
+	StartupManifest contracts_core.StartupManifest
 	Server          *grpc.Server
 	Future          async.Future[interface{}]
 	DotNetGoBuilder *grpcdotnetgo.DotNetGoBuilder
@@ -152,10 +154,29 @@ func (s *Runtime) Start() {
 }
 
 // StartWithListenterAndPlugins starts up the server
-func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []pluginContracts.IGRPCDotNetGoPlugin) {
+func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contracts_plugin.IGRPCDotNetGoPlugin) {
 	if plugins == nil || len(plugins) == 0 {
 		plugins = grpcdotnetgo_plugin.GetPlugins() // pull it from the global one
 	}
+	// start the pprof web server
+	pProfServer := NewPProfServer()
+	pProfServer.Start()
+	defer func() {
+		pProfServer.Stop()
+	}()
+	// start the go profiler
+	pprof := NewPProf()
+	pprof.Start()
+	defer func() {
+		pprof.Stop()
+	}()
+
+	control := NewControl(s)
+	control.Start()
+	defer func() {
+		control.Stop()
+	}()
+
 	logFormat := os.Getenv("LOG_FORMAT")
 	if len(logFormat) == 0 {
 		logFormat = "json"
@@ -265,10 +286,25 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 				unaryServerInterceptorBuilder.GetUnaryServerInterceptors()...,
 			)),
 		)
-		si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
+		serverRegistrations, err := contracts_grpc.SafeGetManyIServiceEndpointRegistrationFromContainer(rootContainer)
+		if err == nil {
+			si.Endpoints = make([]interface{}, 0, len(serverRegistrations))
+			for _, serverRegistration := range serverRegistrations {
+				endpoint := serverRegistration.RegisterEndpoint(grpcServer)
+				si.Endpoints = append(si.Endpoints, endpoint)
+			}
+			healthServer, _ := contracts_core.SafeGetIHealthServerFromContainer(rootContainer)
+			if healthServer != nil {
+				health.RegisterHealthServer(grpcServer, healthServer)
+				si.Endpoints = append(si.Endpoints, healthServer)
+			}
+		} else {
+			// legacy
+			si.Endpoints = startup.RegisterGRPCEndpoints(grpcServer)
+		}
 		// TODO: Make this a first class abstaction
 		// ILifeCycleHook but maybe IStartup can have those
-		backgroundtasksContracts.GetIBackgroundTasksFromContainer(rootContainer)
+		//backgroundtasksContracts.GetIBackgroundTasksFromContainer(rootContainer)
 
 		err = startup.OnPreServerStartup()
 		if err != nil {
@@ -277,7 +313,11 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []plugi
 			panic(err)
 		} else {
 			if lis == nil {
-				lis, err = net.Listen("tcp", fmt.Sprintf(":%d", startup.GetPort()))
+				if si.StartupManifest.Port == 0 {
+					// legacy
+					si.StartupManifest.Port = startup.GetPort()
+				}
+				lis, err = net.Listen("tcp", fmt.Sprintf(":%d", si.StartupManifest.Port))
 				if err != nil {
 					panic(err)
 				}

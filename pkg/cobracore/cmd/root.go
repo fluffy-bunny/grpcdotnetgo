@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,8 +19,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/cobracore/cmd/cli"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/cobracore/cmd/serve"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/cobracore/cmd/version"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -63,7 +65,7 @@ func init() {
 
 	version.Init(rootCmd)
 	serve.Init(rootCmd)
-
+	cli.Init(rootCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.
