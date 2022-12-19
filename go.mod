@@ -18,7 +18,7 @@ require (
 	github.com/gogo/protobuf v1.3.2
 	github.com/gogo/status v1.1.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/golang-jwt/jwt/v4 v4.4.2
+	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
@@ -29,15 +29,15 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/jnewmano/grpc-json-proxy v0.0.6
 	github.com/labstack/echo-contrib v0.13.0
-	github.com/labstack/echo/v4 v4.9.0
-	github.com/labstack/gommon v0.3.1
+	github.com/labstack/echo/v4 v4.9.1
+	github.com/labstack/gommon v0.4.0
 	github.com/lestrrat-go/jwx v1.2.25
 	github.com/pkg/errors v0.9.1
-	github.com/pkg/profile v1.6.0
+	github.com/pkg/profile v1.7.0
 	github.com/reugn/async v0.5.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/xid v1.4.0
-	github.com/rs/zerolog v1.27.0
+	github.com/rs/zerolog v1.28.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sirupsen/logrus v1.9.0
@@ -60,9 +60,11 @@ require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fatih/structtag v1.2.0 // indirect
+	github.com/felixge/fgprof v0.9.3 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/google/pprof v0.0.0-20211214055906-6f57359322fd // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
