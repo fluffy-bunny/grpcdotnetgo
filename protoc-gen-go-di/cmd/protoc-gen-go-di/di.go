@@ -350,11 +350,6 @@ func (s *serviceGenContext) genService() {
 
 	g.P("type Get", service.GoName, "Client func() (", service.GoName, "Client,error)")
 
-	// Client Creation
-	g.P("func GetNew", service.GoName, "Client(cc ", grpcPackage.Ident("ClientConnInterface"), ") ", service.GoName, "Client {")
-	g.P("return New", service.GoName, "Client(cc)")
-	g.P("}")
-	g.P()
 	// DI Helpers
 
 	// making type look like sarulabsdi genny types
