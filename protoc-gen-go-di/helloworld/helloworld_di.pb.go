@@ -93,10 +93,6 @@ var ReflectTypeIGreeterService = sarulabsdi.GetInterfaceReflectType((*IGreeterSe
 
 type GetGreeterClient func() (GreeterClient, error)
 
-func GetNewGreeterClient(cc grpc1.ClientConnInterface) GreeterClient {
-	return NewGreeterClient(cc)
-}
-
 // AddSingletonIGreeterServerByObj adds a prebuilt obj
 func AddSingletonIGreeterServerByObj(builder *sarulabsdi.Builder, obj interface{}) {
 	sarulabsdi.AddSingletonWithImplementedTypesByObj(builder, obj, ReflectTypeIGreeterServer)
@@ -263,10 +259,6 @@ var ReflectTypeIGreeter2Server = sarulabsdi.GetInterfaceReflectType((*IGreeter2S
 var ReflectTypeIGreeter2Service = sarulabsdi.GetInterfaceReflectType((*IGreeter2Service)(nil))
 
 type GetGreeter2Client func() (Greeter2Client, error)
-
-func GetNewGreeter2Client(cc grpc1.ClientConnInterface) Greeter2Client {
-	return NewGreeter2Client(cc)
-}
 
 // AddSingletonIGreeter2ServerByObj adds a prebuilt obj
 func AddSingletonIGreeter2ServerByObj(builder *sarulabsdi.Builder, obj interface{}) {
