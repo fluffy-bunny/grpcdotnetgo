@@ -23,7 +23,6 @@ import (
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
 	"github.com/fluffy-bunny/viperEx"
-	glog "github.com/golang/glog"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/reugn/async"
 	"github.com/rs/zerolog"
@@ -244,13 +243,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 	}
 	// Replace the grpc logger
 	grpclog.SetLoggerV2(NewGRPCLogger())
-	// Replace glog
-	glog.SetLogger(&glog.LoggerFunc{
-		DebugfFunc: func(f string, a ...interface{}) { log.Debug().Msgf(f, a...) },
-		InfofFunc:  func(f string, a ...interface{}) { log.Info().Msgf(f, a...) },
-		WarnfFunc:  func(f string, a ...interface{}) { log.Warn().Msgf(f, a...) },
-		ErrorfFunc: func(f string, a ...interface{}) { log.Error().Msgf(f, a...) },
-	})
+
 	for _, plugin := range plugins {
 		si := &ServerInstance{}
 
