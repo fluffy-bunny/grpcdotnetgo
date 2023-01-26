@@ -34,7 +34,7 @@ require (
 	github.com/reugn/async v0.5.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/xid v1.4.0
-	github.com/rs/zerolog v1.28.0
+	github.com/rs/zerolog v1.29.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sirupsen/logrus v1.9.0
