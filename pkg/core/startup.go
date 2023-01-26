@@ -20,6 +20,7 @@ import (
 	contracts_grpc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/grpc"
 	contracts_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
 
+	contracts_backgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
 	"github.com/fluffy-bunny/viperEx"
@@ -297,7 +298,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 		}
 		// TODO: Make this a first class abstaction
 		// ILifeCycleHook but maybe IStartup can have those
-		//backgroundtasksContracts.GetIBackgroundTasksFromContainer(rootContainer)
+		contracts_backgroundtasks.GetIBackgroundTasksFromContainer(rootContainer)
 
 		err = startup.OnPreServerStartup()
 		if err != nil {
