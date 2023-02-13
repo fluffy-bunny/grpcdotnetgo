@@ -4,9 +4,9 @@ import (
 	"context"
 	"strings"
 
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/wellknown"
 	"github.com/grpc-ecosystem/go-grpc-middleware/util/metautils"
-	"github.com/rs/xid"
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -31,7 +31,7 @@ func EnsureCorrelationIDUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		}
 
 		if len(correlationID) == 0 {
-			correlationID = genCorrelationID()
+			correlationID = utils.GenerateUniqueID()
 			md[wellknown.XCorrelationIDName] = []string{correlationID}
 		}
 
@@ -43,7 +43,7 @@ func EnsureCorrelationIDUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 			md[wellknown.XParentName] = []string{items[0]}
 		}
 		// generate a new span for this context
-		newSpanID := generateSpanID()
+		newSpanID := utils.GenerateUniqueID()
 		md[wellknown.XSpanName] = []string{newSpanID}
 		loggerMap[wellknown.LogSpanName] = newSpanID
 		log := zerolog.Ctx(ctx)
@@ -62,10 +62,4 @@ func EnsureCorrelationIDUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		grpc.SendHeader(ctx, md2)
 		return handler(ctx, req)
 	}
-}
-func generateSpanID() string {
-	return xid.New().String()
-}
-func genCorrelationID() string {
-	return xid.New().String()
 }
