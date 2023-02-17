@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 
 	"github.com/fatih/structs"
@@ -19,6 +20,7 @@ import (
 	contracts_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	contracts_grpc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/grpc"
 	contracts_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 
 	contracts_backgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
@@ -153,6 +155,32 @@ func (s *Runtime) Start() {
 	s.StartWithListenterAndPlugins(nil, nil)
 }
 
+// setup globa logger during runtime
+var _setLogger bool
+var once sync.Once
+
+// TODO: There is a race condition using the zerologger replacement for grpcLog
+// I haven't tracked it down yet so not using it under test.
+func ensureLogger() {
+	if _setLogger {
+		return
+	}
+	once.Do(func() {
+		_setLogger = true
+		appEnv := os.Getenv("APPLICATION_ENVIRONMENT")
+
+		if utils.IsEmptyOrNil(appEnv) {
+			grpclog.SetLoggerV2(NewGRPCLogger())
+		} else {
+			appEnv = strings.ToLower(appEnv)
+			if appEnv != "test" {
+				grpclog.SetLoggerV2(NewGRPCLogger())
+			}
+		}
+	})
+
+}
+
 // StartWithListenterAndPlugins starts up the server
 func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contracts_plugin.IGRPCDotNetGoPlugin) {
 	if plugins == nil || len(plugins) == 0 {
@@ -242,9 +270,8 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 	case "trace":
 		zerolog.SetGlobalLevel(zerolog.TraceLevel)
 	}
-	// Replace the grpc logger
-	grpclog.SetLoggerV2(NewGRPCLogger())
 
+	ensureLogger()
 	for _, plugin := range plugins {
 		si := &ServerInstance{}
 
