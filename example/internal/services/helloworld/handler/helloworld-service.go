@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 
 	"strings"
@@ -25,6 +26,7 @@ import (
 
 // Service is used to implement helloworld.GreeterServer.
 type Service struct {
+	pb.UnimplementedGreeterServerEx
 	Container       di.Container                               `inject:""`
 	ServiceProvider contracts_serviceprovider.IServiceProvider `inject:""`
 	Request         contracts_request.IRequest                 `inject:""`
@@ -46,6 +48,8 @@ type Service struct {
 	multiUUIDs      []string
 }
 
+var _ pb.IGreeterServer = (*Service)(nil)
+
 // Ctor if it exists is called when the service is created
 func (s *Service) Ctor() {
 	s.instanceID = s.GenerateUUID()
@@ -55,23 +59,17 @@ func (s *Service) Ctor() {
 		builder.WriteString(":")
 		s.multiUUIDs = append(s.multiUUIDs, t())
 	}
-
-}
-func (s *Service) getLogger() *zerolog.Logger {
-	ctx := s.Request.GetContext()
-	l := zerolog.Ctx(ctx)
-	return l
 }
 
 // Close if it exists is called when the container is torn down
 func (s *Service) Close() {
-	logger := s.getLogger()
+	logger := zerolog.Ctx(s.Request.GetContext()).With().Logger()
 	logger.Info().Msg("Close")
 }
 
 // SayHello implements helloworld.GreeterServer
-func (s *Service) SayHello(in *pb.HelloRequest) (*pb.HelloReply, error) {
-	logger := s.getLogger()
+func (s *Service) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	logger := zerolog.Ctx(ctx).With().Logger()
 	logger.Info().Msg("Enter")
 	fmt.Println(internal.PrettyJSON(s.ClaimsPrincipal))
 
@@ -93,20 +91,19 @@ func (s *Service) SayHello(in *pb.HelloRequest) (*pb.HelloReply, error) {
 
 // Service2 ...
 type Service2 struct {
+	pb.UnimplementedGreeter2ServerEx
+
 	Request         contracts_request.IRequest                 `inject:""`
 	ClaimsPrincipal contracts_claimsprincipal.IClaimsPrincipal `inject:""`
 	Config          *contracts_config.Config                   `inject:""`
 }
 
-func (s *Service2) getLogger() *zerolog.Logger {
-	ctx := s.Request.GetContext()
-	l := zerolog.Ctx(ctx)
-	return l
-}
+// assert implemetnes
+var _ pb.IGreeter2Server = (*Service2)(nil)
 
 // SayHello implements helloworld.GreeterServer
-func (s *Service2) SayHello(in *pb.HelloRequest) (*pb.HelloReply2, error) {
-	logger := s.getLogger()
+func (s *Service2) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply2, error) {
+	logger := zerolog.Ctx(ctx).With().Logger()
 	logger.Info().Msg("Enter")
 	fmt.Println(internal.PrettyJSON(s.ClaimsPrincipal))
 
