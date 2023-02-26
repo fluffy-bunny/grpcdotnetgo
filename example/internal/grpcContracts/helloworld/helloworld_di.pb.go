@@ -30,6 +30,10 @@ func setNewField_BpLnfgDsc2WD8F2qNfHK5a84jjJkwzDk(dst interface{}, field string)
 type GreeterEndpointRegistration struct {
 }
 
+// GreeterEndpointRegistration defines the grpc server endpoint registration
+type GreeterEndpointRegistrationV2 struct {
+}
+
 // TypeGreeterEndpointRegistration reflect type
 var TypeGreeterEndpointRegistration = sarulabsdi.GetInterfaceReflectType((*GreeterEndpointRegistration)(nil))
 
@@ -39,8 +43,19 @@ func AddGreeterEndpointRegistration(builder *sarulabsdi.Builder, implType reflec
 	AddScopedIGreeterService(builder, implType)
 }
 
+// AddGreeterEndpointRegistration adds a type that implements IServiceEndpointRegistration
+func AddGreeterEndpointRegistrationV2(builder *sarulabsdi.Builder, implType reflect.Type) {
+	grpc.AddSingletonIServiceEndpointRegistration(builder, reflect.TypeOf(&GreeterEndpointRegistrationV2{}))
+	AddScopedIGreeterServer(builder, implType)
+}
+
 // GetName returns the name of the service
 func (s *GreeterEndpointRegistration) GetName() string {
+	return "Greeter"
+}
+
+// GetName returns the name of the service
+func (s *GreeterEndpointRegistrationV2) GetName() string {
 	return "Greeter"
 }
 
@@ -49,9 +64,26 @@ func (s *GreeterEndpointRegistration) GetNewClient(cc grpc1.ClientConnInterface)
 	return NewGreeterClient(cc)
 }
 
+// GetNewClient returns a new instance of a grpc client
+func (s *GreeterEndpointRegistrationV2) GetNewClient(cc grpc1.ClientConnInterface) interface{} {
+	return NewGreeterClient(cc)
+}
+
 // RegisterEndpoint registers a DI server
 func (s *GreeterEndpointRegistration) RegisterEndpoint(server *grpc1.Server) interface{} {
 	endpoint := RegisterGreeterServerDI(server)
+	return endpoint
+}
+
+// RegisterEndpoint registers a DI server
+func (s *GreeterEndpointRegistrationV2) RegisterEndpoint(server *grpc1.Server) interface{} {
+	endpoint := RegisterGreeterServerDIV2(server)
+	return endpoint
+}
+
+// RegisterEndpoint registers a DI server
+func (s *GreeterEndpointRegistrationV2) RegisterEndpointV2(server *grpc1.Server) interface{} {
+	endpoint := RegisterGreeterServerDIV2(server)
 	return endpoint
 }
 
@@ -133,6 +165,11 @@ func AddTransientIGreeterServiceByFunc(builder *sarulabsdi.Builder, implType ref
 	sarulabsdi.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIGreeterService)
 }
 
+// AddScopedIGreeterServer adds a type that implements IGreeterServer
+func AddScopedIGreeterServer(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIGreeterServer)
+}
+
 // AddScopedIGreeterService adds a type that implements IGreeterService
 func AddScopedIGreeterService(builder *sarulabsdi.Builder, implType reflect.Type) {
 	sarulabsdi.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIGreeterService)
@@ -153,9 +190,19 @@ func GetGreeterServiceFromContainer(ctn sarulabsdi.Container) IGreeterService {
 	return ctn.GetByType(ReflectTypeIGreeterService).(IGreeterService)
 }
 
+// GetGreeterServerFromContainer fetches the downstream di.Request scoped service
+func GetGreeterServerFromContainer(ctn sarulabsdi.Container) IGreeterServer {
+	return ctn.GetByType(ReflectTypeIGreeterServer).(IGreeterServer)
+}
+
 // GetIGreeterServiceFromContainer fetches the downstream di.Request scoped service
 func GetIGreeterServiceFromContainer(ctn sarulabsdi.Container) IGreeterService {
 	return ctn.GetByType(ReflectTypeIGreeterService).(IGreeterService)
+}
+
+// GetIGreeterServerFromContainer fetches the downstream di.Request scoped service
+func GetIGreeterServerFromContainer(ctn sarulabsdi.Container) IGreeterServer {
+	return ctn.GetByType(ReflectTypeIGreeterServer).(IGreeterServer)
 }
 
 // SafeGetIGreeterServiceFromContainer fetches the downstream di.Request scoped service
@@ -167,8 +214,22 @@ func SafeGetIGreeterServiceFromContainer(ctn sarulabsdi.Container) (IGreeterServ
 	return obj.(IGreeterService), nil
 }
 
+// SafeGetIGreeterServerFromContainer fetches the downstream di.Request scoped service
+func SafeGetIGreeterServerFromContainer(ctn sarulabsdi.Container) (IGreeterServer, error) {
+	obj, err := ctn.SafeGetByType(ReflectTypeIGreeterServer)
+	if err != nil {
+		return nil, err
+	}
+	return obj.(IGreeterServer), nil
+}
+
 // Impl for Greeter server instances
 type greeterServer struct {
+	UnimplementedGreeterServerEx
+}
+
+// Impl for Greeter server instances
+type greeterServerV2 struct {
 	UnimplementedGreeterServerEx
 }
 
@@ -180,11 +241,26 @@ func RegisterGreeterServerDI(s grpc1.ServiceRegistrar) interface{} {
 	return server
 }
 
+// RegisterGreeterServerDIV2 ...
+func RegisterGreeterServerDIV2(s grpc1.ServiceRegistrar) interface{} {
+	// Register the server
+	var server = &greeterServerV2{}
+	RegisterGreeterServer(s, server)
+	return server
+}
+
 // SayHello...
 func (s *greeterServer) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error) {
 	requestContainer := dicontext.GetRequestContainer(ctx)
 	downstreamService := GetGreeterServiceFromContainer(requestContainer)
 	return downstreamService.SayHello(request)
+}
+
+// SayHello...
+func (s *greeterServerV2) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply, error) {
+	requestContainer := dicontext.GetRequestContainer(ctx)
+	downstreamService := GetGreeterServerFromContainer(requestContainer)
+	return downstreamService.SayHello(ctx, request)
 }
 
 // FullMethodNames for Greeter
@@ -197,6 +273,10 @@ const (
 type Greeter2EndpointRegistration struct {
 }
 
+// Greeter2EndpointRegistration defines the grpc server endpoint registration
+type Greeter2EndpointRegistrationV2 struct {
+}
+
 // TypeGreeter2EndpointRegistration reflect type
 var TypeGreeter2EndpointRegistration = sarulabsdi.GetInterfaceReflectType((*Greeter2EndpointRegistration)(nil))
 
@@ -206,8 +286,19 @@ func AddGreeter2EndpointRegistration(builder *sarulabsdi.Builder, implType refle
 	AddScopedIGreeter2Service(builder, implType)
 }
 
+// AddGreeter2EndpointRegistration adds a type that implements IServiceEndpointRegistration
+func AddGreeter2EndpointRegistrationV2(builder *sarulabsdi.Builder, implType reflect.Type) {
+	grpc.AddSingletonIServiceEndpointRegistration(builder, reflect.TypeOf(&Greeter2EndpointRegistrationV2{}))
+	AddScopedIGreeter2Server(builder, implType)
+}
+
 // GetName returns the name of the service
 func (s *Greeter2EndpointRegistration) GetName() string {
+	return "Greeter2"
+}
+
+// GetName returns the name of the service
+func (s *Greeter2EndpointRegistrationV2) GetName() string {
 	return "Greeter2"
 }
 
@@ -216,9 +307,26 @@ func (s *Greeter2EndpointRegistration) GetNewClient(cc grpc1.ClientConnInterface
 	return NewGreeter2Client(cc)
 }
 
+// GetNewClient returns a new instance of a grpc client
+func (s *Greeter2EndpointRegistrationV2) GetNewClient(cc grpc1.ClientConnInterface) interface{} {
+	return NewGreeter2Client(cc)
+}
+
 // RegisterEndpoint registers a DI server
 func (s *Greeter2EndpointRegistration) RegisterEndpoint(server *grpc1.Server) interface{} {
 	endpoint := RegisterGreeter2ServerDI(server)
+	return endpoint
+}
+
+// RegisterEndpoint registers a DI server
+func (s *Greeter2EndpointRegistrationV2) RegisterEndpoint(server *grpc1.Server) interface{} {
+	endpoint := RegisterGreeter2ServerDIV2(server)
+	return endpoint
+}
+
+// RegisterEndpoint registers a DI server
+func (s *Greeter2EndpointRegistrationV2) RegisterEndpointV2(server *grpc1.Server) interface{} {
+	endpoint := RegisterGreeter2ServerDIV2(server)
 	return endpoint
 }
 
@@ -300,6 +408,11 @@ func AddTransientIGreeter2ServiceByFunc(builder *sarulabsdi.Builder, implType re
 	sarulabsdi.AddTransientWithImplementedTypesByFunc(builder, implType, build, ReflectTypeIGreeter2Service)
 }
 
+// AddScopedIGreeter2Server adds a type that implements IGreeter2Server
+func AddScopedIGreeter2Server(builder *sarulabsdi.Builder, implType reflect.Type) {
+	sarulabsdi.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIGreeter2Server)
+}
+
 // AddScopedIGreeter2Service adds a type that implements IGreeter2Service
 func AddScopedIGreeter2Service(builder *sarulabsdi.Builder, implType reflect.Type) {
 	sarulabsdi.AddScopedWithImplementedTypes(builder, implType, ReflectTypeIGreeter2Service)
@@ -320,9 +433,19 @@ func GetGreeter2ServiceFromContainer(ctn sarulabsdi.Container) IGreeter2Service 
 	return ctn.GetByType(ReflectTypeIGreeter2Service).(IGreeter2Service)
 }
 
+// GetGreeter2ServerFromContainer fetches the downstream di.Request scoped service
+func GetGreeter2ServerFromContainer(ctn sarulabsdi.Container) IGreeter2Server {
+	return ctn.GetByType(ReflectTypeIGreeter2Server).(IGreeter2Server)
+}
+
 // GetIGreeter2ServiceFromContainer fetches the downstream di.Request scoped service
 func GetIGreeter2ServiceFromContainer(ctn sarulabsdi.Container) IGreeter2Service {
 	return ctn.GetByType(ReflectTypeIGreeter2Service).(IGreeter2Service)
+}
+
+// GetIGreeter2ServerFromContainer fetches the downstream di.Request scoped service
+func GetIGreeter2ServerFromContainer(ctn sarulabsdi.Container) IGreeter2Server {
+	return ctn.GetByType(ReflectTypeIGreeter2Server).(IGreeter2Server)
 }
 
 // SafeGetIGreeter2ServiceFromContainer fetches the downstream di.Request scoped service
@@ -334,8 +457,22 @@ func SafeGetIGreeter2ServiceFromContainer(ctn sarulabsdi.Container) (IGreeter2Se
 	return obj.(IGreeter2Service), nil
 }
 
+// SafeGetIGreeter2ServerFromContainer fetches the downstream di.Request scoped service
+func SafeGetIGreeter2ServerFromContainer(ctn sarulabsdi.Container) (IGreeter2Server, error) {
+	obj, err := ctn.SafeGetByType(ReflectTypeIGreeter2Server)
+	if err != nil {
+		return nil, err
+	}
+	return obj.(IGreeter2Server), nil
+}
+
 // Impl for Greeter2 server instances
 type greeter2Server struct {
+	UnimplementedGreeter2ServerEx
+}
+
+// Impl for Greeter2 server instances
+type greeter2ServerV2 struct {
 	UnimplementedGreeter2ServerEx
 }
 
@@ -347,11 +484,26 @@ func RegisterGreeter2ServerDI(s grpc1.ServiceRegistrar) interface{} {
 	return server
 }
 
+// RegisterGreeter2ServerDIV2 ...
+func RegisterGreeter2ServerDIV2(s grpc1.ServiceRegistrar) interface{} {
+	// Register the server
+	var server = &greeter2ServerV2{}
+	RegisterGreeter2Server(s, server)
+	return server
+}
+
 // SayHello...
 func (s *greeter2Server) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply2, error) {
 	requestContainer := dicontext.GetRequestContainer(ctx)
 	downstreamService := GetGreeter2ServiceFromContainer(requestContainer)
 	return downstreamService.SayHello(request)
+}
+
+// SayHello...
+func (s *greeter2ServerV2) SayHello(ctx context.Context, request *HelloRequest) (*HelloReply2, error) {
+	requestContainer := dicontext.GetRequestContainer(ctx)
+	downstreamService := GetGreeter2ServerFromContainer(requestContainer)
+	return downstreamService.SayHello(ctx, request)
 }
 
 // FullMethodNames for Greeter2
