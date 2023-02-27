@@ -20,7 +20,6 @@ import (
 	contracts_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	contracts_grpc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/grpc"
 	contracts_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
-	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 
 	contracts_backgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
@@ -168,14 +167,9 @@ func ensureLogger() {
 	once.Do(func() {
 		_setLogger = true
 		appEnv := os.Getenv("APPLICATION_ENVIRONMENT")
-
-		if utils.IsEmptyOrNil(appEnv) {
+		appEnv = strings.ToLower(appEnv)
+		if appEnv == "production" {
 			grpclog.SetLoggerV2(NewGRPCLogger())
-		} else {
-			appEnv = strings.ToLower(appEnv)
-			if appEnv != "test" {
-				grpclog.SetLoggerV2(NewGRPCLogger())
-			}
 		}
 	})
 
