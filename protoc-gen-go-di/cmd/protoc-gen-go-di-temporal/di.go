@@ -112,7 +112,7 @@ func newMethodGenContext(uniqueRunId string, protogenMethod *protogen.Method, ge
 	return ctx
 }
 
-// generateFile generates a _gtm.pb.go file containing gRPC service definitions.
+// generateFile generates a _di.pb.go file containing gRPC service definitions.
 func generateFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
 	if len(file.Services) == 0 {
 		return nil

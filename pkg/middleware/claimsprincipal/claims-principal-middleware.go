@@ -6,6 +6,7 @@ import (
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
+	services_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/gogo/status"
@@ -15,6 +16,7 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
+// Validate ...
 func Validate(logger *zerolog.Logger, claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal claimsprincipalContracts.IClaimsPrincipal) bool {
 	if !validateAND(claimsConfig, claimsPrincipal) {
 		logger.Debug().Msg("AND validation failed")
@@ -84,7 +86,33 @@ func FinalAuthVerificationMiddleware(container di.Container) grpc.UnaryServerInt
 
 // FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption evaluates the claims principal
 func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig, enableZeroTrust bool) grpc.UnaryServerInterceptor {
+	log.Info().Interface("entryPointConfig", grpcEntrypointClaimsMap).Send()
+	for i := 0; i < 10; i++ {
+		log.Warn().Str("middleware", "FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption").Msg("[FATAL] convert to using FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOptionV2")
+	}
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		// major flaw where we need to let everyone in and force them to to to V2
+		return handler(ctx, req)
+	}
+}
 
+// FinalAuthVerificationMiddlewareUsingClaimsMap evaluates the claims principal
+func FinalAuthVerificationMiddlewareUsingClaimsMap(grpcEntrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
+	return FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap, false)
+}
+
+// FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrust evaluates the claims principal
+func FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrust(grpcEntrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
+	return FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap, true)
+}
+
+// FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrustV2 evaluates the claims principal
+func FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrustV2(grpcEntrypointClaimsMap map[string]*services_claimsprincipal.EntryPointConfig) grpc.UnaryServerInterceptor {
+	return FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOptionV2(grpcEntrypointClaimsMap, true)
+}
+
+// FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOptionV2 evaluates the claims principal
+func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOptionV2(grpcEntrypointClaimsMap map[string]*services_claimsprincipal.EntryPointConfig, enableZeroTrust bool) grpc.UnaryServerInterceptor {
 	log.Info().Interface("entryPointConfig", grpcEntrypointClaimsMap).Send()
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
@@ -99,36 +127,30 @@ func FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypoint
 
 		if requestContainer != nil {
 			claimsPrincipal := claimsprincipalContracts.GetIClaimsPrincipalFromContainer(requestContainer)
-
 			permissionDeniedFunc := func() (interface{}, error) {
 				subLogger.Debug().Msg("Permission denied")
 				return nil, status.Errorf(codes.PermissionDenied, "permission denied")
 			}
 			elem, ok := grpcEntrypointClaimsMap[info.FullMethod]
+			if !ok {
+				if enableZeroTrust {
+					subLogger.Debug().Msg("FullMethod not found in entrypoint claims map")
+					return permissionDeniedFunc()
+				}
+			}
 			if !ok && enableZeroTrust {
 				subLogger.Debug().Msg("FullMethod not found in entrypoint claims map")
 				return permissionDeniedFunc()
 			}
 			if !ok || elem == nil {
-				// break out of if
-				goto end
+				return handler(ctx, req)
 			}
-			if !Validate(&subLogger, elem.ClaimsConfig, claimsPrincipal) {
+			valid := elem.ClaimsAST.Validate(claimsPrincipal)
+			if !valid {
 				subLogger.Debug().Msg("ClaimsConfig validation failed")
 				return permissionDeniedFunc()
 			}
-		end:
 		}
 		return handler(ctx, req)
 	}
-}
-
-// FinalAuthVerificationMiddlewareUsingClaimsMap evaluates the claims principal
-func FinalAuthVerificationMiddlewareUsingClaimsMap(grpcEntrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
-	return FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap, false)
-}
-
-// FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrust evaluates the claims principal
-func FinalAuthVerificationMiddlewareUsingClaimsMapWithZeroTrust(grpcEntrypointClaimsMap map[string]*middleware_oidc.EntryPointConfig) grpc.UnaryServerInterceptor {
-	return FinalAuthVerificationMiddlewareUsingClaimsMapWithTrustOption(grpcEntrypointClaimsMap, true)
 }
