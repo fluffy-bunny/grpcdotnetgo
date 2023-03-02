@@ -1,11 +1,11 @@
-package grpc_auth
+package claimsprincipal
 
 import (
 	"fmt"
 	"strings"
 
 	contracts_auth "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/auth"
-	core_contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	"github.com/rs/zerolog/log"
 )
 
@@ -14,26 +14,26 @@ const (
 	or  contracts_auth.Operand = 2
 )
 
-// Claims is a light-weight AST that allows for logical collections of claims to
+// ClaimsAST is a light-weight AST that allows for logical collections of claims to
 // be defined and tested by GTM based services. Grouping is implicit in the tree's structure
 // such that the root arrays form grouped AND operations, and branches are processed by
 // their placement in the parent. For example:
 // ```
 //
-//	Claims{
+//	ClaimsAST{
 //		Values: []string{"A", "B"},
-//		Or: []Claims{
+//		Or: []ClaimsAST{
 //			{Values: []string{"C", "D"}},
 //			{
 //				Values: []string{"E", "F"},
-//				And: []Claims{
+//				And: []ClaimsAST{
 //					{Values: []string{"G", "H"}},
 //				},
 //			},
 //		},
-//		Not: []Claims{
+//		Not: []ClaimsAST{
 //			{
-//				Or: []Claims{
+//				Or: []ClaimsAST{
 //					{Values: []string{"I", "J"}},
 //				},
 //			},
@@ -44,8 +44,8 @@ const (
 //
 // Is the equivalent to:
 // if A && B && ((C || D) || (E || F || (G && H))) && !(I || J)
-type Claims struct {
-	Values []core_contracts_claimsprincipal.Claim
+type ClaimsAST struct {
+	Claims []contracts_claimsprincipal.Claim
 
 	And []contracts_auth.IClaimsValidator
 	Or  []contracts_auth.IClaimsValidator
@@ -53,22 +53,22 @@ type Claims struct {
 }
 
 // Validate the assumptions made in a Claims object
-func (p *Claims) Validate(claimsPrincipal core_contracts_claimsprincipal.IClaimsPrincipal) bool {
+func (p *ClaimsAST) Validate(claimsPrincipal contracts_claimsprincipal.IClaimsPrincipal) bool {
 	// Root is processed as an AND operation
 	return p.validate(claimsPrincipal, and)
 }
 
-func (p *Claims) ValidateWithOperand(claimsPrincipal core_contracts_claimsprincipal.IClaimsPrincipal, op contracts_auth.Operand) bool {
+func (p *ClaimsAST) ValidateWithOperand(claimsPrincipal contracts_claimsprincipal.IClaimsPrincipal, op contracts_auth.Operand) bool {
 	return p.validate(claimsPrincipal, op)
 }
 
-func (p *Claims) validate(claimsPrincipal core_contracts_claimsprincipal.IClaimsPrincipal, op contracts_auth.Operand) bool {
+func (p *ClaimsAST) validate(claimsPrincipal contracts_claimsprincipal.IClaimsPrincipal, op contracts_auth.Operand) bool {
 	switch op {
 	case and:
 		// Return false on the first false, true if everything is true
 
 		// Values
-		for _, val := range p.Values {
+		for _, val := range p.Claims {
 			claimsPrincipal.HasClaim(val)
 			if !claimsPrincipal.HasClaim(val) {
 				return false
@@ -102,7 +102,7 @@ func (p *Claims) validate(claimsPrincipal core_contracts_claimsprincipal.IClaims
 		// Return true on the first true, false if everything is false
 
 		// Values
-		for _, val := range p.Values {
+		for _, val := range p.Claims {
 			if claimsPrincipal.HasClaim(val) {
 				return true
 			}
@@ -137,17 +137,17 @@ func (p *Claims) validate(claimsPrincipal core_contracts_claimsprincipal.IClaims
 	return false
 }
 
-func (p *Claims) String() string {
+func (p *ClaimsAST) String() string {
 	return p.string(and)
 }
-func (p *Claims) StringWithOperand(op contracts_auth.Operand) string {
+func (p *ClaimsAST) StringWithOperand(op contracts_auth.Operand) string {
 	return p.string(op)
 }
-func (p *Claims) string(op contracts_auth.Operand) string {
+func (p *ClaimsAST) string(op contracts_auth.Operand) string {
 	var groups []string
 
 	// Values
-	for _, claim := range p.Values {
+	for _, claim := range p.Claims {
 		val := fmt.Sprintf("%s|%s", claim.Type, claim.Value)
 		groups = append(groups, val)
 	}
