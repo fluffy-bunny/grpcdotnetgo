@@ -26,7 +26,7 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.4.4
 	github.com/jinzhu/copier v0.3.5
 	github.com/jnewmano/grpc-json-proxy v0.0.6
-	github.com/labstack/echo-contrib v0.14.0
+	github.com/labstack/echo-contrib v0.14.1
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/labstack/gommon v0.4.0
 	github.com/lestrrat-go/jwx v1.2.25
