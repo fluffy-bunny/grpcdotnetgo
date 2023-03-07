@@ -22,9 +22,9 @@ func (s *EntryPointClaimsBuilderV2) WithGrpcEntrypointPermissionsClaimsMapOpen(f
 	return s
 }
 
-func (s *EntryPointClaimsBuilderV2) WithGrpcEntrypointClams(fullMethodName string, claims ...contracts_claimsprincipal.Claim) *EntryPointClaimsBuilderV2 {
+func (s *EntryPointClaimsBuilderV2) WithGrpcEntrypointClams(fullMethodName string, claims ...contracts_claimsprincipal.ClaimFact) *EntryPointClaimsBuilderV2 {
 	ast := s.GetClaimsAST(fullMethodName)
-	ast.Claims = append(ast.Claims, claims...)
+	ast.ClaimFacts = append(ast.ClaimFacts, claims...)
 	return s
 }
 

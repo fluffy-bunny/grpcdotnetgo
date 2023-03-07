@@ -7,6 +7,7 @@ import (
 	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestClaimsEmpty(t *testing.T) {
@@ -20,14 +21,20 @@ func TestClaimsEmpty(t *testing.T) {
 func TestClaimsRootOnly(t *testing.T) {
 	// (A && B)
 	perms := ClaimsAST{
-		Claims: []contracts_claimsprincipal.Claim{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
 			{
-				Type:  "permissions",
-				Value: "A",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "A",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 			{
-				Type:  "permissions",
-				Value: "B",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "B",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 		},
 	}
@@ -37,19 +44,58 @@ func TestClaimsRootOnly(t *testing.T) {
 	assert.False(t, perms.Validate(NewmockClaimsPrincipalToken("B", "C", "D")))
 	assert.False(t, perms.Validate(NewmockClaimsPrincipalToken("A", "C", "D")))
 }
+func TestClaimsRootOnlyTypeOnly(t *testing.T) {
+	// (A && B)
+	perms := ClaimsAST{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
+			{
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "secret",
+				},
+				Directive: contracts_claimsprincipal.ClaimType,
+			},
+		},
+	}
 
+	require.Equal(t, "(permissions|secret)", perms.String())
+	require.True(t, perms.Validate(NewmockClaimsPrincipalToken("A", "B", "C", "D")))
+}
+func TestClaimsRootOnlyTypeOnlyFail(t *testing.T) {
+	// (A && B)
+	perms := ClaimsAST{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
+			{
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "secret",
+					Value: "password",
+				},
+				Directive: contracts_claimsprincipal.ClaimType,
+			},
+		},
+	}
+
+	require.Equal(t, "(secret|password)", perms.String())
+	require.False(t, perms.Validate(NewmockClaimsPrincipalToken("A", "B", "C", "D")))
+}
 func TestClaimsBranchAnd(t *testing.T) {
 	// ((A && B))
 	var ands []contracts_auth.IClaimsValidator
 	ands = append(ands, &ClaimsAST{
-		Claims: []contracts_claimsprincipal.Claim{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
 			{
-				Type:  "permissions",
-				Value: "A",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "A",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 			{
-				Type:  "permissions",
-				Value: "B",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "B",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 		},
 	})
@@ -69,14 +115,20 @@ func TestClaimsBranchOr(t *testing.T) {
 	// ((A || B))
 	var ors []contracts_auth.IClaimsValidator
 	ors = append(ors, &ClaimsAST{
-		Claims: []contracts_claimsprincipal.Claim{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
 			{
-				Type:  "permissions",
-				Value: "A",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "A",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 			{
-				Type:  "permissions",
-				Value: "B",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "B",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 		},
 	})
@@ -84,27 +136,53 @@ func TestClaimsBranchOr(t *testing.T) {
 		Or: ors,
 	}
 
-	assert.Equal(t, "((permissions|A || permissions|B))", perms.String())
-	assert.True(t, perms.Validate(NewmockClaimsPrincipalToken("A", "B", "C", "D")))
-	assert.True(t, perms.Validate(NewmockClaimsPrincipalToken("B", "C", "D")))
-	assert.True(t, perms.Validate(NewmockClaimsPrincipalToken("A", "C", "D")))
-	assert.False(t, perms.Validate(NewmockClaimsPrincipalToken("X", "C", "D")))
-	assert.False(t, perms.Validate(NewmockClaimsPrincipalToken("C", "D")))
+	require.Equal(t, "((permissions|A || permissions|B))", perms.String())
+	require.True(t, perms.Validate(NewmockClaimsPrincipalToken("A", "B", "C", "D")))
+	require.True(t, perms.Validate(NewmockClaimsPrincipalToken("B", "C", "D")))
+	require.True(t, perms.Validate(NewmockClaimsPrincipalToken("A", "C", "D")))
+	require.False(t, perms.Validate(NewmockClaimsPrincipalToken("X", "C", "D")))
+	require.False(t, perms.Validate(NewmockClaimsPrincipalToken("C", "D")))
 }
+func TestClaimsBranchOrTypeOnly(t *testing.T) {
+	// ((A || B))
+	var ors []contracts_auth.IClaimsValidator
+	ors = append(ors, &ClaimsAST{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
+			{
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "secret",
+				},
+				Directive: contracts_claimsprincipal.ClaimType,
+			},
+		},
+	})
+	perms := ClaimsAST{
+		Or: ors,
+	}
 
+	require.Equal(t, "((permissions|secret))", perms.String())
+	require.True(t, perms.Validate(NewmockClaimsPrincipalToken("A", "B", "C", "D")))
+}
 func TestClaimsBranchNot(t *testing.T) {
 	// Not inherits the operand from it's parent, and in this case
 	// (!(A && B))
 	var nots []contracts_auth.IClaimsValidator
 	nots = append(nots, &ClaimsAST{
-		Claims: []contracts_claimsprincipal.Claim{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
 			{
-				Type:  "permissions",
-				Value: "A",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "A",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 			{
-				Type:  "permissions",
-				Value: "B",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "B",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 		},
 	})
@@ -124,14 +202,20 @@ func TestClaimsBranchNotNested(t *testing.T) {
 	// (!((A || B)))
 	var ors []contracts_auth.IClaimsValidator
 	ors = append(ors, &ClaimsAST{
-		Claims: []contracts_claimsprincipal.Claim{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
 			{
-				Type:  "permissions",
-				Value: "A",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "A",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 			{
-				Type:  "permissions",
-				Value: "B",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "B",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 		},
 	})
@@ -156,39 +240,57 @@ func TestClaimsDocSample(t *testing.T) {
 	// (A && B && (C || D) && (E || F || (G && H)) && !((I && J)))
 	var ands1 []contracts_auth.IClaimsValidator
 	ands1 = append(ands1, &ClaimsAST{
-		Claims: []contracts_claimsprincipal.Claim{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
 			{
-				Type:  "permissions",
-				Value: "G",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "G",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 			{
-				Type:  "permissions",
-				Value: "H",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "H",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 		},
 	})
 	var ors []contracts_auth.IClaimsValidator
 	ors = append(ors, &ClaimsAST{
-		Claims: []contracts_claimsprincipal.Claim{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
 			{
-				Type:  "permissions",
-				Value: "C",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "C",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 			{
-				Type:  "permissions",
-				Value: "D",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "D",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 		},
 	})
 	ors = append(ors, &ClaimsAST{
-		Claims: []contracts_claimsprincipal.Claim{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
 			{
-				Type:  "permissions",
-				Value: "E",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "E",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 			{
-				Type:  "permissions",
-				Value: "F",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "F",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 		},
 		And: ands1,
@@ -196,14 +298,20 @@ func TestClaimsDocSample(t *testing.T) {
 
 	var ands2 []contracts_auth.IClaimsValidator
 	ands2 = append(ands2, &ClaimsAST{
-		Claims: []contracts_claimsprincipal.Claim{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
 			{
-				Type:  "permissions",
-				Value: "I",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "I",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 			{
-				Type:  "permissions",
-				Value: "J",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "J",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 		},
 	})
@@ -212,14 +320,20 @@ func TestClaimsDocSample(t *testing.T) {
 		And: ands2,
 	})
 	perms := ClaimsAST{
-		Claims: []contracts_claimsprincipal.Claim{
+		ClaimFacts: []contracts_claimsprincipal.ClaimFact{
 			{
-				Type:  "permissions",
-				Value: "A",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "A",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 			{
-				Type:  "permissions",
-				Value: "B",
+				Claim: contracts_claimsprincipal.Claim{
+					Type:  "permissions",
+					Value: "B",
+				},
+				Directive: contracts_claimsprincipal.ClaimTypeAndValue,
 			},
 		},
 		Or:  ors,

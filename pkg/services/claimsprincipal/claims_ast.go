@@ -45,7 +45,7 @@ const (
 // Is the equivalent to:
 // if A && B && ((C || D) || (E || F || (G && H))) && !(I || J)
 type ClaimsAST struct {
-	Claims []contracts_claimsprincipal.Claim
+	ClaimFacts []contracts_claimsprincipal.ClaimFact
 
 	And []contracts_auth.IClaimsValidator
 	Or  []contracts_auth.IClaimsValidator
@@ -58,6 +58,7 @@ func (p *ClaimsAST) Validate(claimsPrincipal contracts_claimsprincipal.IClaimsPr
 	return p.validate(claimsPrincipal, and)
 }
 
+// ValidateWithOperand ...
 func (p *ClaimsAST) ValidateWithOperand(claimsPrincipal contracts_claimsprincipal.IClaimsPrincipal, op contracts_auth.Operand) bool {
 	return p.validate(claimsPrincipal, op)
 }
@@ -68,10 +69,16 @@ func (p *ClaimsAST) validate(claimsPrincipal contracts_claimsprincipal.IClaimsPr
 		// Return false on the first false, true if everything is true
 
 		// Values
-		for _, val := range p.Claims {
-			claimsPrincipal.HasClaim(val)
-			if !claimsPrincipal.HasClaim(val) {
-				return false
+		for _, val := range p.ClaimFacts {
+			switch val.Directive {
+			case contracts_claimsprincipal.ClaimTypeAndValue:
+				if !claimsPrincipal.HasClaim(val.Claim) {
+					return false
+				}
+			case contracts_claimsprincipal.ClaimType:
+				if !claimsPrincipal.HasClaimType(val.Claim.Type) {
+					return false
+				}
 			}
 		}
 
@@ -102,9 +109,16 @@ func (p *ClaimsAST) validate(claimsPrincipal contracts_claimsprincipal.IClaimsPr
 		// Return true on the first true, false if everything is false
 
 		// Values
-		for _, val := range p.Claims {
-			if claimsPrincipal.HasClaim(val) {
-				return true
+		for _, val := range p.ClaimFacts {
+			switch val.Directive {
+			case contracts_claimsprincipal.ClaimTypeAndValue:
+				if claimsPrincipal.HasClaim(val.Claim) {
+					return true
+				}
+			case contracts_claimsprincipal.ClaimType:
+				if claimsPrincipal.HasClaimType(val.Claim.Type) {
+					return true
+				}
 			}
 		}
 
@@ -137,18 +151,21 @@ func (p *ClaimsAST) validate(claimsPrincipal contracts_claimsprincipal.IClaimsPr
 	return false
 }
 
+// String ...
 func (p *ClaimsAST) String() string {
-	return p.string(and)
+	return p._string(and)
 }
+
+// StringWithOperand ...
 func (p *ClaimsAST) StringWithOperand(op contracts_auth.Operand) string {
-	return p.string(op)
+	return p._string(op)
 }
-func (p *ClaimsAST) string(op contracts_auth.Operand) string {
+func (p *ClaimsAST) _string(op contracts_auth.Operand) string {
 	var groups []string
 
 	// Values
-	for _, claim := range p.Claims {
-		val := fmt.Sprintf("%s|%s", claim.Type, claim.Value)
+	for _, claimFacts := range p.ClaimFacts {
+		val := fmt.Sprintf("%s|%s", claimFacts.Claim.Type, claimFacts.Claim.Value)
 		groups = append(groups, val)
 	}
 
