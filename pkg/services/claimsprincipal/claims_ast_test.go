@@ -1,6 +1,7 @@
 package claimsprincipal
 
 import (
+	"fmt"
 	"testing"
 
 	contracts_auth "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/auth"
@@ -60,6 +61,96 @@ func TestClaimsRootOnlyTypeOnly(t *testing.T) {
 
 	require.Equal(t, "(permissions|secret)", perms.String())
 	require.True(t, perms.Validate(NewmockClaimsPrincipalToken("A", "B", "C", "D")))
+}
+func TestClaimsAndOrGroup(t *testing.T) {
+	// Complex
+	// if you have the All claim, we are done
+	// OR you MUST have the org claim (don't care about the value) AND you must have the permissions claim to match your org.
+	perms := ClaimsAST{
+
+		Or: []contracts_auth.IClaimsValidator{
+			&ClaimsAST{
+				ClaimFacts: []contracts_claimsprincipal.ClaimFact{
+					{
+						Claim: contracts_claimsprincipal.Claim{
+							Type:  "all",
+							Value: "true",
+						},
+						Directive: contracts_claimsprincipal.ClaimType,
+					},
+				},
+				And: []contracts_auth.IClaimsValidator{
+					&ClaimsAST{
+						ClaimFacts: []contracts_claimsprincipal.ClaimFact{
+							{
+								Claim: contracts_claimsprincipal.Claim{
+									Type:  "org",
+									Value: "secret",
+								},
+								Directive: contracts_claimsprincipal.ClaimType,
+							},
+						},
+						And: []contracts_auth.IClaimsValidator{
+							&ClaimsAST{
+
+								Or: []contracts_auth.IClaimsValidator{
+									&ClaimsAST{
+										ClaimFacts: []contracts_claimsprincipal.ClaimFact{
+											{
+												Claim: contracts_claimsprincipal.Claim{
+													Type:  "permissions",
+													Value: "A",
+												},
+												Directive: contracts_claimsprincipal.ClaimTypeAndValue,
+											},
+											{
+												Claim: contracts_claimsprincipal.Claim{
+													Type:  "permissions",
+													Value: "B",
+												},
+												Directive: contracts_claimsprincipal.ClaimTypeAndValue,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	require.Equal(t, "((all|true || (org|secret && ((permissions|A || permissions|B)))))", perms.String())
+
+	fmt.Println(perms.String())
+	cp := NewmockClaimsPrincipalToken("secret")
+	cp.AddClaim(contracts_claimsprincipal.Claim{
+		Type:  "all",
+		Value: "true",
+	})
+	require.True(t, perms.Validate(cp))
+
+	cp = NewmockClaimsPrincipalToken("A")
+	cp.AddClaim(contracts_claimsprincipal.Claim{
+		Type:  "org",
+		Value: "org1234",
+	})
+	require.True(t, perms.Validate(cp))
+
+	cp = NewmockClaimsPrincipalToken("B")
+	cp.AddClaim(contracts_claimsprincipal.Claim{
+		Type:  "org",
+		Value: "org1234",
+	})
+	require.True(t, perms.Validate(cp))
+
+	cp = NewmockClaimsPrincipalToken("C")
+	cp.AddClaim(contracts_claimsprincipal.Claim{
+		Type:  "org",
+		Value: "org1234",
+	})
+	require.False(t, perms.Validate(cp))
+
 }
 func TestClaimsRootOnlyTypeOnlyFail(t *testing.T) {
 	// (A && B)
