@@ -46,7 +46,7 @@ require (
 	github.com/ziflex/lecho v1.2.0
 	golang.org/x/oauth2 v0.6.0
 	google.golang.org/grpc v1.53.0
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.29.0
 	gopkg.in/DataDog/dd-trace-go.v1 v1.48.0
 	gopkg.in/square/go-jose.v2 v2.6.0
 
