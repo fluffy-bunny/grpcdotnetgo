@@ -19,7 +19,7 @@ import (
 // is compatible with the grpc package it is being compiled against.
 const _ = pkg.SupportPackageIsVersion7
 
-func setNewField_nneVfs5cvSvBxdtZV9YSAZOgXFFItTVN(dst interface{}, field string) {
+func setNewField_jKBwix0ewkpnWXO25SaIlpUQwvyQdvAu(dst interface{}, field string) {
 	v := reflect.ValueOf(dst).Elem().FieldByName(field)
 	if v.IsValid() {
 		v.Set(reflect.New(v.Type().Elem()))
@@ -553,12 +553,12 @@ func Get_helloworldFullEmptyResponseFromFullMethodName(fullMethodName string) fu
 var helloworldFullMethodNameWithErrorResponseMap = map[string]func() interface{}{
 	"/example.internal.grpcContracts.helloworld.Greeter/SayHello": func() interface{} {
 		ret := &HelloReply{}
-		setNewField_nneVfs5cvSvBxdtZV9YSAZOgXFFItTVN(ret, "Error")
+		setNewField_jKBwix0ewkpnWXO25SaIlpUQwvyQdvAu(ret, "Error")
 		return ret
 	},
 	"/example.internal.grpcContracts.helloworld.Greeter2/SayHello": func() interface{} {
 		ret := &HelloReply2{}
-		setNewField_nneVfs5cvSvBxdtZV9YSAZOgXFFItTVN(ret, "Error")
+		setNewField_jKBwix0ewkpnWXO25SaIlpUQwvyQdvAu(ret, "Error")
 		return ret
 	},
 }
