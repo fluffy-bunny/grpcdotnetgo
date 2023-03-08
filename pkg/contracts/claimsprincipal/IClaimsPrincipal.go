@@ -19,10 +19,11 @@ type (
 		Type  string `json:"type" mapstructure:"TYPE"`
 		Value string `json:"value" mapstructure:"VALUE"`
 	}
-	// ClaimFact used for authorization
-	ClaimFact struct {
-		Claim     Claim
-		Directive ClaimFactDirective
+
+	// IClaimFact interface
+	IClaimFact interface {
+		HasClaim(claimsprincipal IClaimsPrincipal) bool
+		Expression() string
 	}
 	// IClaimsPrincipal interface
 	IClaimsPrincipal interface {

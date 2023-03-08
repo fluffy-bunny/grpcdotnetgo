@@ -1,11 +1,12 @@
 package claimsprincipal
 
 import (
-	"fmt"
 	"strings"
 
 	contracts_auth "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/auth"
+	contracts_claimfact "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimfact"
 	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+
 	"github.com/rs/zerolog/log"
 )
 
@@ -45,7 +46,7 @@ const (
 // Is the equivalent to:
 // if A && B && ((C || D) || (E || F || (G && H))) && !(I || J)
 type ClaimsAST struct {
-	ClaimFacts []contracts_claimsprincipal.ClaimFact
+	ClaimFacts []contracts_claimfact.IClaimFact
 
 	And []contracts_auth.IClaimsValidator
 	Or  []contracts_auth.IClaimsValidator
@@ -55,30 +56,23 @@ type ClaimsAST struct {
 // Validate the assumptions made in a Claims object
 func (p *ClaimsAST) Validate(claimsPrincipal contracts_claimsprincipal.IClaimsPrincipal) bool {
 	// Root is processed as an AND operation
-	return p.validate(claimsPrincipal, and)
+	return p._validate(claimsPrincipal, and)
 }
 
 // ValidateWithOperand ...
 func (p *ClaimsAST) ValidateWithOperand(claimsPrincipal contracts_claimsprincipal.IClaimsPrincipal, op contracts_auth.Operand) bool {
-	return p.validate(claimsPrincipal, op)
+	return p._validate(claimsPrincipal, op)
 }
 
-func (p *ClaimsAST) validate(claimsPrincipal contracts_claimsprincipal.IClaimsPrincipal, op contracts_auth.Operand) bool {
+func (p *ClaimsAST) _validate(claimsPrincipal contracts_claimsprincipal.IClaimsPrincipal, op contracts_auth.Operand) bool {
 	switch op {
 	case and:
 		// Return false on the first false, true if everything is true
 
 		// Values
 		for _, val := range p.ClaimFacts {
-			switch val.Directive {
-			case contracts_claimsprincipal.ClaimTypeAndValue:
-				if !claimsPrincipal.HasClaim(val.Claim) {
-					return false
-				}
-			case contracts_claimsprincipal.ClaimType:
-				if !claimsPrincipal.HasClaimType(val.Claim.Type) {
-					return false
-				}
+			if !val.HasClaim(claimsPrincipal) {
+				return false
 			}
 		}
 
@@ -110,15 +104,8 @@ func (p *ClaimsAST) validate(claimsPrincipal contracts_claimsprincipal.IClaimsPr
 
 		// Values
 		for _, val := range p.ClaimFacts {
-			switch val.Directive {
-			case contracts_claimsprincipal.ClaimTypeAndValue:
-				if claimsPrincipal.HasClaim(val.Claim) {
-					return true
-				}
-			case contracts_claimsprincipal.ClaimType:
-				if claimsPrincipal.HasClaimType(val.Claim.Type) {
-					return true
-				}
+			if val.HasClaim(claimsPrincipal) {
+				return true
 			}
 		}
 
@@ -165,7 +152,7 @@ func (p *ClaimsAST) _string(op contracts_auth.Operand) string {
 
 	// Values
 	for _, claimFacts := range p.ClaimFacts {
-		val := fmt.Sprintf("%s|%s", claimFacts.Claim.Type, claimFacts.Claim.Value)
+		val := claimFacts.Expression()
 		groups = append(groups, val)
 	}
 
