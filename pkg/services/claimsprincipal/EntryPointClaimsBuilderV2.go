@@ -1,7 +1,7 @@
 package claimsprincipal
 
 import (
-	contracts_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	contracts_claimfact "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimfact"
 )
 
 // EntryPointClaimsBuilderV2 struct
@@ -22,7 +22,8 @@ func (s *EntryPointClaimsBuilderV2) WithGrpcEntrypointPermissionsClaimsMapOpen(f
 	return s
 }
 
-func (s *EntryPointClaimsBuilderV2) WithGrpcEntrypointClams(fullMethodName string, claims ...contracts_claimsprincipal.ClaimFact) *EntryPointClaimsBuilderV2 {
+// WithGrpcEntrypointClams helper to add a single entrypoint config
+func (s *EntryPointClaimsBuilderV2) WithGrpcEntrypointClams(fullMethodName string, claims ...contracts_claimfact.IClaimFact) *EntryPointClaimsBuilderV2 {
 	ast := s.GetClaimsAST(fullMethodName)
 	ast.ClaimFacts = append(ast.ClaimFacts, claims...)
 	return s
