@@ -4,7 +4,9 @@ import (
 	"io"
 	"net/url"
 
-	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	contracts_core_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
+	services_claimfact "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimfact"
+
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/golang-jwt/jwt"
 	"github.com/sirupsen/logrus"
@@ -15,13 +17,13 @@ type (
 	ClaimFactDirective int64
 	// ClaimFact ...
 	ClaimFact struct {
-		Claim     claimsprincipalContracts.Claim
+		Claim     contracts_core_claimsprincipal.Claim
 		Directive ClaimFactDirective
 	}
 )
 
 // NewClaimFactTypeAndValueClaim ...
-func NewClaimFactTypeAndValueClaim(claim claimsprincipalContracts.Claim) ClaimFact {
+func NewClaimFactTypeAndValueClaim(claim contracts_core_claimsprincipal.Claim) ClaimFact {
 	return ClaimFact{
 		Claim:     claim,
 		Directive: ClaimTypeAndValue,
@@ -30,7 +32,7 @@ func NewClaimFactTypeAndValueClaim(claim claimsprincipalContracts.Claim) ClaimFa
 
 // NewClaimFactTypeAndValue ...
 func NewClaimFactTypeAndValue(claimType string, value string) ClaimFact {
-	return NewClaimFactTypeAndValueClaim(claimsprincipalContracts.Claim{
+	return NewClaimFactTypeAndValueClaim(contracts_core_claimsprincipal.Claim{
 		Type:  claimType,
 		Value: value,
 	})
@@ -39,7 +41,7 @@ func NewClaimFactTypeAndValue(claimType string, value string) ClaimFact {
 // NewClaimFactType ...
 func NewClaimFactType(claimType string) ClaimFact {
 	return ClaimFact{
-		Claim: claimsprincipalContracts.Claim{
+		Claim: contracts_core_claimsprincipal.Claim{
 			Type: claimType,
 		},
 		Directive: ClaimType,
@@ -55,8 +57,8 @@ const (
 
 // ClaimsConfig ...
 type ClaimsConfig struct {
-	OR    []*ClaimFact `mapstructure:"OR"`
-	AND   []*ClaimFact `mapstructure:"AND"`
+	OR    []*services_claimfact.ClaimFact `mapstructure:"OR"`
+	AND   []*services_claimfact.ClaimFact `mapstructure:"AND"`
 	Child *ClaimsConfig
 }
 
@@ -69,7 +71,7 @@ func (s *ClaimsConfig) GetChild() *ClaimsConfig {
 }
 
 // WithGrpcEntrypointPermissionsClaimFactsMapOR helper to add a single entrypoint config
-func (s *ClaimsConfig) WithGrpcEntrypointPermissionsClaimFactsMapOR(claimFacts ...*ClaimFact) *ClaimsConfig {
+func (s *ClaimsConfig) WithGrpcEntrypointPermissionsClaimFactsMapOR(claimFacts ...*services_claimfact.ClaimFact) *ClaimsConfig {
 	for _, claimFact := range claimFacts {
 		s.OR = append(s.OR, claimFact)
 	}
@@ -77,7 +79,7 @@ func (s *ClaimsConfig) WithGrpcEntrypointPermissionsClaimFactsMapOR(claimFacts .
 }
 
 // WithGrpcEntrypointPermissionsClaimFactsMapAND helper to add a single entrypoint config
-func (s *ClaimsConfig) WithGrpcEntrypointPermissionsClaimFactsMapAND(claimFacts ...*ClaimFact) *ClaimsConfig {
+func (s *ClaimsConfig) WithGrpcEntrypointPermissionsClaimFactsMapAND(claimFacts ...*services_claimfact.ClaimFact) *ClaimsConfig {
 	for _, claimFact := range claimFacts {
 		s.AND = append(s.AND, claimFact)
 	}

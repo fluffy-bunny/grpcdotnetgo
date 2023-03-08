@@ -6,6 +6,7 @@ import (
 	claimsprincipalContracts "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimsprincipal"
 	middleware_dicontext "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/dicontext"
 	middleware_oidc "github.com/fluffy-bunny/grpcdotnetgo/pkg/middleware/oidc"
+	services_claimfact "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimfact"
 	services_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
@@ -39,12 +40,12 @@ func validateAND(claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal cla
 
 	if !utils.IsEmptyOrNil(claimsConfig.AND) {
 		for _, v := range claimsConfig.AND {
-			if v.Directive == middleware_oidc.ClaimTypeAndValue {
+			if v.Directive == services_claimfact.ClaimTypeAndValue {
 				if !claimsPrincipal.HasClaim(v.Claim) {
 					return false
 				}
 			}
-			if v.Directive == middleware_oidc.ClaimType {
+			if v.Directive == services_claimfact.ClaimType {
 				if !claimsPrincipal.HasClaimType(v.Claim.Type) {
 					return false
 				}
@@ -61,12 +62,12 @@ func validateOR(claimsConfig *middleware_oidc.ClaimsConfig, claimsPrincipal clai
 	}
 	if !utils.IsEmptyOrNil(claimsConfig.OR) {
 		for _, v := range claimsConfig.OR {
-			if v.Directive == middleware_oidc.ClaimTypeAndValue {
+			if v.Directive == services_claimfact.ClaimTypeAndValue {
 				if claimsPrincipal.HasClaim(v.Claim) {
 					return true
 				}
 			}
-			if v.Directive == middleware_oidc.ClaimType {
+			if v.Directive == services_claimfact.ClaimType {
 				if claimsPrincipal.HasClaimType(v.Claim.Type) {
 					return true
 				}
