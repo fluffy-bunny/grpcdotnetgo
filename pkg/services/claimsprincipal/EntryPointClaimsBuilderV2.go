@@ -1,7 +1,10 @@
 package claimsprincipal
 
 import (
+	"fmt"
+
 	contracts_claimfact "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/claimfact"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 )
 
 // EntryPointClaimsBuilderV2 struct
@@ -45,4 +48,28 @@ func (s *EntryPointClaimsBuilderV2) ensureEntry(fullMethodName string) *EntryPoi
 		s.GrpcEntrypointClaimsMap[fullMethodName] = result
 	}
 	return result
+}
+
+// DumpExpressions ...
+func (s *EntryPointClaimsBuilderV2) DumpExpressions() {
+
+	type entrypoint struct {
+		FullMethodName string
+		Expression     string
+	}
+	type fullExpressions struct {
+		EntryPoints []entrypoint
+	}
+	fullE := fullExpressions{}
+	fmt.Println("")
+	fmt.Println("EntryPointClaimsBuilderV2 auth config:")
+	fmt.Println("==================================================================")
+	for _, entry := range s.GrpcEntrypointClaimsMap {
+		fullE.EntryPoints = append(fullE.EntryPoints, entrypoint{
+			FullMethodName: entry.FullMethodName,
+			Expression:     entry.ClaimsAST.String(),
+		})
+	}
+	fmt.Println(utils.PrettyJSON(fullE))
+
 }
