@@ -21,7 +21,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.1
-	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/hibiken/asynq v0.24.0
 	github.com/jedib0t/go-pretty/v6 v6.4.6
 	github.com/jinzhu/copier v0.3.5
