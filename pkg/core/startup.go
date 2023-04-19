@@ -17,13 +17,13 @@ import (
 	"github.com/fatih/structs"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
 	grpcdotnetgoasync "github.com/fluffy-bunny/grpcdotnetgo/pkg/async"
+	contracts_backgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	contracts_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	contracts_grpc "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/grpc"
 	contracts_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/plugin"
-
-	contracts_backgroundtasks "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/backgroundtasks"
 	grpcdotnetgo_plugin "github.com/fluffy-bunny/grpcdotnetgo/pkg/plugin"
 	servicesConfig "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/config"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/reugn/async"
@@ -34,6 +34,7 @@ import (
 	"google.golang.org/grpc"
 	grpclog "google.golang.org/grpc/grpclog"
 	health "google.golang.org/grpc/health/grpc_health_v1"
+	grpc_reflection "google.golang.org/grpc/reflection"
 )
 
 // ValidateConfigPath just makes sure, that the path provided is a file,
@@ -301,6 +302,11 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 				unaryServerInterceptorBuilder.GetUnaryServerInterceptors()...,
 			)),
 		)
+		enableGRPCReflection := utils.BoolEnv("ENABLE_GRPC_SERVER_REFLECTION", false)
+		if enableGRPCReflection {
+			log.Info().Msg("Enabling GRPC Server Reflection")
+			grpc_reflection.Register(grpcServer)
+		}
 		serverRegistrations, err := contracts_grpc.SafeGetManyIServiceEndpointRegistrationFromContainer(rootContainer)
 		if err == nil {
 			si.Endpoints = make([]interface{}, 0, len(serverRegistrations))
