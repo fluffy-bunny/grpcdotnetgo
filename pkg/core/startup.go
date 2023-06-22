@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net"
@@ -267,6 +268,11 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 	}
 
 	ensureLogger()
+	ctx := context.Background()
+
+	log := zerolog.New(os.Stdout).With().Caller().Timestamp().Logger()
+	ctx = log.WithContext(ctx)
+
 	for _, plugin := range plugins {
 		si := &ServerInstance{}
 
@@ -278,7 +284,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 		si.DotNetGoBuilder.AddDefaultService()
 
 		startup := plugin.GetStartup()
-
+		startup.SetContext(ctx)
 		configOptions := startup.GetConfigOptions()
 		err = LoadConfig(configOptions)
 		if err != nil {
