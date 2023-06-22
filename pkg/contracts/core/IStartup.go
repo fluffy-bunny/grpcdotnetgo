@@ -5,6 +5,8 @@ package core
 //go:generate mockgen -package=$GOPACKAGE -destination=../../mocks/$GOPACKAGE/mock_$GOFILE   github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/$GOPACKAGE ICoreConfig,IStartup,IUnaryServerInterceptorBuilder
 
 import (
+	"context"
+
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"google.golang.org/grpc"
 )
@@ -23,9 +25,15 @@ type StartupManifest struct {
 
 // UnimplementedStartup helper ...
 type UnimplementedStartup struct {
+	Context context.Context
 }
 
-func (UnimplementedStartup) mustEmbedUnimplementedStartup() {}
+func (u UnimplementedStartup) mustEmbedUnimplementedStartup() {
+
+}
+func (u *UnimplementedStartup) SetContext(ctx context.Context) {
+	u.Context = ctx
+}
 
 // RegisterGRPCEndpoints legacy
 func (u UnimplementedStartup) RegisterGRPCEndpoints(_ *grpc.Server) []interface{} {
@@ -60,6 +68,7 @@ type IStartup interface {
 	SetRootContainer(container di.Container)
 	OnPreServerStartup() error
 	OnPostServerShutdown()
+	SetContext(ctx context.Context)
 }
 
 // IUnaryServerInterceptorBuilder ...
