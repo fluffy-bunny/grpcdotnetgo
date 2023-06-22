@@ -5,6 +5,7 @@
 package core
 
 import (
+	context "context"
 	reflect "reflect"
 
 	core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
@@ -177,6 +178,18 @@ func (m *MockIStartup) RegisterGRPCEndpoints(arg0 *grpc.Server) []interface{} {
 func (mr *MockIStartupMockRecorder) RegisterGRPCEndpoints(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterGRPCEndpoints", reflect.TypeOf((*MockIStartup)(nil).RegisterGRPCEndpoints), arg0)
+}
+
+// SetContext mocks base method.
+func (m *MockIStartup) SetContext(arg0 context.Context) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetContext", arg0)
+}
+
+// SetContext indicates an expected call of SetContext.
+func (mr *MockIStartupMockRecorder) SetContext(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetContext", reflect.TypeOf((*MockIStartup)(nil).SetContext), arg0)
 }
 
 // SetRootContainer mocks base method.
