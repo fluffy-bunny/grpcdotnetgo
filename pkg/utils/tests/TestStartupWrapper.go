@@ -1,6 +1,8 @@
 package tests
 
 import (
+	"context"
+
 	contracts_core "github.com/fluffy-bunny/grpcdotnetgo/pkg/contracts/core"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"google.golang.org/grpc"
@@ -24,6 +26,10 @@ func NewTestStartupWrapper(config *TestStartupWrapperConfig) *TestStartupWrapper
 	return &TestStartupWrapper{
 		Config: config,
 	}
+}
+func (s *TestStartupWrapper) SetContext(ctx context.Context) {
+	s.UnimplementedStartup.SetContext(ctx)
+	s.Config.InnerStartup.SetContext(ctx)
 }
 
 // GetConfigOptions wrapper
