@@ -39,7 +39,8 @@
                 "EXAMPLE__PORT": "1111",
                 //"OIDC_CONFIG__AUTHORITY": "https://some.oidc.authority/",
                 "ENABLE_TRANSIENT_2": "false",
-                "LOG_LEVEL": "debug"               
+                "LOG_LEVEL": "debug",
+                "ENABLE_GRPC_SERVER_REFLECTION": "true"               
             },
             "args": ["serve", "-e=EXAMPLE__PORT=6111" ]
         },

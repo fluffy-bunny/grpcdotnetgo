@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"path"
@@ -27,12 +28,14 @@ import (
 	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/fluffy-bunny/viperEx"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_gateway_runtime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/reugn/async"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	grpclog "google.golang.org/grpc/grpclog"
 	health "google.golang.org/grpc/health/grpc_health_v1"
 	grpc_reflection "google.golang.org/grpc/reflection"
@@ -112,6 +115,10 @@ type ServerInstance struct {
 	StartupManifest contracts_core.StartupManifest
 	Server          *grpc.Server
 	Future          async.Future[interface{}]
+
+	ServerGRPCGatewayMux *http.Server
+	FutureGRPCGatewayMux async.Future[interface{}]
+
 	DotNetGoBuilder *grpcdotnetgo.DotNetGoBuilder
 	Endpoints       []interface{}
 }
@@ -346,7 +353,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 				}
 				lis, err = net.Listen("tcp", fmt.Sprintf(":%d", si.StartupManifest.Port))
 				if err != nil {
-					panic(err)
+					log.Fatal().Err(err).Msg("Failed to listen")
 				}
 			}
 
@@ -354,6 +361,32 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 			si.Server = grpcServer
 			si.Future = future
 			s.ServerInstances = append(s.ServerInstances, si)
+
+			if si.StartupManifest.GRPCGatewayEnabled {
+				// Create a client connection to the gRPC server we just started
+				// This is where the gRPC-Gateway proxies the requests
+				conn, err := grpc.DialContext(
+					context.Background(),
+					fmt.Sprintf("0.0.0.0:%d", si.StartupManifest.Port),
+					grpc.WithBlock(),
+					grpc.WithTransportCredentials(insecure.NewCredentials()),
+				)
+				if err != nil {
+					log.Fatal().Err(err).Msg("Failed to dial server")
+				}
+				gwmux := grpc_gateway_runtime.NewServeMux()
+				for _, serverRegistration := range serverRegistrations {
+					serverRegistration.RegisterGatewayHandler(gwmux, conn)
+				}
+				gwServer := &http.Server{
+					Addr:    fmt.Sprintf(":%d", si.StartupManifest.RESTPort),
+					Handler: gwmux,
+				}
+				si.ServerGRPCGatewayMux = gwServer
+				future := asyncServeGRPCGatewayMux(gwServer)
+				si.FutureGRPCGatewayMux = future
+			}
+
 		}
 	}
 	s.Wait()
@@ -362,6 +395,11 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 	for _, v := range s.ServerInstances {
 		// tell all grpc servers to stop
 		v.Server.Stop()
+		if v.StartupManifest.GRPCGatewayEnabled {
+			if v.ServerGRPCGatewayMux != nil {
+				v.ServerGRPCGatewayMux.Shutdown(context.Background())
+			}
+		}
 		// tear down the DI Container
 		v.DotNetGoBuilder.Container.DeleteWithSubContainers()
 	}
@@ -372,6 +410,11 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 	// do a future wait
 	for _, v := range s.ServerInstances {
 		v.Future.Join()
+		if v.StartupManifest.GRPCGatewayEnabled {
+			if v.FutureGRPCGatewayMux != nil {
+				v.FutureGRPCGatewayMux.Join()
+			}
+		}
 	}
 }
 func fixPath(fpath string) string {
@@ -412,6 +455,29 @@ func asyncServeGRPC(grpcServer *grpc.Server, lis net.Listener) async.Future[inte
 			return
 		}
 		log.Info().Msg("grpc Server has shut down....")
+	})
+}
+func asyncServeGRPCGatewayMux(httpServer *http.Server) async.Future[interface{}] {
+	return grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[interface{}]) {
+		var err error
+		log.Info().Msg("gRPC Server Starting up")
+
+		defer func() {
+			promise.Success(&grpcdotnetgoasync.AsyncResponse{
+				Message: "End Serve - http Server",
+				Error:   err,
+			})
+			if err != nil {
+				log.Error().Err(err).Msg("gRPC Server exit")
+				os.Exit(1)
+			}
+		}()
+
+		if err = httpServer.ListenAndServe(); err != nil {
+			log.Fatal().Err(err).Msg("Failed to listen")
+			return
+		}
+		log.Info().Msg("GRPCGatewayMux Server has shut down....")
 	})
 }
 

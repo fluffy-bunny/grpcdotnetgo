@@ -173,9 +173,11 @@ func (s *Startup) Configure(unaryServerInterceptorBuilder contracts_core.IUnaryS
 func (s *Startup) GetStartupManifest() contracts_core.StartupManifest {
 	config := s.ConfigOptions.Destination.(*contracts_config.Config)
 	manifest := contracts_core.StartupManifest{
-		Name:    "hello",
-		Version: "test.1",
-		Port:    config.Example.Port,
+		Name:               "hello",
+		Version:            "test.1",
+		Port:               config.Example.Port,
+		RESTPort:           int(config.Example.RESTPort),
+		GRPCGatewayEnabled: config.Example.GRPCGatewayEnabled,
 	}
 	return manifest
 }

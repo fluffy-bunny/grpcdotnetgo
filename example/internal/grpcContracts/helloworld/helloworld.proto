@@ -24,6 +24,8 @@ option java_outer_classname = "HelloWorldProto";
 
 package example.internal.grpcContracts.helloworld;
 
+import "google/api/annotations.proto";
+
 enum HelloDirectives {
   HELLO_DIRECTIVES_UNKNOWN = 0;
   HELLO_DIRECTIVES_PANIC = 1;
@@ -33,12 +35,22 @@ enum HelloDirectives {
 // The greeting service definition.
 service Greeter {
   // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+  rpc SayHello (HelloRequest) returns (HelloReply) {
+    option (google.api.http) = {
+      post: "/v1/example/echo"
+      body: "*"
+    };
+  }
    
 }
 service Greeter2 {
   // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply2) {}
+  rpc SayHello (HelloRequest) returns (HelloReply2) {
+    option (google.api.http) = {
+      post: "/v2/example/echo"
+      body: "*"
+    };
+  }
 }
 // The request message containing the user's name.
 message HelloRequest {

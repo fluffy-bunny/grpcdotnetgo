@@ -21,5 +21,5 @@ go mod vendor
 
 go get -u github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/cmd/protoc-gen-go-di
 
-protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative example\internal\grpcContracts\helloworld\helloworld.proto  
+protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --grpc-gateway_out . --grpc-gateway_opt paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative,grpc_gateway=true example/internal/grpcContracts/helloworld/helloworld.proto   
 ```

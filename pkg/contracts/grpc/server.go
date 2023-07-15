@@ -1,6 +1,7 @@
 package grpc
 
 import (
+	grpc_gateway_runtime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
 
@@ -14,5 +15,6 @@ type (
 		GetName() string
 		GetNewClient(cc grpc.ClientConnInterface) interface{}
 		RegisterEndpoint(server *grpc.Server) interface{}
+		RegisterGatewayHandler(gwmux *grpc_gateway_runtime.ServeMux, conn *grpc.ClientConn)
 	}
 )
