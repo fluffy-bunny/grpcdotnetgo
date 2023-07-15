@@ -256,8 +256,21 @@ func (s *serviceGenContext) genService() {
 	mustEmbedUnimplementedName := fmt.Sprintf("mustEmbedUnimplemented%vServer", service.GoName)
 	interfaceDownstreamServiceName := fmt.Sprintf("I%vService", service.GoName)
 
+	isStreamingServer := false
+	for _, method := range service.Methods {
+		if method.Desc.IsStreamingServer() {
+			isStreamingServer = true
+			break
+		}
+	}
+	if isStreamingServer {
+		// we have an unimplemented server that already implements the interface
+		// does nothing
+		g.P("")
+		g.P("// We have a streaming service", service.GoName, "")
+		g.P("")
+	}
 	unimplementedServerEndpointRegistrationName := fmt.Sprintf("Unimplemented%sServerEndpointRegistration", service.GoName)
-
 	g.P("type ", unimplementedServerEndpointRegistrationName, " struct {")
 	g.P("}")
 	g.P()
@@ -317,6 +330,16 @@ func (s *serviceGenContext) genService() {
 	g.P("	return New", service.GoName, "Client(cc)")
 	g.P("}")
 	g.P()
+	if !isStreamingServer {
+		if *grpcGatewayEnabled {
+			g.P("// Registery gateway handler")
+			g.P("func (s *", serviceEndpointRegistrationName, ") RegisterGatewayHandler(gwmux *", grpcGatewayRuntimePackage.Ident("ServeMux"),
+				",conn *", grpcPackage.Ident("ClientConn"), ") {")
+			g.P("   ", "Register", service.GoName, "Handler(", contextPackage.Ident("Background()"), ", gwmux, conn)")
+			g.P("}")
+			g.P()
+		}
+	}
 	g.P("// RegisterEndpoint registers a DI server")
 	g.P("func (s *", serviceEndpointRegistrationName, ") RegisterEndpoint(server *", grpcPackage.Ident("Server"), ") interface{} {")
 	g.P("  endpoint := Register", service.GoName, "ServerDI(server)")
@@ -329,6 +352,16 @@ func (s *serviceGenContext) genService() {
 	g.P("  return endpoint")
 	g.P("}")
 	g.P()
+	if !isStreamingServer {
+		if *grpcGatewayEnabled {
+			g.P("// Registery gateway handler")
+			g.P("func (s *", serviceEndpointRegistrationName, "V2) RegisterGatewayHandler(gwmux *", grpcGatewayRuntimePackage.Ident("ServeMux"),
+				",conn *", grpcPackage.Ident("ClientConn"), ") {")
+			g.P("   ", "Register", service.GoName, "Handler(", contextPackage.Ident("Background()"), ", gwmux, conn)")
+			g.P("}")
+			g.P()
+		}
+	}
 	g.P("// RegisterEndpoint registers a DI server")
 	g.P("func (s *", serviceEndpointRegistrationName, "V2) RegisterEndpointV2(server *", grpcPackage.Ident("Server"), ") interface{} {")
 	g.P("  endpoint := Register", service.GoName, "ServerDIV2(server)")
@@ -522,30 +555,6 @@ func (s *serviceGenContext) genService() {
 	g.P("type ", strings.ToLower(service.GoName), "ServerV2 struct {")
 	g.P(unimplementedExServerName)
 	g.P("}")
-
-	isStreamingServer := false
-	for _, method := range service.Methods {
-		if method.Desc.IsStreamingServer() {
-			isStreamingServer = true
-			break
-		}
-	}
-	if isStreamingServer {
-		// we have an unimplemented server that already implements the interface
-		// does nothing
-		g.P("")
-		g.P("// We have a streaming service")
-		g.P("")
-	} else {
-		if *grpcGatewayEnabled {
-			g.P("// Registery gateway handler")
-			g.P("func (s *", strings.ToLower(service.GoName), "Server) RegisterHandler(gwmux *", grpcGatewayRuntimePackage.Ident("ServeMux"),
-				",conn *", grpcPackage.Ident("ClientConn"), ") {")
-			g.P("   ", "Register", service.GoName, "Handler(", contextPackage.Ident("Background()"), ", gwmux, conn)")
-			g.P("}")
-			g.P()
-		}
-	}
 
 	// Server Registration
 	g.P("// Register", service.GoName, "ServerDI ...")

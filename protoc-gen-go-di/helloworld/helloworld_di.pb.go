@@ -21,7 +21,7 @@ import (
 // is compatible with the grpc package it is being compiled against.
 const _ = pkg.SupportPackageIsVersion7
 
-func setNewField_HkNMRYX36v9pHYagPZcmSO3BMSbeYnHa(dst interface{}, field string) {
+func setNewField_DI48NAMtdqIUHUMQvPRwtwLmZHqElQJS(dst interface{}, field string) {
 	v := reflect.ValueOf(dst).Elem().FieldByName(field)
 	if v.IsValid() {
 		v.Set(reflect.New(v.Type().Elem()))
@@ -78,6 +78,11 @@ func (s *GreeterEndpointRegistrationV2) GetNewClient(cc grpc.ClientConnInterface
 	return NewGreeterClient(cc)
 }
 
+// Registery gateway handler
+func (s *GreeterEndpointRegistration) RegisterGatewayHandler(gwmux *runtime.ServeMux, conn *grpc.ClientConn) {
+	RegisterGreeterHandler(context.Background(), gwmux, conn)
+}
+
 // RegisterEndpoint registers a DI server
 func (s *GreeterEndpointRegistration) RegisterEndpoint(server *grpc.Server) interface{} {
 	endpoint := RegisterGreeterServerDI(server)
@@ -88,6 +93,11 @@ func (s *GreeterEndpointRegistration) RegisterEndpoint(server *grpc.Server) inte
 func (s *GreeterEndpointRegistrationV2) RegisterEndpoint(server *grpc.Server) interface{} {
 	endpoint := RegisterGreeterServerDIV2(server)
 	return endpoint
+}
+
+// Registery gateway handler
+func (s *GreeterEndpointRegistrationV2) RegisterGatewayHandler(gwmux *runtime.ServeMux, conn *grpc.ClientConn) {
+	RegisterGreeterHandler(context.Background(), gwmux, conn)
 }
 
 // RegisterEndpoint registers a DI server
@@ -242,11 +252,6 @@ type greeterServerV2 struct {
 	UnimplementedGreeterServerEx
 }
 
-// Registery gateway handler
-func (s *greeterServer) RegisterHandler(gwmux *runtime.ServeMux, conn *grpc.ClientConn) {
-	RegisterGreeterHandler(context.Background(), gwmux, conn)
-}
-
 // RegisterGreeterServerDI ...
 func RegisterGreeterServerDI(s grpc.ServiceRegistrar) interface{} {
 	// Register the server
@@ -333,6 +338,11 @@ func (s *Greeter2EndpointRegistrationV2) GetNewClient(cc grpc.ClientConnInterfac
 	return NewGreeter2Client(cc)
 }
 
+// Registery gateway handler
+func (s *Greeter2EndpointRegistration) RegisterGatewayHandler(gwmux *runtime.ServeMux, conn *grpc.ClientConn) {
+	RegisterGreeter2Handler(context.Background(), gwmux, conn)
+}
+
 // RegisterEndpoint registers a DI server
 func (s *Greeter2EndpointRegistration) RegisterEndpoint(server *grpc.Server) interface{} {
 	endpoint := RegisterGreeter2ServerDI(server)
@@ -343,6 +353,11 @@ func (s *Greeter2EndpointRegistration) RegisterEndpoint(server *grpc.Server) int
 func (s *Greeter2EndpointRegistrationV2) RegisterEndpoint(server *grpc.Server) interface{} {
 	endpoint := RegisterGreeter2ServerDIV2(server)
 	return endpoint
+}
+
+// Registery gateway handler
+func (s *Greeter2EndpointRegistrationV2) RegisterGatewayHandler(gwmux *runtime.ServeMux, conn *grpc.ClientConn) {
+	RegisterGreeter2Handler(context.Background(), gwmux, conn)
 }
 
 // RegisterEndpoint registers a DI server
@@ -497,11 +512,6 @@ type greeter2ServerV2 struct {
 	UnimplementedGreeter2ServerEx
 }
 
-// Registery gateway handler
-func (s *greeter2Server) RegisterHandler(gwmux *runtime.ServeMux, conn *grpc.ClientConn) {
-	RegisterGreeter2Handler(context.Background(), gwmux, conn)
-}
-
 // RegisterGreeter2ServerDI ...
 func RegisterGreeter2ServerDI(s grpc.ServiceRegistrar) interface{} {
 	// Register the server
@@ -579,12 +589,12 @@ func Get_helloworldFullEmptyResponseFromFullMethodName(fullMethodName string) fu
 var helloworldFullMethodNameWithErrorResponseMap = map[string]func() interface{}{
 	"/helloworld.Greeter/SayHello": func() interface{} {
 		ret := &HelloReply{}
-		setNewField_HkNMRYX36v9pHYagPZcmSO3BMSbeYnHa(ret, "Error")
+		setNewField_DI48NAMtdqIUHUMQvPRwtwLmZHqElQJS(ret, "Error")
 		return ret
 	},
 	"/helloworld.Greeter2/SayHello": func() interface{} {
 		ret := &HelloReply2{}
-		setNewField_HkNMRYX36v9pHYagPZcmSO3BMSbeYnHa(ret, "Error")
+		setNewField_DI48NAMtdqIUHUMQvPRwtwLmZHqElQJS(ret, "Error")
 		return ret
 	},
 }

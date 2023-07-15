@@ -37,12 +37,17 @@
                 "APPLICATION_ENVIRONMENT":"Development",
                 "MODE":"ddd",
                 "EXAMPLE__PORT": "1111",
+                "ddEXAMPLE__REST_PORT": "6112",
+
                 //"OIDC_CONFIG__AUTHORITY": "https://some.oidc.authority/",
                 "ENABLE_TRANSIENT_2": "false",
                 "LOG_LEVEL": "debug",
                 "ENABLE_GRPC_SERVER_REFLECTION": "true"               
             },
-            "args": ["serve", "-e=EXAMPLE__PORT=6111" ]
+            "args": [   "serve", 
+                        "-e=EXAMPLE__PORT=6111", 
+                        "-e=EXAMPLE__REST_PORT=6112",
+                        "-e=EXAMPLE__GRPC_GATEWAY_ENABLED=true"]
         },
         {
             "name": "Client",
