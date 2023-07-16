@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"strings"
 
+	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/compiler/protogen"
+	protobuf_proto "google.golang.org/protobuf/proto"
 )
 
 const (
@@ -270,6 +272,27 @@ func (s *serviceGenContext) genService() {
 		g.P("// We have a streaming service", service.GoName, "")
 		g.P("")
 	}
+	isHTTPService := false
+	for _, method := range service.Methods {
+		extHTTP := protobuf_proto.GetExtension(method.Desc.Options(), annotations.E_Http)
+		if extHTTP != nil && extHTTP != annotations.E_Http.InterfaceOf(annotations.E_Http.Zero()) {
+			isHTTPService = true
+			break
+		}
+	}
+	if isHTTPService {
+		// we have an unimplemented server that already implements the interface
+		// does nothing
+		g.P("")
+		g.P("// We have an HTTP service using grpc-gateway", service.GoName, "")
+		g.P("")
+	} else {
+		g.P("")
+		g.P("// We have NO HTTP service:", service.GoName, "")
+		g.P("")
+
+	}
+
 	unimplementedServerEndpointRegistrationName := fmt.Sprintf("Unimplemented%sServerEndpointRegistration", service.GoName)
 	g.P("type ", unimplementedServerEndpointRegistrationName, " struct {")
 	g.P("}")
@@ -331,7 +354,7 @@ func (s *serviceGenContext) genService() {
 	g.P("}")
 	g.P()
 	if !isStreamingServer {
-		if *grpcGatewayEnabled {
+		if *grpcGatewayEnabled && isHTTPService {
 			g.P("// Registery gateway handler")
 			g.P("func (s *", serviceEndpointRegistrationName, ") RegisterGatewayHandler(gwmux *", grpcGatewayRuntimePackage.Ident("ServeMux"),
 				",conn *", grpcPackage.Ident("ClientConn"), ") {")
@@ -353,7 +376,7 @@ func (s *serviceGenContext) genService() {
 	g.P("}")
 	g.P()
 	if !isStreamingServer {
-		if *grpcGatewayEnabled {
+		if *grpcGatewayEnabled && isHTTPService {
 			g.P("// Registery gateway handler")
 			g.P("func (s *", serviceEndpointRegistrationName, "V2) RegisterGatewayHandler(gwmux *", grpcGatewayRuntimePackage.Ident("ServeMux"),
 				",conn *", grpcPackage.Ident("ClientConn"), ") {")

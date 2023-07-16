@@ -21,12 +21,14 @@ import (
 // is compatible with the grpc package it is being compiled against.
 const _ = pkg.SupportPackageIsVersion7
 
-func setNewField_kDskDyHU4HkOBsOfJVVt3Meb3gwiWgsP(dst interface{}, field string) {
+func setNewField_CC5Cbe0ouKVWqkgOYVT5Ajx2sYjGEz1Z(dst interface{}, field string) {
 	v := reflect.ValueOf(dst).Elem().FieldByName(field)
 	if v.IsValid() {
 		v.Set(reflect.New(v.Type().Elem()))
 	}
 }
+
+// We have an HTTP service using grpc-gatewayGreeter
 
 type UnimplementedGreeterServerEndpointRegistration struct {
 }
@@ -288,6 +290,8 @@ const (
 	FMN_Greeter_SayHello = "/example.internal.grpcContracts.helloworld.Greeter/SayHello"
 )
 
+// We have NO HTTP service:Greeter2
+
 type UnimplementedGreeter2ServerEndpointRegistration struct {
 }
 
@@ -338,11 +342,6 @@ func (s *Greeter2EndpointRegistrationV2) GetNewClient(cc grpc.ClientConnInterfac
 	return NewGreeter2Client(cc)
 }
 
-// Registery gateway handler
-func (s *Greeter2EndpointRegistration) RegisterGatewayHandler(gwmux *runtime.ServeMux, conn *grpc.ClientConn) {
-	RegisterGreeter2Handler(context.Background(), gwmux, conn)
-}
-
 // RegisterEndpoint registers a DI server
 func (s *Greeter2EndpointRegistration) RegisterEndpoint(server *grpc.Server) interface{} {
 	endpoint := RegisterGreeter2ServerDI(server)
@@ -353,11 +352,6 @@ func (s *Greeter2EndpointRegistration) RegisterEndpoint(server *grpc.Server) int
 func (s *Greeter2EndpointRegistrationV2) RegisterEndpoint(server *grpc.Server) interface{} {
 	endpoint := RegisterGreeter2ServerDIV2(server)
 	return endpoint
-}
-
-// Registery gateway handler
-func (s *Greeter2EndpointRegistrationV2) RegisterGatewayHandler(gwmux *runtime.ServeMux, conn *grpc.ClientConn) {
-	RegisterGreeter2Handler(context.Background(), gwmux, conn)
 }
 
 // RegisterEndpoint registers a DI server
@@ -589,12 +583,12 @@ func Get_helloworldFullEmptyResponseFromFullMethodName(fullMethodName string) fu
 var helloworldFullMethodNameWithErrorResponseMap = map[string]func() interface{}{
 	"/example.internal.grpcContracts.helloworld.Greeter/SayHello": func() interface{} {
 		ret := &HelloReply{}
-		setNewField_kDskDyHU4HkOBsOfJVVt3Meb3gwiWgsP(ret, "Error")
+		setNewField_CC5Cbe0ouKVWqkgOYVT5Ajx2sYjGEz1Z(ret, "Error")
 		return ret
 	},
 	"/example.internal.grpcContracts.helloworld.Greeter2/SayHello": func() interface{} {
 		ret := &HelloReply2{}
-		setNewField_kDskDyHU4HkOBsOfJVVt3Meb3gwiWgsP(ret, "Error")
+		setNewField_CC5Cbe0ouKVWqkgOYVT5Ajx2sYjGEz1Z(ret, "Error")
 		return ret
 	},
 }
