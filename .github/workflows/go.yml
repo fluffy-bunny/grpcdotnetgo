@@ -65,47 +65,50 @@ jobs:
 
     - name: Install protoc Plugins
       run:  |
-        go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.26
-        go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
-        go install github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/cmd/protoc-gen-go-di
+        go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+        go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@@latest
+        go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
+        go build ./protoc-gen-go-di/cmd/protoc-gen-go-di
+        #go install github.com/fluffy-bunny/grpcdotnetgo/protoc-gen-go-di/cmd/protoc-gen-go-di
 
-    - name: go mod vendor
-      run: |
-        go mod tidy -compat="${{ env.GO_VERSION }}" 
-        go mod download
-        go mod vendor
+#    - name: go mod vendor
+#      run: |
+#        go mod tidy -compat="${{ env.GO_VERSION }}" 
+#        go mod download
+#        go mod vendor
 
     - name: make proto go
       run: |
-        protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative ./protoc-gen-go-di/helloworld/helloworld.proto
-        protoc --proto_path=. --proto_path=vendor --proto_path=vendor/github.com/fluffy-bunny  --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative ./example/internal/grpcContracts/helloworld/helloworld.proto
+        protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --grpc-gateway_out . --grpc-gateway_opt paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative,grpc_gateway=true protoc-gen-go-di/helloworld/helloworld.proto
+        protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --grpc-gateway_out . --grpc-gateway_opt paths=source_relative --go-di_out=. --go-di_opt=paths=source_relative,grpc_gateway=true example/internal/grpcContracts/helloworld/helloworld.proto
 
-    - name: move vendor sub folders
-      run: |
-        mv ./vendor/github.com/fluffy-bunny/sarulabsdi/genny/ ./genny/sarulabsdi/
-        rm -rf ./vendor/
-    
-    - name: Install Mockgen
-      run: |
-        go install github.com/golang/mock/mockgen@latest
-
-
-    - name: Install genny
-      run: |
-        go version
-        go install github.com/cheekybits/genny@latest
-
-    - name: GO GENERATE
-      run: |
-        go generate -x ./...
-        rm -rf ./genny/sarulabsdi/
-        go mod tidy -compat="${{ env.GO_VERSION }}" 
-          
-    # NOTE: This will NOT trigger another run of CI.yml
-    - name: AutoCommit
-      uses: stefanzweifel/git-auto-commit-action@v4.16.0
-      with:
-        commit_message: Apply genny and mockgen changes
+#    - name: move vendor sub folders
+#      run: |
+#        mv ./vendor/github.com/fluffy-bunny/sarulabsdi/genny/ ./genny/sarulabsdi/
+#        rm -rf ./vendor/
+#    
+#    - name: Install Mockgen
+#      run: |
+#        go install github.com/golang/mock/mockgen@latest
+#
+#
+#    - name: Install genny
+#      run: |
+#        go version
+#        go install github.com/cheekybits/genny@latest
+#
+#    - name: GO GENERATE
+#      run: |
+#        go generate -x ./...
+#        rm -rf ./genny/sarulabsdi/
+#        go mod tidy -compat="${{ env.GO_VERSION }}" 
+#          
+#    # NOTE: This will NOT trigger another run of CI.yml
+#    - name: AutoCommit
+#      uses: stefanzweifel/git-auto-commit-action@v4.16.0
+#      with:
+#        commit_message: Apply genny and mockgen changes
+###########################################################################
     # Test pkg for -race
     - name: Test 
       run: |
