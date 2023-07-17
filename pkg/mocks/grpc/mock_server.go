@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	runtime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	grpc "google.golang.org/grpc"
 )
 
@@ -74,4 +75,16 @@ func (m *MockIServiceEndpointRegistration) RegisterEndpoint(arg0 *grpc.Server) i
 func (mr *MockIServiceEndpointRegistrationMockRecorder) RegisterEndpoint(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterEndpoint", reflect.TypeOf((*MockIServiceEndpointRegistration)(nil).RegisterEndpoint), arg0)
+}
+
+// RegisterGatewayHandler mocks base method.
+func (m *MockIServiceEndpointRegistration) RegisterGatewayHandler(arg0 *runtime.ServeMux, arg1 *grpc.ClientConn) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RegisterGatewayHandler", arg0, arg1)
+}
+
+// RegisterGatewayHandler indicates an expected call of RegisterGatewayHandler.
+func (mr *MockIServiceEndpointRegistrationMockRecorder) RegisterGatewayHandler(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterGatewayHandler", reflect.TypeOf((*MockIServiceEndpointRegistration)(nil).RegisterGatewayHandler), arg0, arg1)
 }

@@ -6,7 +6,10 @@ import (
 
 // ExampleConfig type
 type ExampleConfig struct {
-	Port             int             `mapstructure:"PORT"`
+	Port               int  `mapstructure:"PORT"`
+	RESTPort           int  `mapstructure:"REST_PORT"`
+	GRPCGatewayEnabled bool `json:"grpcGatewayEnabled" mapstructure:"GRPC_GATEWAY_ENABLED"`
+
 	Mode             string          `mapstructure:"MODE"`
 	OIDCConfig       oidc.OIDCConfig `mapstructure:"OIDC_CONFIG"`
 	EnableTransient2 bool            `mapstructure:"ENABLE_TRANSIENT_2"`
@@ -30,6 +33,8 @@ var ConfigDefaultJSON = []byte(`
 	"EXAMPLE": {
 	  "ENABLE_TRANSIENT_2": true,
 	  "PORT": 1111,
+	  "GRPC_GATEWAY_ENABLED": false,
+	  "REST_PORT": 1112,
 	  "OIDC_CONFIG": {
 		"AUTHORITY": "https://in-environment/",
 		"CRON_REFRESH_SCHEDULE": "@every 0h1m0s"

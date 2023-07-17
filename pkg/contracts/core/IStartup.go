@@ -18,9 +18,11 @@ type ICoreConfig interface {
 
 // StartupManifest informational
 type StartupManifest struct {
-	Name    string
-	Version string
-	Port    int
+	Name               string `json:"name" mapstructure:"NAME"`
+	Version            string `json:"version" mapstructure:"VERSION"`
+	Port               int    `json:"port" mapstructure:"PORT"`
+	GRPCGatewayEnabled bool   `json:"grpcGatewayEnabled" mapstructure:"GRPC_GATEWAY_ENABLED"`
+	RESTPort           int    `json:"restPort" mapstructure:"REST_PORT"`
 }
 
 // UnimplementedStartup helper ...
