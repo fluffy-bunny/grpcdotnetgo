@@ -11,6 +11,9 @@ import (
 )
 
 var version = "development"
+var (
+	grpcGatewayEnabled *bool
+)
 
 func main() {
 	showVersion := flag.Bool("version", false, "print the version and exit")
@@ -22,6 +25,7 @@ func main() {
 
 	// Additional options
 	var flags flag.FlagSet
+	grpcGatewayEnabled = flags.Bool("grpc_gateway", false, "enable grpc-gateway")
 
 	protogen.Options{
 		ParamFunc: flags.Set,
