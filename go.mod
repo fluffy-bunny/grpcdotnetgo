@@ -1,6 +1,6 @@
 module github.com/fluffy-bunny/grpcdotnetgo
 
-go 1.20
+go 1.21
 
 require (
 	github.com/ReneKroon/ttlcache/v2 v2.11.0
@@ -21,7 +21,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.1
-	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0
 	github.com/hibiken/asynq v0.24.0
 	github.com/jedib0t/go-pretty/v6 v6.4.6
@@ -49,7 +49,7 @@ require (
 	google.golang.org/api v0.114.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20230530153820-e85fd2cbaebc
 	google.golang.org/grpc v1.55.0
-	google.golang.org/protobuf v1.30.0
+	google.golang.org/protobuf v1.31.0
 	gopkg.in/DataDog/dd-trace-go.v1 v1.48.0
 	gopkg.in/square/go-jose.v2 v2.6.0
 
