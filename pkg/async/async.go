@@ -29,35 +29,37 @@ func (s *PromiseResponse[T]) IsComplete() bool {
 	}
 }
 
+// FutureResponse ...
+type FutureResponse struct {
+	Err   error
+	Value interface{}
+}
+
 // ExecuteAsync returns a response that contains a future and a helper method to check if the future has been completed
-func ExecuteAsync(f func() (interface{}, error)) *PromiseResponse[interface{}] {
-	type internalFutureResponse struct {
-		Err   error
-		Value interface{}
-	}
-	p := async.NewPromise[interface{}]()
+func ExecuteAsync(f func() (interface{}, error)) *PromiseResponse[FutureResponse] {
+	p := async.NewPromise[FutureResponse]()
 	done := make(chan struct{})
 	go func() {
 		if err := recover(); err != nil {
-			p.Success(&internalFutureResponse{Value: nil, Err: fmt.Errorf("%v", err)})
+			p.Success(&FutureResponse{Value: nil, Err: fmt.Errorf("%v", err)})
 		}
 		value, err := f()
-		p.Success(&internalFutureResponse{Value: value, Err: err})
+		p.Success(&FutureResponse{Value: value, Err: err})
 	}()
-	future := p.Future().Map(func(v interface{}) (interface{}, error) {
-		response := v.(*internalFutureResponse)
+	future := p.Future().Map(func(v *FutureResponse) (*FutureResponse, error) {
+		response := v
 		done <- struct{}{}
-		return response.Value, response.Err
+		return response, response.Err
 	})
-	return &PromiseResponse[interface{}]{
+	return &PromiseResponse[FutureResponse]{
 		Future: future,
 		done:   done,
 	}
 }
 
 // ExecuteWithPromiseAsync ...
-func ExecuteWithPromiseAsync(fn func(async.Promise[interface{}])) async.Future[interface{}] {
-	promise := async.NewPromise[interface{}]()
+func ExecuteWithPromiseAsync[T any](fn func(async.Promise[T])) async.Future[T] {
+	promise := async.NewPromise[T]()
 	go fn(promise)
 	return promise.Future()
 }

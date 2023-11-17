@@ -8,7 +8,7 @@
     "go.vetFlags": [
         "-composites=false"
     ],
-    "go.testFlags": ["-race"],
+    "go.testFlags": [],
     "go.lintTool": "revive",
     "go.lintFlags": [
         "-config=${workspaceFolder}\\revive.toml"
