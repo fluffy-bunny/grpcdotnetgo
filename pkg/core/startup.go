@@ -15,6 +15,7 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/fatih/structs"
 	grpcdotnetgo "github.com/fluffy-bunny/grpcdotnetgo/pkg"
@@ -38,6 +39,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	grpclog "google.golang.org/grpc/grpclog"
 	health "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/keepalive"
 	grpc_reflection "google.golang.org/grpc/reflection"
 )
 
@@ -311,6 +313,9 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 		startup.Configure(unaryServerInterceptorBuilder)
 
 		grpcServer := grpc.NewServer(
+			grpc.KeepaliveParams(keepalive.ServerParameters{
+				MaxConnectionIdle: 5 * time.Minute, // <--- This fixes it!
+			}),
 			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 				unaryServerInterceptorBuilder.GetUnaryServerInterceptors()...,
 			)),
