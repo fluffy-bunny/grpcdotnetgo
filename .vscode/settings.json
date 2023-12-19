@@ -59,5 +59,10 @@
         "findReferences": true,
         "diagnostics": true,
         "documentLink": true
+    },
+    "[go][go.mod]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
     }
 }
