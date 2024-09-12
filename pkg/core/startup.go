@@ -116,10 +116,10 @@ func LoadConfig(configOptions *contracts_core.ConfigOptions) error {
 type ServerInstance struct {
 	StartupManifest contracts_core.StartupManifest
 	Server          *grpc.Server
-	Future          async.Future[grpcdotnetgoasync.AsyncResponse]
+	Future          async.Future[*grpcdotnetgoasync.AsyncResponse]
 
 	ServerGRPCGatewayMux *http.Server
-	FutureGRPCGatewayMux async.Future[grpcdotnetgoasync.AsyncResponse]
+	FutureGRPCGatewayMux async.Future[*grpcdotnetgoasync.AsyncResponse]
 
 	DotNetGoBuilder *grpcdotnetgo.DotNetGoBuilder
 	Endpoints       []interface{}
@@ -440,9 +440,9 @@ func fixPath(fpath string) string {
 
 	return fpath
 }
-func asyncServeGRPC(grpcServer *grpc.Server, lis net.Listener) async.Future[grpcdotnetgoasync.AsyncResponse] {
+func asyncServeGRPC(grpcServer *grpc.Server, lis net.Listener) async.Future[*grpcdotnetgoasync.AsyncResponse] {
 
-	return grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[grpcdotnetgoasync.AsyncResponse]) {
+	return grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[*grpcdotnetgoasync.AsyncResponse]) {
 		var err error
 		log.Info().Msg("gRPC Server Starting up")
 
@@ -463,8 +463,8 @@ func asyncServeGRPC(grpcServer *grpc.Server, lis net.Listener) async.Future[grpc
 		log.Info().Msg("grpc Server has shut down....")
 	})
 }
-func asyncServeGRPCGatewayMux(httpServer *http.Server) async.Future[grpcdotnetgoasync.AsyncResponse] {
-	return grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[grpcdotnetgoasync.AsyncResponse]) {
+func asyncServeGRPCGatewayMux(httpServer *http.Server) async.Future[*grpcdotnetgoasync.AsyncResponse] {
+	return grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[*grpcdotnetgoasync.AsyncResponse]) {
 		var err error
 		log.Info().Msg("gRPC Server Starting up")
 
