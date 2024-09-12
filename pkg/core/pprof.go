@@ -9,7 +9,6 @@ import (
 
 	"net/http/pprof"
 
-	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	zlog "github.com/rs/zerolog/log"
@@ -134,7 +133,7 @@ func (s *PProfServer) Start() {
 				port := fmt.Sprintf(":%d", port)
 				if err := e.Start(port); err != nil {
 					e.Logger.Info("shutting down the server")
-					promise.Success(utils.Ptr("OK"))
+					promise.Success("OK")
 				} else {
 					promise.Failure(err)
 				}

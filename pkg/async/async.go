@@ -36,8 +36,8 @@ type FutureResponse struct {
 }
 
 // ExecuteAsync returns a response that contains a future and a helper method to check if the future has been completed
-func ExecuteAsync(f func() (interface{}, error)) *PromiseResponse[FutureResponse] {
-	p := async.NewPromise[FutureResponse]()
+func ExecuteAsync(f func() (interface{}, error)) *PromiseResponse[*FutureResponse] {
+	p := async.NewPromise[*FutureResponse]()
 	done := make(chan struct{})
 	go func() {
 		if err := recover(); err != nil {
@@ -51,7 +51,7 @@ func ExecuteAsync(f func() (interface{}, error)) *PromiseResponse[FutureResponse
 		done <- struct{}{}
 		return response, response.Err
 	})
-	return &PromiseResponse[FutureResponse]{
+	return &PromiseResponse[*FutureResponse]{
 		Future: future,
 		done:   done,
 	}

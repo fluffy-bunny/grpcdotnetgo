@@ -232,7 +232,7 @@ func (s *Runtime) finalPhase() error {
 			}
 		}
 	}
-	future := grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[grpcdotnetgoasync.AsyncResponse]) {
+	future := grpcdotnetgoasync.ExecuteWithPromiseAsync(func(promise async.Promise[*grpcdotnetgoasync.AsyncResponse]) {
 		var err error
 		defer func() {
 			promise.Success(&grpcdotnetgoasync.AsyncResponse{
