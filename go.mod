@@ -10,7 +10,7 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/fluffy-bunny/mockoidc v0.0.0-20230906140505-26909937ea88
 	github.com/fluffy-bunny/sarulabsdi v0.1.66
-	github.com/fluffy-bunny/viperEx v0.0.29
+	github.com/fluffy-bunny/viperEx v0.0.32
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/gogo/googleapis v1.4.1
 	github.com/gogo/protobuf v1.3.2
