@@ -44,7 +44,7 @@ require (
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	github.com/tkuchiki/parsetime v0.3.0
-	github.com/ziflex/lecho/v3 v3.5.0
+	github.com/ziflex/lecho/v3 v3.7.0
 	golang.org/x/oauth2 v0.23.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240903143218-8af14fe29dc1
 	google.golang.org/grpc v1.66.2
