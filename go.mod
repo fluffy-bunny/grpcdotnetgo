@@ -19,8 +19,8 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.6.0
-	github.com/gorilla/securecookie v1.1.1
-	github.com/gorilla/sessions v1.2.1
+	github.com/gorilla/securecookie v1.1.2
+	github.com/gorilla/sessions v1.4.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0
 	github.com/hibiken/asynq v0.24.1
