@@ -618,7 +618,8 @@ func (s *methodGenContext) genDownstreamMethodSignature() {
 	g := s.g
 	if s.ProtogenMethod.Desc.IsStreamingClient() || s.ProtogenMethod.Desc.IsStreamingServer() {
 		// Explicitly no current support for streaming methods
-		panic("Does not currently support streaming methods")
+		//panic("Does not currently support streaming methods")
+		return
 	}
 	// Unary method
 	g.P(s.downstreamServiceSignature())
@@ -633,7 +634,8 @@ func (s *methodGenContext) genServerMethodShim() {
 
 	if method.Desc.IsStreamingClient() || method.Desc.IsStreamingServer() {
 		// Explicitly no current support for streaming methods
-		panic("Does not currently support streaming methods")
+		//	panic("Does not currently support streaming methods")
+		return
 	}
 
 	// Unary method
