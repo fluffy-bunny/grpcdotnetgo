@@ -701,7 +701,8 @@ func (s *methodGenContext) downstreamServiceSignature() string {
 		reqArgs = append(reqArgs, "request *"+g.QualifiedGoIdent(method.Input.GoIdent))
 	}
 	if method.Desc.IsStreamingClient() || method.Desc.IsStreamingServer() {
-		reqArgs = append(reqArgs, method.Parent.GoName+"_"+method.GoName+"Server")
+		//reqArgs = append(reqArgs, method.Parent.GoName+"_"+method.GoName+"Server")
+
 	}
 	return method.GoName + "(" + strings.Join(reqArgs, ", ") + ") " + ret
 }
@@ -718,7 +719,7 @@ func (s *methodGenContext) serverSignature() string {
 		reqArgs = append(reqArgs, "request *"+g.QualifiedGoIdent(method.Input.GoIdent))
 	}
 	if method.Desc.IsStreamingClient() || method.Desc.IsStreamingServer() {
-		reqArgs = append(reqArgs, method.Parent.GoName+"_"+method.GoName+"Server")
+		//reqArgs = append(reqArgs, method.Parent.GoName+"_"+method.GoName+"Server")
 	}
 	return method.GoName + "(" + strings.Join(reqArgs, ", ") + ") " + ret
 }
