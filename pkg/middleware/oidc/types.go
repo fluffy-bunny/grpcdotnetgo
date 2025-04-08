@@ -8,7 +8,7 @@ import (
 	services_claimfact "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimfact"
 
 	di "github.com/fluffy-bunny/sarulabsdi"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/sirupsen/logrus"
 )
 
@@ -108,9 +108,7 @@ type IOIDCConfig interface {
 	GetEntryPoints() map[string]*EntryPointConfig
 }
 
-func assertImplementation() {
-	var _ IOIDCConfig = (*OIDCConfig)(nil)
-}
+var _ IOIDCConfig = (*OIDCConfig)(nil)
 
 // GetAuthority ...
 func (c *OIDCConfig) GetAuthority() string {
