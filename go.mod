@@ -2,13 +2,14 @@ module github.com/fluffy-bunny/grpcdotnetgo
 
 go 1.24
 
+replace github.com/ziflex/lecho/v3 => github.com/fluffy-bunny/lecho/v3 v3.7.0
+
 require (
 	github.com/ReneKroon/ttlcache/v2 v2.11.0
 	github.com/bamzi/jobrunner v1.0.0
 	github.com/cheekybits/genny v1.0.0
 	github.com/coreos/go-oidc/v3 v3.14.1
 	github.com/fatih/structs v1.1.0
-	github.com/fluffy-bunny/mockoidc v0.0.0-20230906140505-26909937ea88
 	github.com/fluffy-bunny/sarulabsdi v0.1.66
 	github.com/fluffy-bunny/viperEx v0.0.34
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
@@ -30,6 +31,7 @@ require (
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/labstack/gommon v0.4.2
 	github.com/lestrrat-go/jwx v1.2.30
+	github.com/oauth2-proxy/mockoidc v0.0.0-20240214162133-caebfff84d25
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.7.0
 	github.com/reugn/async v0.9.0
@@ -49,7 +51,6 @@ require (
 	google.golang.org/grpc v1.71.1
 	google.golang.org/protobuf v1.36.6
 	gopkg.in/DataDog/dd-trace-go.v1 v1.72.2
-	gopkg.in/square/go-jose.v2 v2.6.0
 )
 
 require (
@@ -80,11 +81,11 @@ require (
 	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/felixge/fgprof v0.9.5 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
-	github.com/go-jose/go-jose/v4 v4.0.5 // indirect
+	github.com/go-jose/go-jose/v3 v3.0.3 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
-	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/pprof v0.0.0-20240227163752-401108e1b7e7 // indirect
 	github.com/gorilla/context v1.1.2 // indirect

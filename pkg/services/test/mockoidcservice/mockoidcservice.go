@@ -1,7 +1,7 @@
 package mockoidcservice
 
 import (
-	"github.com/fluffy-bunny/mockoidc"
+	"github.com/oauth2-proxy/mockoidc"
 	"github.com/rs/zerolog/log"
 )
 
