@@ -9,7 +9,11 @@ import (
 	grpchealth "google.golang.org/grpc/health/grpc_health_v1"
 )
 
-type service struct{}
+type service struct {
+	grpchealth.UnimplementedHealthServer
+}
+
+var _ grpchealth.HealthServer = (*service)(nil)
 
 func (s *service) Check(context.Context, *grpchealth.HealthCheckRequest) (*grpchealth.HealthCheckResponse, error) {
 	return &grpchealth.HealthCheckResponse{
