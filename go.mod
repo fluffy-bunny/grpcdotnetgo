@@ -46,7 +46,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/tkuchiki/parsetime v0.3.0
 	github.com/ziflex/lecho/v3 v3.8.0
-	golang.org/x/oauth2 v0.29.0
+	golang.org/x/oauth2 v0.30.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250303144028-a0af3efb3deb
 	google.golang.org/grpc v1.72.0
 	google.golang.org/protobuf v1.36.6
