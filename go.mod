@@ -24,7 +24,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3
 	github.com/hibiken/asynq v0.25.1
-	github.com/jedib0t/go-pretty/v6 v6.6.7
+	github.com/jedib0t/go-pretty/v6 v6.7.5
 	github.com/jinzhu/copier v0.4.0
 	github.com/jnewmano/grpc-json-proxy v0.0.6
 	github.com/labstack/echo-contrib v0.17.3
