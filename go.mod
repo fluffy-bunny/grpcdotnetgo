@@ -34,7 +34,7 @@ require (
 	github.com/oauth2-proxy/mockoidc v0.0.0-20240214162133-caebfff84d25
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/profile v1.7.0
-	github.com/reugn/async v0.9.0
+	github.com/reugn/async v0.10.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/xid v1.6.0
 	github.com/rs/zerolog v1.34.0
