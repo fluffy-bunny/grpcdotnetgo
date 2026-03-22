@@ -7,6 +7,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"time"
@@ -58,4 +59,13 @@ func DurationEnv(key string, def time.Duration) time.Duration {
 		return def
 	}
 	return v
+}
+
+// BindAddress returns "127.0.0.1:port" when DEV_BIND_LOCALHOST=true,
+// otherwise ":port". Binding to localhost prevents Windows Firewall prompts.
+func BindAddress(port int) string {
+	if BoolEnv("DEV_BIND_LOCALHOST", false) {
+		return fmt.Sprintf("127.0.0.1:%d", port)
+	}
+	return fmt.Sprintf(":%d", port)
 }

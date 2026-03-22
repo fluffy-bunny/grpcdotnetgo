@@ -356,7 +356,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 					// legacy
 					si.StartupManifest.Port = startup.GetPort()
 				}
-				lis, err = net.Listen("tcp", fmt.Sprintf(":%d", si.StartupManifest.Port))
+				lis, err = net.Listen("tcp", utils.BindAddress(si.StartupManifest.Port))
 				if err != nil {
 					log.Fatal().Err(err).Msg("Failed to listen")
 				}
@@ -372,7 +372,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 				// This is where the gRPC-Gateway proxies the requests
 				conn, err := grpc.DialContext(
 					context.Background(),
-					fmt.Sprintf("0.0.0.0:%d", si.StartupManifest.Port),
+					fmt.Sprintf("127.0.0.1:%d", si.StartupManifest.Port),
 					grpc.WithBlock(),
 					grpc.WithTransportCredentials(insecure.NewCredentials()),
 				)
@@ -384,7 +384,7 @@ func (s *Runtime) StartWithListenterAndPlugins(lis net.Listener, plugins []contr
 					serverRegistration.RegisterGatewayHandler(gwmux, conn)
 				}
 				gwServer := &http.Server{
-					Addr:    fmt.Sprintf(":%d", si.StartupManifest.RESTPort),
+					Addr:    utils.BindAddress(si.StartupManifest.RESTPort),
 					Handler: gwmux,
 				}
 				si.ServerGRPCGatewayMux = gwServer

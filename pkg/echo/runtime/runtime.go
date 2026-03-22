@@ -27,6 +27,7 @@ import (
 	core_echo_templates "github.com/fluffy-bunny/grpcdotnetgo/pkg/echo/templates"
 	services_core_claimsprincipal "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/claimsprincipal"
 	services_timeutils "github.com/fluffy-bunny/grpcdotnetgo/pkg/services/timeutils"
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	di "github.com/fluffy-bunny/sarulabsdi"
 	"github.com/google/uuid"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -221,7 +222,7 @@ func (s *Runtime) finalPhase() error {
 		log.Error().Err(err).Msg("Failed to start server")
 		return err
 	}
-	address := fmt.Sprintf(":%v", startupOptions.Port)
+	address := utils.BindAddress(startupOptions.Port)
 
 	for _, hooks := range s.Startup.GetHooks() {
 		if hooks.PreStartHook != nil {

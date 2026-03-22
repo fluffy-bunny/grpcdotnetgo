@@ -2,13 +2,13 @@ package core
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"strconv"
 
 	"net/http/pprof"
 
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	zlog "github.com/rs/zerolog/log"
@@ -130,8 +130,8 @@ func (s *PProfServer) Start() {
 		asyncAction := func() async.Future[string] {
 			promise := async.NewPromise[string]()
 			go func() {
-				port := fmt.Sprintf(":%d", port)
-				if err := e.Start(port); err != nil {
+				address := utils.BindAddress(port)
+				if err := e.Start(address); err != nil {
 					e.Logger.Info("shutting down the server")
 					promise.Success("OK")
 				} else {

@@ -2,12 +2,12 @@ package core
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	go_runtime "runtime"
 	"strconv"
 
+	"github.com/fluffy-bunny/grpcdotnetgo/pkg/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/reugn/async"
@@ -72,8 +72,8 @@ func (s *Control) Start() {
 		asyncAction := func() async.Future[string] {
 			promise := async.NewPromise[string]()
 			go func() {
-				port := fmt.Sprintf(":%d", port)
-				if err := e.Start(port); err != nil {
+				address := utils.BindAddress(port)
+				if err := e.Start(address); err != nil {
 					e.Logger.Info("shutting down the server")
 					promise.Success("OK")
 				} else {
