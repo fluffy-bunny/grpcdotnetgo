@@ -13,7 +13,7 @@ on:
     branches: [main]
 env:
   BINARY: "server"
-  GO_VERSION: "1.24"
+  GO_VERSION: "1.27"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -112,7 +112,7 @@ jobs:
 
       - name: Build
         run: |
-          go build -mod=mod -v -a -tags netgo -ldflags "-X 'main.version=${{ steps.tag_version.outputs.new_tag }}' -extldflags '-static'" ./example/cmd/server
+          go build -mod=mod -v -a -tags netgo -ldflags "-X 'main.version=${{ needs.pre_flight.outputs.new_tag }}' -extldflags '-static'" ./example/cmd/server
 
       # https://github.com/actions/runner/issues/1353
       # -coverpkg not working in this project, but it does work elsewhere
@@ -132,41 +132,17 @@ jobs:
           name: coverage-report
           path: coverage
 
-  # Copied from https://github.com/remast/service_sonar/tree/feature/go-build
-  #         and https://dev.to/remast/go-for-sonarcloud-with-github-actions-3pmn
-  sonar:
-    name: SonarCloud Analysis
-    runs-on: ubuntu-latest
-    needs: [pre_flight, framework]
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Download code coverage results
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage
-      - name: Update version in SonarCloud config
-        run: |
-          echo "" >> sonar-project.properties
-          echo "sonar.projectVersion=${{needs.pre_flight.outputs.new_tag}}" >> sonar-project.properties
-      - name: Fix GoLint paths
-        run: sed -i 's~${{ github.workspace }}~/github/workspace~g' coverage/golint.txt
-
-      - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   release:
     needs: [pre_flight, framework]
     runs-on: ubuntu-latest
 
     steps:
-      - run: |
-          echo new_tag: ${{needs.pre_flight.outputs.new_tag}} 
-          echo changelog: ${{needs.pre_flight.outputs.changelog}}
+      - env:
+          NEW_TAG: ${{ needs.pre_flight.outputs.new_tag }}
+          CHANGELOG: ${{ needs.pre_flight.outputs.changelog }}
+        run: |
+          echo "new_tag: $NEW_TAG"
+          echo "changelog: $CHANGELOG"
 
       - name: Create a GitHub release
         uses: actions/create-release@v1
