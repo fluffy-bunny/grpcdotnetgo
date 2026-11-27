@@ -137,9 +137,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: |
-          echo new_tag: ${{needs.pre_flight.outputs.new_tag}} 
-          echo changelog: ${{needs.pre_flight.outputs.changelog}}
+      - env:
+          NEW_TAG: ${{ needs.pre_flight.outputs.new_tag }}
+          CHANGELOG: ${{ needs.pre_flight.outputs.changelog }}
+        run: |
+          echo "new_tag: $NEW_TAG"
+          echo "changelog: $CHANGELOG"
 
       - name: Create a GitHub release
         uses: actions/create-release@v1
