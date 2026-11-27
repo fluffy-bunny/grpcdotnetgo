@@ -112,7 +112,7 @@ jobs:
 
       - name: Build
         run: |
-          go build -mod=mod -v -a -tags netgo -ldflags "-X 'main.version=${{ steps.tag_version.outputs.new_tag }}' -extldflags '-static'" ./example/cmd/server
+          go build -mod=mod -v -a -tags netgo -ldflags "-X 'main.version=${{ needs.pre_flight.outputs.new_tag }}' -extldflags '-static'" ./example/cmd/server
 
       # https://github.com/actions/runner/issues/1353
       # -coverpkg not working in this project, but it does work elsewhere
