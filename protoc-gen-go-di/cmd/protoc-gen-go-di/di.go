@@ -52,7 +52,7 @@ func newGenFileContext(gen *protogen.Plugin, file *protogen.File) *genFileContex
 	ctx := &genFileContext{
 		file:        file,
 		gen:         gen,
-		uniqueRunID: randomString(32),
+		uniqueRunID: fileUniqueID(file.Desc.Path()),
 		packageName: string(file.GoPackageName),
 		filename:    file.GeneratedFilenamePrefix + "_di.pb.go",
 	}
@@ -78,6 +78,7 @@ type methodGenContext struct {
 type serviceGenContext struct {
 	packageName     string
 	MethodMapGenCtx map[string]*methodGenContext
+	methodKeys      []string
 	gen             *protogen.Plugin
 	file            *protogen.File
 	g               *protogen.GeneratedFile
@@ -182,7 +183,7 @@ func (s *genFileContext) generateFileContent() {
 	g.P("func New_", getFileName(file), "FullMethodNameSlice() []string {")
 	g.P("    slice := []string {")
 	for _, sctx := range serviceGenCtxs {
-		for k := range sctx.MethodMapGenCtx {
+		for _, k := range sctx.methodKeys {
 			g.P("        \"", k, "\",")
 		}
 	}
@@ -199,7 +200,8 @@ func (s *genFileContext) generateFileContent() {
 	g.P("// i.e. /helloworld.Greeter/SayHello ")
 	g.P("var ", getFileName(file), "FullMethodNameEmptyResponseMap = map[string]func()interface{} {")
 	for _, sctx := range serviceGenCtxs {
-		for k, v := range sctx.MethodMapGenCtx {
+		for _, k := range sctx.methodKeys {
+			v := sctx.MethodMapGenCtx[k]
 			g.P("    \"", k, "\": ", v.MethodInfo.NewResponseFunc, ",")
 		}
 	}
@@ -218,7 +220,8 @@ func (s *genFileContext) generateFileContent() {
 	g.P("// i.e. /helloworld.Greeter/SayHello ")
 	g.P("var ", getFileName(file), "FullMethodNameWithErrorResponseMap = map[string]func()interface{} {")
 	for _, sctx := range serviceGenCtxs {
-		for k, v := range sctx.MethodMapGenCtx {
+		for _, k := range sctx.methodKeys {
+			v := sctx.MethodMapGenCtx[k]
 			g.P("    \"", k, "\": ", v.MethodInfo.NewResponseWithErrorFunc, ",")
 		}
 	}
@@ -237,7 +240,8 @@ func (s *genFileContext) generateFileContent() {
 		g.P("// M_", getFileName(file), "_", sctx.service.GoName, "FullMethodNameExecuteMap keys match that of grpc.UnaryServerInfo.FullMethodName")
 		g.P("var M_", getFileName(file), "_", sctx.service.GoName,
 			fmt.Sprintf("FullMethodNameExecuteMap = map[string]func(service I%vServer, ctx context.Context, request interface{}) (interface{}, error) {", sctx.service.GoName))
-		for k, v := range sctx.MethodMapGenCtx {
+		for _, k := range sctx.methodKeys {
+			v := sctx.MethodMapGenCtx[k]
 			g.P("    \"", k, "\": ", v.MethodInfo.ExecuteFunc, ",")
 		}
 
@@ -427,6 +431,7 @@ func (s *serviceGenContext) genService() {
 		methodGenCtx := newMethodGenContext(s.uniqueRunID, method, gen, file, g, service)
 		methodGenCtx.genDownstreamMethodSignature()
 		s.MethodMapGenCtx[key] = methodGenCtx
+		s.methodKeys = append(s.methodKeys, key)
 	}
 	g.P("}")
 	g.P()
